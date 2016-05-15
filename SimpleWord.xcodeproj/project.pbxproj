@@ -68,6 +68,7 @@
 		74C899FF1CE726A500C63C56 /* LMTextData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMTextData.m; sourceTree = "<group>"; };
 		74C89A011CE727D300C63C56 /* LMTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMTextStyle.h; sourceTree = "<group>"; };
 		74C89A021CE727D300C63C56 /* LMTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMTextStyle.m; sourceTree = "<group>"; };
+		74C89A051CE7E25B00C63C56 /* LMStyleSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMStyleSettings.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +147,7 @@
 		744FF2231CE5DADB008F06BF /* StyleSettingCells */ = {
 			isa = PBXGroup;
 			children = (
+				74C89A051CE7E25B00C63C56 /* LMStyleSettings.h */,
 				744FF22A1CE5DBB0008F06BF /* LMStyleFontStyleCell.h */,
 				744FF22B1CE5DBB0008F06BF /* LMStyleFontStyleCell.m */,
 				744FF22D1CE5DBEE008F06BF /* LMStyleParagraphCell.h */,

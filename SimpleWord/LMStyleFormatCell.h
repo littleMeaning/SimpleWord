@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LMStyleSettings.h"
 
 @interface LMStyleFormatCell : UITableViewCell
+
+@property (nonatomic, weak) id<LMStyleSettings> delegate;
 
 @property (nonatomic, assign) NSInteger *selectedIndex;
 

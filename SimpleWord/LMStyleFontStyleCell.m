@@ -23,6 +23,7 @@
     
     for (UIButton *button in @[_boldButton, _italicButton, _underLineButton]) {
         button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
     }    
 }
 
@@ -30,6 +31,40 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (void)buttonAction:(UIButton *)button {
+    button.selected = !button.selected;
+    
+    NSDictionary *settings;
+    if (button == self.boldButton) settings = @{ LMStyleSettingsBoldName: @(self.bold) };
+    if (button == self.italicButton) settings = @{ LMStyleSettingsItalicName: @(self.italic) };
+    if (button == self.underLineButton) settings = @{ LMStyleSettingsUnderlineName: @(self.underline) };
+    [self.delegate lm_didChangeStyleSettings:settings];
+}
+
+- (void)setBold:(BOOL)bold {
+    self.boldButton.selected = bold;
+}
+
+- (BOOL)bold {
+    return self.boldButton.selected;
+}
+
+- (void)setItalic:(BOOL)italic {
+    self.italicButton.selected = italic;
+}
+
+- (BOOL)italic {
+    return self.italicButton.selected;
+}
+
+- (void)setUnderline:(BOOL)underline {
+    self.underLineButton.selected = underline;
+}
+
+- (BOOL)underline {
+    return self.underLineButton.selected;
 }
 
 @end

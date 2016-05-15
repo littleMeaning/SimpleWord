@@ -78,7 +78,7 @@
     if (self.italic) {
         CGAffineTransform matrix = CGAffineTransformMake(1, 0, tanf(15 * (CGFloat)M_PI / 180), 1, 0, 0);
         UIFontDescriptor *descriptor = [UIFontDescriptor fontDescriptorWithName:font.fontName matrix:matrix];
-        font = [UIFont fontWithDescriptor:descriptor size:self.fontSize];
+        font = [UIFont fontWithDescriptor:descriptor size:self.fontSize];        
     }
     return font;
 }

@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LMStyleSettings.h"
 
 @interface LMStyleFontStyleCell : UITableViewCell
+
+@property (nonatomic, weak) id<LMStyleSettings> delegate;
+
+@property (nonatomic, assign) BOOL bold;
+@property (nonatomic, assign) BOOL italic;
+@property (nonatomic, assign) BOOL underline;
 
 @end

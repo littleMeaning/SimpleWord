@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LMStyleSettings.h"
 
 @interface LMStyleParagraphCell : UITableViewCell
+
+@property (nonatomic, weak) id<LMStyleSettings> delegate;
 
 @end

@@ -36,7 +36,7 @@
     }
     
     _colors = @[
-                [UIColor colorWithRed:0 green:0 blue:0 alpha:1],
+                [UIColor blackColor],
                 [UIColor colorWithRed:10/255.f green:41/255.f blue:147/255.f alpha:1],
                 [UIColor colorWithRed:218/255.f green:101/255.f blue:320/255.f alpha:1],
                 [UIColor colorWithRed:135/255.f green:135/255.f blue:135/255.f alpha:1],
@@ -86,6 +86,22 @@
     [self.colorPickerView reloadData];
 }
 
+#pragma mark - set Color
+
+- (void)setSelectedColor:(UIColor *)selectedColor {
+    if (self.colors.count == 0) {
+        return;
+    }
+    [self.colors enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isEqual:selectedColor]) {
+            _selectedColor = selectedColor;
+            self.colorDisplayView.backgroundColor = selectedColor;
+            [self.colorPickerView selectIndex:idx];
+            *stop = YES;
+        }
+    }];
+}
+
 #pragma mark - <LMColorPickerViewDataSource, LMColorPickerViewDelegate>
 
 - (NSInteger)lm_numberOfColorsInColorPickerView:(LMColorPickerView *)pickerView {
@@ -98,10 +114,7 @@
 
 - (void)lm_colorPickerView:(LMColorPickerView *)pickerView didSelectColor:(UIColor *)color {
     self.colorDisplayView.backgroundColor = color;
-}
-
-- (void)lm_colorPickerView:(LMColorPickerView *)pickerView didSelectIndex:(NSInteger)index {
-    NSLog(@"%ld", index);
+    [self.delegate lm_didChangeStyleSettings:@{LMStyleSettingsTextColorName: color}];
 }
 
 @end

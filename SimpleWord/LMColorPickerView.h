@@ -33,8 +33,9 @@
 @property (nonatomic, assign) NSInteger spacingBetweenColors; // default is 20.f
 
 @property (nonatomic, readonly) NSInteger numberOfColors;
-@property (nonatomic, assign) NSInteger selectedIndex;
+@property (nonatomic, readonly) NSInteger selectedIndex;
 
 - (void)reloadData;
+- (void)selectIndex:(NSInteger)index;
 
 @end

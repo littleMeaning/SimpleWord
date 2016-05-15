@@ -12,7 +12,7 @@
 #import "LMStyleSettingsController.h"
 #import "LMTextStyle.h"
 
-@interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate>
+@interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, NSTextStorageDelegate, NSLayoutManagerDelegate, LMStyleSettingsControllerDelegate>
 
 @property (nonatomic, assign) CGFloat keyboardSpacingHeight;
 @property (nonatomic, strong) LMSegmentedControl *contentInputAccessoryView;
@@ -28,6 +28,9 @@
 @end
 
 @implementation LMWordViewController
+{
+    NSRange _lastInputRange;
+}
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self  = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
@@ -55,8 +58,11 @@
     _textView = [[LMWordView alloc] init];
     _textView.delegate = self;
     _textView.titleTextField.delegate = self;
-//    _textView.textStorage.layoutManagers[0].delegate = self;
+    _textView.textStorage.delegate = self;
+    _textView.textStorage.layoutManagers[0].delegate = self;
     [self.view addSubview:_textView];
+    
+    [self setCurrentTextStyle:[LMTextStyle textStyleWithType:LMTextStyleFormatNormal]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
@@ -134,20 +140,22 @@
     return YES;
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    [self setupCurrentTextStyle];
-}
-
 - (void)textViewDidChangeSelection:(UITextView *)textView {
-    [self setupCurrentTextStyle];
-    NSLog(@"%@, %@", NSStringFromRange(textView.selectedRange), textView.selectedTextRange);
+
+    if (_lastInputRange.location != textView.selectedRange.location) {
+        [self updateStyleSettings];
+    }
+    _lastInputRange = textView.selectedRange;
 }
 
-//- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-//    
-//}
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+
+    _lastInputRange = NSMakeRange(range.location + text.length - range.length, 0);
+    return YES;
+}
 
 //- (void)textViewDidChange:(UITextView *)textView {
+//    
 //    CGRect line = [textView caretRectForPosition:textView.selectedTextRange.start];
 //    CGFloat overflow = line.origin.y + line.size.height - ( textView.contentOffset.y + textView.bounds.size.height - textView.contentInset.bottom - textView.contentInset.top );
 //    if ( overflow > 0 ) {
@@ -161,6 +169,27 @@
 //        }];
 //    }
 //}
+
+#pragma mark - <NSTextStorageDelegate>
+
+//- (void)textStorage:(NSTextStorage *)textStorage willProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
+//    
+//    NSLog(@"will: %ld, %@, %ld", editedMask, NSStringFromRange(editedRange), delta);
+//}
+//
+//// Sent inside -processEditing right before notifying layout managers.  Delegates can change the attributes.
+//- (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta {
+//    
+//    if (editedMask == NSTextStorageEditedCharacters && editedRange.length == 1 && delta == 1) {
+//        // 正在输入字符
+//        
+//    }
+//    NSLog(@"did: %ld, %@, %ld", editedMask, NSStringFromRange(editedRange), delta);
+//}
+
+#pragma mark - 
+
+
 
 #pragma mark - Change InputView
 
@@ -187,6 +216,8 @@
 - (LMStyleSettingsController *)styleSettingsViewController {
     if (!_styleSettingsViewController) {
         _styleSettingsViewController = [self.lm_storyboard instantiateViewControllerWithIdentifier:@"style"];
+        _styleSettingsViewController.textStyle = self.currentTextStyle;
+        _styleSettingsViewController.delegate = self;
     }
     return _styleSettingsViewController;
 }
@@ -213,30 +244,46 @@
 
 #pragma mark - textStyle
 
-- (void)setupCurrentTextStyle {
+- (void)setCurrentTextStyle:(LMTextStyle *)currentTextStyle {
+    _currentTextStyle = currentTextStyle;
+    self.textView.typingAttributes = @{
+                                       NSFontAttributeName: currentTextStyle.font,
+                                       NSForegroundColorAttributeName: currentTextStyle.textColor,
+                                       NSUnderlineStyleAttributeName: @(currentTextStyle.underline ? NSUnderlineStyleSingle : NSUnderlineStyleNone)
+                                       };
+}
+
+- (void)updateStyleSettings {
     
-    if (self.textView.text.length == 0) {
-        self.currentTextStyle = [LMTextStyle textStyleWithType:LMTextStyleFormatNormal];
-        return;
+    LMTextStyle *textStyle = [[LMTextStyle alloc] init];
+    UIFont *font = self.textView.typingAttributes[NSFontAttributeName];
+    NSDictionary<NSString *, id> *fontAttributes = font.fontDescriptor.fontAttributes;
+    if (![font.fontName isEqualToString:[UIFont systemFontOfSize:15].fontName]) {
+        // 通过fontName来判断粗体
+        textStyle.bold = YES;
     }
-//    NSRange selectedRange = self.textView.selectedRange;
-//    if (selectedRange.length == 0) {
-//        // 无选中
-//        NSString *previousString;
-//        if (selectedRange.location > 0) {
-//            NSRange range = NSMakeRange(selectedRange.location - 1, 0);
-//            previousString = [self.textView.text substringWithRange:range];
-//        }
-//        if (previousString == nil || [previousString isEqualToString:@"\n"]) {
-//            // 上一个字符为空（光标在初始位置）或者为换行，则使用下一个字符的样式
-//            if (selectedRange.location == self.textView.text.length - 1) {
-//                // 最后一个字符
-//            }
-//            else {
-//                // TODO
-//            }
-//        }
-//    }
+    if (fontAttributes[@"NSCTFontMatrixAttribute"]) {
+        // 通过是否包含 matrix 判断斜体
+        textStyle.italic = YES;
+    }
+    textStyle.fontSize = [fontAttributes[@"NSFontSizeAttribute"] floatValue];
+    textStyle.textColor = self.textView.typingAttributes[NSForegroundColorAttributeName] ?: textStyle.textColor;
+    if (self.textView.typingAttributes[NSUnderlineStyleAttributeName]) {
+        textStyle.underline = [self.textView.typingAttributes[NSUnderlineStyleAttributeName] integerValue] == NSUnderlineStyleSingle;
+    }
+    [self setCurrentTextStyle:textStyle];
+    
+    self.styleSettingsViewController.textStyle = self.currentTextStyle;
+}
+
+#pragma mark - <LMStyleSettingsControllerDelegate>
+
+- (void)lm_didChangedTextStyle:(LMTextStyle *)textStyle {
+    [self setCurrentTextStyle:textStyle];
+    
+    if (self.textView.selectedRange.length > 0) {
+        [self.textView.textStorage addAttributes:self.textView.typingAttributes range:self.textView.selectedRange];
+    }
 }
 
 @end

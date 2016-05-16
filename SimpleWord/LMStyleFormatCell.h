@@ -12,7 +12,6 @@
 @interface LMStyleFormatCell : UITableViewCell
 
 @property (nonatomic, weak) id<LMStyleSettings> delegate;
-
-@property (nonatomic, assign) NSInteger *selectedIndex;
+@property (nonatomic, assign) NSInteger selectedIndex;
 
 @end

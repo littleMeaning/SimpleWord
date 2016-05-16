@@ -7,6 +7,7 @@
 //
 
 #import "LMStyleFormatCell.h"
+#import "LMTextStyle.h"
 
 @interface LMStyleFormatCell ()
 
@@ -73,14 +74,37 @@
         return;
     }
     
-    self.selectedButton.selected = NO;
-    self.selectedButton.titleLabel.font = [UIFont systemFontOfSize:15.f];
+    [self setSelectedIndex:[self.buttons indexOfObject:button]];
     
-    button.selected = YES;
-    button.titleLabel.font = [UIFont systemFontOfSize:17.f];
-    self.selectedButton = button;
+    LMTextStyleType type = [self.buttons indexOfObject:button];
+    NSDictionary *settings = @{LMStyleSettingsFormatName : @(type)};
+    [self.delegate lm_didChangeStyleSettings:settings];
+}
+
+- (void)setSelectedIndex:(NSInteger)selectedIndex {
     
-    self.formatTitleLabel.text = [button titleForState:UIControlStateNormal];
+    if (self.selectedButton) {
+        self.selectedButton.selected = NO;
+        self.selectedButton.titleLabel.font = [UIFont systemFontOfSize:15.f];
+    }
+    
+    if (selectedIndex < 0) {
+        self.selectedButton = nil;
+        self.formatTitleLabel.text = @"普通";
+    }
+    else {
+        self.selectedButton = self.buttons[selectedIndex];
+        self.selectedButton.selected = YES;
+        self.selectedButton.titleLabel.font = [UIFont systemFontOfSize:17.f];
+        self.formatTitleLabel.text = [self.selectedButton titleForState:UIControlStateNormal];
+    }
+}
+
+- (NSInteger)selectedIndex {
+    if (!self.selectedButton) {
+        return -1;
+    }
+    return [self.buttons indexOfObject:self.selectedButton];
 }
 
 @end

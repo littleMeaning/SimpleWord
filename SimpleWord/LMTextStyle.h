@@ -9,8 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSUInteger, LMTextStyleType) {
-    LMTextStyleFormatCustom,
-    LMTextStyleFormatNormal,
+    LMTextStyleFormatNormal = 0,
     LMTextStyleFormatTitleSmall,
     LMTextStyleFormatTitleMedium,
     LMTextStyleFormatTitleLarge,

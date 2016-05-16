@@ -13,8 +13,9 @@
 #import "LMStyleColorCell.h"
 #import "LMStyleFormatCell.h"
 #import "LMTextStyle.h"
+#import "LMParagraphConfig.h"
 
-@interface LMStyleSettingsController () <LMStyleSettings>
+@interface LMStyleSettingsController () <LMStyleParagraphCellDelegate>
 
 @property (nonatomic, weak) NSIndexPath *selectedIndexPath;
 
@@ -22,17 +23,13 @@
 
 @implementation LMStyleSettingsController
 {
+    BOOL _paragraphType;
     BOOL _shouldScrollToSelectedRow;
+    BOOL _needReload;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -40,11 +37,30 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    if (_needReload) {
+        [self reload];
+    }
+}
+
+- (void)reload {
+    [self.tableView reloadData];
+    _needReload = NO;
+}
+
 #pragma mark - setTextStyle
 
 - (void)setTextStyle:(LMTextStyle *)textStyle {
     _textStyle = textStyle;
-    [self.tableView reloadData];
+    _needReload = YES;
+}
+
+#pragma mark - setParagraph
+
+- (void)setParagraphConfig:(LMParagraphConfig *)paragraphConfig {
+    _paragraphType = paragraphConfig.type;
+    _needReload = YES;
 }
 
 #pragma mark - UITableViewDataSource
@@ -88,8 +104,13 @@
             break;
         }
         case 1:
-            cell = [tableView dequeueReusableCellWithIdentifier:@"paragraph"];
+        {
+            LMStyleParagraphCell *prargraphCell = [tableView dequeueReusableCellWithIdentifier:@"paragraph"];
+            prargraphCell.type = _paragraphType;
+            prargraphCell.delegate = self;
+            cell = prargraphCell;
             break;
+        }
         case 2:
         {
             LMStyleFontSizeCell *fontSizeCell = [tableView dequeueReusableCellWithIdentifier:@"fontSize"];
@@ -112,6 +133,7 @@
         case 4:
         {
             LMStyleFormatCell *formatCell = [tableView dequeueReusableCellWithIdentifier:@"format"];
+            formatCell.selectedIndex = (self.textStyle.type == 0) ? -1 : self.textStyle.type;
             formatCell.delegate = self;
             cell = formatCell;
             break;
@@ -156,6 +178,7 @@
 
 - (void)lm_didChangeStyleSettings:(NSDictionary *)settings {
     
+    __block BOOL needReload = NO;
     [settings enumerateKeysAndObjectsUsingBlock:^(NSString *key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         
         if ([key isEqualToString:LMStyleSettingsBoldName]) {
@@ -174,10 +197,24 @@
             self.textStyle.textColor = obj;
         }
         else if ([key isEqualToString:LMStyleSettingsFormatName]) {
-                        
+            UIColor *textColor = self.textStyle.textColor;
+            self.textStyle = [LMTextStyle textStyleWithType:[obj integerValue]];
+            self.textStyle.textColor = textColor;
+            needReload = YES;
         }
     }];
+    if (needReload) {
+        [self.tableView reloadData];
+    }
     [self.delegate lm_didChangedTextStyle:self.textStyle];
+}
+
+- (void)lm_paragraphChangeIndentWithDirection:(LMStyleIndentDirection)direction {
+    [self.delegate lm_didChangedParagraphIndentLevel:direction];
+}
+
+- (void)lm_paragraphChangeType:(NSInteger)type {
+    [self.delegate lm_didChangedParagraphType:type];
 }
 
 @end

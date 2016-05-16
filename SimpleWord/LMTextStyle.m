@@ -10,8 +10,6 @@
 
 @interface LMTextStyle ()
 
-@property (nonatomic, readwrite, assign) LMTextStyleType type;
-
 @end
 
 @implementation LMTextStyle
@@ -20,7 +18,6 @@
     if (self = [super init]) {
         _fontSize = [UIFont systemFontSize];
         _textColor = [UIColor blackColor];
-        _type = LMTextStyleFormatCustom;
     }
     return self;
 }
@@ -30,10 +27,10 @@
     LMTextStyle *textStyle = [[self alloc] init];
     switch (type) {
         case LMTextStyleFormatTitleSmall:
-            textStyle.fontSize = 16.f;
+            textStyle.fontSize = 18.f;
             break;
         case LMTextStyleFormatTitleMedium:
-            textStyle.fontSize = 18.f;
+            textStyle.fontSize = 24.f;
             break;
         case LMTextStyleFormatTitleLarge:
             textStyle.fontSize = 30.f;
@@ -42,35 +39,24 @@
             return textStyle;
     }
     textStyle.bold = type == LMTextStyleFormatNormal ? NO : YES;
-    textStyle.type = type;
     return textStyle;
 }
 
 #pragma mark - setter & getter
 
-- (void)setBold:(BOOL)bold {
-    _bold = bold;
-    _type = LMTextStyleFormatCustom;
-}
-
-- (void)setItalic:(BOOL)italic {
-    _italic = italic;
-    _type = LMTextStyleFormatCustom;
-}
-
-- (void)setUnderline:(BOOL)underline {
-    _underline = underline;
-    _type = LMTextStyleFormatCustom;
-}
-
-- (void)setFontSize:(CGFloat)fontSize {
-    _fontSize = fontSize;
-    _type = LMTextStyleFormatCustom;
-}
-
-- (void)setTextColor:(UIColor *)textColor {
-    _textColor = textColor;
-    _type = LMTextStyleFormatCustom;
+- (LMTextStyleType)type {
+    if (self.bold == YES && self.italic == NO && self.underline == NO) {
+        if (self.fontSize == 18.f) {
+            return LMTextStyleFormatTitleSmall;
+        }
+        else if (self.fontSize == 24.f) {
+            return LMTextStyleFormatTitleMedium;
+        }
+        else if (self.fontSize == 30.f) {
+            return LMTextStyleFormatTitleLarge;
+        }
+    }
+    return LMTextStyleFormatNormal;
 }
 
 - (UIFont *)font {

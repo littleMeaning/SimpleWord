@@ -7,6 +7,7 @@
 //
 
 #import "LMTextStyle.h"
+#import "UIFont+LMText.m"
 
 @interface LMTextStyle ()
 
@@ -60,13 +61,7 @@
 }
 
 - (UIFont *)font {
-    UIFont *font = self.bold ? [UIFont boldSystemFontOfSize:self.fontSize] : [UIFont systemFontOfSize:self.fontSize];
-    if (self.italic) {
-        CGAffineTransform matrix = CGAffineTransformMake(1, 0, tanf(15 * (CGFloat)M_PI / 180), 1, 0, 0);
-        UIFontDescriptor *descriptor = [UIFontDescriptor fontDescriptorWithName:font.fontName matrix:matrix];
-        font = [UIFont fontWithDescriptor:descriptor size:self.fontSize];        
-    }
-    return font;
+    return [UIFont lm_fontWithFontSize:self.fontSize bold:self.bold italic:self.italic];
 }
 
 @end

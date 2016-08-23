@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, LMTextStyleType) {
 @property (nonatomic, assign) BOOL italic;
 @property (nonatomic, assign) BOOL underline;
 
-@property (nonatomic, assign) CGFloat fontSize;
+@property (nonatomic, assign) float fontSize;
 @property (nonatomic, strong) UIColor *textColor;
 
 @property (nonatomic, readonly) UIFont *font;

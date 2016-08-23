@@ -49,6 +49,8 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     [_titleView addSubview:_separatorLine];
     [self addSubview:_titleView];
     
+    self.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.spellCheckingType = UITextSpellCheckingTypeNo;    
     self.alwaysBounceVertical = YES;
     self.textContainerInset = UIEdgeInsetsMake(kLMWMargin + kLMWTitleHeight + kLMWCommonSpacing,
                                                kLMWCommonSpacing,

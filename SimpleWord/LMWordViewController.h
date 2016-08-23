@@ -14,4 +14,6 @@
 
 @property (nonatomic, strong) LMWordView *textView;
 
+- (NSString *)exportHTML;
+
 @end

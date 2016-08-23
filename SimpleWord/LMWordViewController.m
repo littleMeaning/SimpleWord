@@ -14,6 +14,8 @@
 #import "LMTextStyle.h"
 #import "LMParagraphConfig.h"
 #import "NSTextAttachment+LMText.h"
+#import "UIFont+LMText.h"
+#import "LMTextHTMLParser.h"
 
 @interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, LMStyleSettingsControllerDelegate, LMImageSettingsControllerDelegate>
 
@@ -40,7 +42,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+        
     NSArray *items = @[
                        [UIImage imageNamed:@"ABC_icon"],
                        [UIImage imageNamed:@"style_icon"],
@@ -172,7 +174,6 @@
     if (text.length == 0 && range.length > 0) {
         _keepCurrentTextStyle = YES;
     }
-//    NSLog(@"%@", self.textView.attributedText);
     return YES;
 }
 
@@ -257,16 +258,9 @@
     
     LMTextStyle *textStyle = [[LMTextStyle alloc] init];
     UIFont *font = self.textView.typingAttributes[NSFontAttributeName];
-    NSDictionary<NSString *, id> *fontAttributes = font.fontDescriptor.fontAttributes;
-    if (![font.fontName isEqualToString:[UIFont systemFontOfSize:15].fontName]) {
-        // TODO: 通过fontName来判断粗体（待修改）
-        textStyle.bold = YES;
-    }
-    if (fontAttributes[@"NSCTFontMatrixAttribute"]) {
-        // 通过是否包含 matrix 判断斜体
-        textStyle.italic = YES;
-    }
-    textStyle.fontSize = [fontAttributes[@"NSFontSizeAttribute"] floatValue];
+    textStyle.bold = font.bold;
+    textStyle.italic = font.italic;
+    textStyle.fontSize = font.fontSize;
     textStyle.textColor = self.textView.typingAttributes[NSForegroundColorAttributeName] ?: textStyle.textColor;
     if (self.textView.typingAttributes[NSUnderlineStyleAttributeName]) {
         textStyle.underline = [self.textView.typingAttributes[NSUnderlineStyleAttributeName] integerValue] == NSUnderlineStyleSingle;
@@ -496,8 +490,13 @@
     [self presentViewController:picker animated:YES completion:nil];
 }
 
-//- (void)lm_imageSettingsController:(LMImageSettingsController *)viewController dismissImagePickerView:(UIViewController *)picker {
-//    
-//}
+#pragma mark - export
+
+- (NSString *)exportHTML {
+    
+    NSString *title = [NSString stringWithFormat:@"<h1 align=\"center\">%@</h1>", self.textView.titleTextField.text];
+    NSString *content = [LMTextHTMLParser HTMLFromAttributedString:self.textView.attributedText];
+    return [title stringByAppendingString:content];
+}
 
 @end

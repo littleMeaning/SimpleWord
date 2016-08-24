@@ -77,16 +77,17 @@
     if (_selectedSegmentIndex == selectedSegmentIndex) {
         return;
     }
+    
     _selectedSegmentIndex = selectedSegmentIndex;
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
     if (animated) {
         [UIView animateWithDuration:0.2 animations:^{
             [self layoutSubviews];
         }];
     }
     else {
-        [self setNeedsLayout];
+        [self layoutSubviews];
     }
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)drawRect:(CGRect)rect {

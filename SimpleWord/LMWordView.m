@@ -36,7 +36,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 - (void)setup {
     _titleTextField = [[UITextField alloc] init];
-    _titleTextField.font = [UIFont boldSystemFontOfSize:17.f];
+    _titleTextField.font = [UIFont boldSystemFontOfSize:16.f];
     _titleTextField.placeholder = @"标题";
     
     _separatorLine = [[UIView alloc] init];

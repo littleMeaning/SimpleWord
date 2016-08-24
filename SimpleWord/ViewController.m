@@ -65,6 +65,7 @@
     viewController.view.frame = self.container.bounds;
     
     if (sender.selectedSegmentIndex == 1) {
+        [self.container endEditing:YES];
         self.htmlViewController.HTMLString = [self.wordViewController exportHTML];
     }
 }

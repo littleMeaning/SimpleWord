@@ -8,6 +8,7 @@
 
 #import "NSTextAttachment+LMText.h"
 #import "LMParagraphConfig.h"
+#import <objc/runtime.h>
 
 @implementation NSTextAttachment (LMText)
 
@@ -39,6 +40,25 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
+}
+
+static void * keyOfAttachmentType = &keyOfAttachmentType;
+static void * keyOfUserInfo = &keyOfUserInfo;
+
+- (LMTextAttachmentType)attachmentType {
+    return [(NSNumber *)objc_getAssociatedObject(self, keyOfAttachmentType) intValue];
+}
+
+- (void)setAttachmentType:(LMTextAttachmentType)attachmentType {
+    objc_setAssociatedObject(self, keyOfAttachmentType, @(attachmentType), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (id)userInfo {
+    return objc_getAssociatedObject(self, keyOfUserInfo);
+}
+
+- (void)setUserInfo:(id)userInfo {
+    objc_setAssociatedObject(self, keyOfUserInfo, userInfo, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

@@ -88,8 +88,12 @@
 - (void)layoutTextView {
     CGRect rect = self.view.bounds;
     rect.origin.y = [self.topLayoutGuide length];
-    rect.size.height -= (rect.origin.y + self.keyboardSpacingHeight);
+    rect.size.height -= rect.origin.y;
     self.textView.frame = rect;
+
+    UIEdgeInsets insets = self.textView.contentInset;
+    insets.bottom = self.keyboardSpacingHeight;
+    self.textView.contentInset = insets;
 }
 
 #pragma mark - Keyboard
@@ -405,7 +409,7 @@
     self.textView.selectedRange = selectedRange;
 }
 
-- (void)inserImage:(UIImage *)image {
+- (NSTextAttachment *)insertImage:(UIImage *)image {
     // textView 默认会有一些左右边距
     CGFloat width = CGRectGetWidth(self.textView.frame) - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12.f);
     NSTextAttachment *textAttachment = [NSTextAttachment attachmentWithImage:image width:width];
@@ -429,6 +433,8 @@
     self.textView.allowsEditingTextAttributes = YES;
     self.textView.attributedText = attributedText;
     self.textView.allowsEditingTextAttributes = NO;
+    
+    return textAttachment;
 }
 
 #pragma mark - <LMStyleSettingsControllerDelegate>
@@ -480,10 +486,37 @@
 }
 
 - (void)lm_imageSettingsController:(LMImageSettingsController *)viewController insertImage:(UIImage *)image {
-    // TODO: 会卡顿一下，可以先加载预览图，再替换
-    [self inserImage:image];
+    
+    // 降低图片质量用于流畅显示，将原始图片存入到 Document 目录下，将图片文件 URL 与 Attachment 绑定。
+    float actualWidth = image.size.width * image.scale;
+    float boundsWidth = CGRectGetWidth(self.view.bounds) - 8.f * 2;
+    float compressionQuality = boundsWidth / actualWidth;
+    if (compressionQuality > 1) {
+        compressionQuality = 1;
+    }
+    NSData *degradedImageData = UIImageJPEGRepresentation(image, compressionQuality);
+    UIImage *degradedImage = [UIImage imageWithData:degradedImageData];
+    
+    NSTextAttachment *attachment = [self insertImage:degradedImage];
     [self.textView resignFirstResponder];
     [self.textView scrollRangeToVisible:_lastSelectedRange];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        // 实际应用时候可以将存本地的操作改为上传到服务器，URL 也由本地路径改为服务器图片地址。
+        NSURL *documentDir = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory
+                                                                    inDomain:NSUserDomainMask
+                                                           appropriateForURL:nil
+                                                                      create:NO
+                                                                       error:nil];
+        NSURL *filePath = [documentDir URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", [NSDate date].description]];
+        NSData *originImageData = UIImagePNGRepresentation(image);
+        
+        if ([originImageData writeToFile:filePath.path atomically:YES]) {
+            attachment.attachmentType = LMTextAttachmentTypeImage;
+            attachment.userInfo = filePath.absoluteString;
+        }
+    });
 }
 
 - (void)lm_imageSettingsController:(LMImageSettingsController *)viewController presentImagePickerView:(UIViewController *)picker {

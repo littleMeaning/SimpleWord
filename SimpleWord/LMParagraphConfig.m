@@ -13,7 +13,7 @@ NSString * const LMParagraphIndentName = @"LMParagraphIndent";
 
 @implementation LMParagraphConfig
 
-static CGFloat const kIndentPerLevel = 40.f;
+static CGFloat const kIndentPerLevel = 32.f;
 static NSInteger const kMaxIndentLevel = 6;
 
 - (instancetype)init {

@@ -21,6 +21,7 @@
     
     self.webView = ({
         UIWebView *webView = [[UIWebView alloc] init];
+        webView.dataDetectorTypes = UIDataDetectorTypeNone;
         [self.view addSubview:webView];
         webView;
     });

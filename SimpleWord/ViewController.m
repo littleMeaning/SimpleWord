@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "LMWordViewController.h"
 #import "HTMLViewController.h"
+#import "LMWordView.h"
 
 @interface ViewController ()
 
@@ -65,7 +66,8 @@
     viewController.view.frame = self.container.bounds;
     
     if (sender.selectedSegmentIndex == 1) {
-        [self.container endEditing:YES];
+        [self.wordViewController.textView.titleTextField resignFirstResponder];
+        [self.view endEditing:YES];
         self.htmlViewController.HTMLString = [self.wordViewController exportHTML];
     }
 }

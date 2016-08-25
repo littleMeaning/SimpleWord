@@ -26,10 +26,8 @@
     while (effectiveRange.location + effectiveRange.length < attributedString.length) {
         
         NSDictionary *attributes = [attributedString attributesAtIndex:effectiveRange.location effectiveRange:&effectiveRange];
-        
         NSTextAttachment *attachment = attributes[@"NSAttachment"];
         if (attachment) {
-            //
             switch (attachment.attachmentType) {
                 case LMTextAttachmentTypeImage:
                     [htmlContent appendString:[NSString stringWithFormat:@"<img src=\"%@\" width=\"100%%\"/>", attachment.userInfo]];
@@ -39,26 +37,38 @@
             }            
         }
         else {
-            NSString *content = [[attributedString string] substringWithRange:effectiveRange];
+            NSString *text = [[attributedString string] substringWithRange:effectiveRange];
             UIFont *font = attributes[NSFontAttributeName];
-            BOOL underline = [attributes[NSUnderlineStyleAttributeName] boolValue];
             UIColor *fontColor = attributes[@"NSColor"];
             NSString *color = [self hexStringWithColor:fontColor];
+            BOOL underline = [attributes[NSUnderlineStyleAttributeName] boolValue];
             
-            if (font.bold) {
-                content = [NSString stringWithFormat:@"<b>%@</b>", content];
+            BOOL isFirst = YES;
+            for (NSString *content in [text componentsSeparatedByString:@"\n"]) {
+                if (!isFirst) {
+                    [htmlContent appendString:@"<br>"];
+                }
+                [htmlContent appendString:[self HTMLWithContent:content font:font underline:underline color:color]];
+                isFirst = NO;
             }
-            if (font.italic) {
-                content = [NSString stringWithFormat:@"<i>%@</i>", content];
-            }
-            if (underline) {
-                content = [NSString stringWithFormat:@"<u>%@</u>", content];
-            }
-            [htmlContent appendString:[NSString stringWithFormat:@"<font style=\"font-size:%f;color:%@\">%@</font>", font.fontSize, color, content]];
         }
         effectiveRange = NSMakeRange(effectiveRange.location + effectiveRange.length, 0);
     }
     return [htmlContent copy];
+}
+
++ (NSString *)HTMLWithContent:(NSString *)content font:(UIFont *)font underline:(BOOL)underline color:(NSString *)color {
+
+    if (font.bold) {
+        content = [NSString stringWithFormat:@"<b>%@</b>", content];
+    }
+    if (font.italic) {
+        content = [NSString stringWithFormat:@"<i>%@</i>", content];
+    }
+    if (underline) {
+        content = [NSString stringWithFormat:@"<u>%@</u>", content];
+    }
+    return [NSString stringWithFormat:@"<font style=\"font-size:%f;color:%@\">%@</font>", font.fontSize, color, content];
 }
 
 + (NSString *)hexStringWithColor:(UIColor *)color {

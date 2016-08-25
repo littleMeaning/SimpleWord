@@ -11,14 +11,12 @@
 @implementation UIFont (LMText)
 
 - (BOOL)bold {
-    // 通过fontName来判断粗体
-    UIFont *template = [UIFont lm_fontWithFontSize:self.fontSize bold:YES italic:self.italic];
-    return [self.fontDescriptor.fontAttributes isEqual:template.fontDescriptor.fontAttributes];
+    return [self.description containsString:@"font-weight: bold"];    
 }
 
 - (BOOL)italic {
     // 通过是否包含 matrix 判断斜体
-    return self.fontDescriptor.fontAttributes[@"NSCTFontMatrixAttribute"] != nil;
+    return (self.fontDescriptor.fontAttributes[@"NSCTFontMatrixAttribute"] != nil);
 }
 
 - (float)fontSize {

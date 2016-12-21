@@ -23,7 +23,8 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-    for (UIButton *button in @[_listButton, _numberListButton, _checkboxButton, _leftButton, _rightButton]) {
+    NSArray *buttons = @[_listButton, _numberListButton, _checkboxButton, _leftButton, _rightButton];
+    for (UIButton *button in buttons) {
         button.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
     }

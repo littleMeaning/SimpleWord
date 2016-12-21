@@ -31,8 +31,9 @@
 @implementation LMImageSettingsController
 
 - (void)awakeFromNib {
-    self.selecting = NO;
+    [super awakeFromNib];
     
+    self.selecting = NO;
     self.button1.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.button2.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }

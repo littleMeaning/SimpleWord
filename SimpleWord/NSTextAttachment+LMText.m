@@ -8,57 +8,60 @@
 
 #import "NSTextAttachment+LMText.h"
 #import "LMParagraphConfig.h"
+#import "UIFont+LMText.h"
 #import <objc/runtime.h>
 
 @implementation NSTextAttachment (LMText)
 
++ (CGRect)attachmentBounds {
+    CGFloat height = (NSInteger)[UIFont lm_systemFont].lineHeight + 4.f;
+    return CGRectMake(0, 0, height, height);
+}
+
 + (instancetype)checkBoxAttachment {
     NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];
-    textAttachment.bounds = CGRectMake(0, 0, 20, 20);
-    textAttachment.image = [self imageWithType:LMParagraphTypeCheckbox];
+    textAttachment.bounds = CGRectZero;
+    textAttachment.attachmentType = LMTextAttachmentTypeCheckBox;
     return textAttachment;
 }
 
-+ (instancetype)attachmentWithImage:(UIImage *)image width:(CGFloat)width {
-    NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];    
-    CGRect rect = CGRectZero;
-    rect.size.width = width;
-    rect.size.height = width * image.size.height / image.size.width;
-    textAttachment.bounds = rect;
-    textAttachment.image = image;
-    return textAttachment;
-}
+//+ (instancetype)attachmentWithImage:(UIImage *)image width:(CGFloat)width {
+//    NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];    
+//    CGRect rect = CGRectZero;
+//    rect.size.width = width;
+//    rect.size.height = width * image.size.height / image.size.width;
+//    rect.size.width += kSpaceWidth;
+//    textAttachment.bounds = rect;
+//    textAttachment.image = image;
+//    return textAttachment;
+//}
 
-+ (UIImage *)imageWithType:(LMParagraphType)type {
-    
-    CGRect rect = CGRectMake(0, 0, 20, 20);
-    UIGraphicsBeginImageContext(rect.size);
-    UIBezierPath *path = [UIBezierPath bezierPathWithRect:rect];
-    [[UIColor redColor] setStroke];
-    path.lineWidth = 2.f;
-    [path stroke];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
-
-static void * keyOfAttachmentType = &keyOfAttachmentType;
-static void * keyOfUserInfo = &keyOfUserInfo;
+//+ (UIImage *)imageWithType:(LMParagraphType)type {
+//    CGRect rect = [self attachmentBounds];
+//    UIGraphicsBeginImageContextWithOptions(CGSizeMake(rect.size.width + kSpaceWidth, rect.size.height), NO, [UIScreen mainScreen].scale);
+//    UIBezierPath *path = [UIBezierPath bezierPathWithRect:CGRectInset(rect, 1, 1)];
+//    [[UIColor redColor] setStroke];
+//    path.lineWidth = 1.f;
+//    [path stroke];
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    return image;
+//}
 
 - (LMTextAttachmentType)attachmentType {
-    return [(NSNumber *)objc_getAssociatedObject(self, keyOfAttachmentType) intValue];
+    return [(NSNumber *)objc_getAssociatedObject(self, @selector(attachmentType)) intValue];
 }
 
 - (void)setAttachmentType:(LMTextAttachmentType)attachmentType {
-    objc_setAssociatedObject(self, keyOfAttachmentType, @(attachmentType), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(attachmentType), @(attachmentType), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (id)userInfo {
-    return objc_getAssociatedObject(self, keyOfUserInfo);
+    return objc_getAssociatedObject(self, @selector(userInfo));
 }
 
 - (void)setUserInfo:(id)userInfo {
-    objc_setAssociatedObject(self, keyOfUserInfo, userInfo, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(userInfo), userInfo, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

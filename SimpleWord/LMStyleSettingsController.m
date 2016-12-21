@@ -18,15 +18,13 @@
 @interface LMStyleSettingsController () <LMStyleParagraphCellDelegate>
 
 @property (nonatomic, weak) NSIndexPath *selectedIndexPath;
+@property (nonatomic, assign) BOOL paragraphType;
+@property (nonatomic, assign) BOOL shouldScrollToSelectedRow;
+@property (nonatomic, assign) BOOL needReload;
 
 @end
 
 @implementation LMStyleSettingsController
-{
-    BOOL _paragraphType;
-    BOOL _shouldScrollToSelectedRow;
-    BOOL _needReload;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -39,28 +37,28 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    if (_needReload) {
+    if (self.needReload) {
         [self reload];
     }
 }
 
 - (void)reload {
     [self.tableView reloadData];
-    _needReload = NO;
+    self.needReload = NO;
 }
 
 #pragma mark - setTextStyle
 
 - (void)setTextStyle:(LMTextStyle *)textStyle {
     _textStyle = textStyle;
-    _needReload = YES;
+    self.needReload = YES;
 }
 
 #pragma mark - setParagraph
 
 - (void)setParagraphConfig:(LMParagraphConfig *)paragraphConfig {
     _paragraphType = paragraphConfig.type;
-    _needReload = YES;
+    self.needReload = YES;
 }
 
 #pragma mark - UITableViewDataSource
@@ -106,7 +104,7 @@
         case 1:
         {
             LMStyleParagraphCell *prargraphCell = [tableView dequeueReusableCellWithIdentifier:@"paragraph"];
-            prargraphCell.type = _paragraphType;
+            prargraphCell.type = self.paragraphType;
             prargraphCell.delegate = self;
             cell = prargraphCell;
             break;
@@ -151,9 +149,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(nonnull UITableViewCell *)cell forRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    if (_shouldScrollToSelectedRow && [indexPath isEqual:self.selectedIndexPath]) {
+    if (self.shouldScrollToSelectedRow && [indexPath isEqual:self.selectedIndexPath]) {
         [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
-        _shouldScrollToSelectedRow = NO;
+        self.shouldScrollToSelectedRow = NO;
     }
 }
 
@@ -170,7 +168,7 @@
         self.selectedIndexPath = indexPath;
     }
     [indexPaths addObject:indexPath];
-    _shouldScrollToSelectedRow = YES;
+    self.shouldScrollToSelectedRow = YES;
     [tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
@@ -208,6 +206,8 @@
     }
     [self.delegate lm_didChangedTextStyle:self.textStyle];
 }
+
+#pragma mark - <LMStyleParagraphCellDelegate>
 
 - (void)lm_paragraphChangeIndentWithDirection:(LMStyleIndentDirection)direction {
     [self.delegate lm_didChangedParagraphIndentLevel:direction];

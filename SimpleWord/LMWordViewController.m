@@ -16,6 +16,7 @@
 #import "NSTextAttachment+LMText.h"
 #import "UIFont+LMText.h"
 #import "LMTextHTMLParser.h"
+#import "LMParagraphStyle.h"
 
 @interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, LMStyleSettingsControllerDelegate, LMImageSettingsControllerDelegate>
 
@@ -32,17 +33,35 @@
 @property (nonatomic, strong) LMTextStyle *currentTextStyle;
 @property (nonatomic, strong) LMParagraphConfig *currentParagraphConfig;
 
+@property (nonatomic, assign) NSRange lastSelectedRange;
+@property (nonatomic, assign) BOOL keepCurrentTextStyle;
+
+@property (nonatomic, readonly) NSArray *paragraphStyles;
+
 @end
 
 @implementation LMWordViewController
 {
-    NSRange _lastSelectedRange;
-    BOOL _keepCurrentTextStyle;
+    NSMutableArray *_paragraphStyles;
+}
+
+#pragma mark - getter & setter
+
+- (NSArray *)paragraphStyles {
+    return [_paragraphStyles copy];
+}
+
+#pragma mark - life cycle
+
+- (void)setup {
+    _paragraphStyles = [[NSMutableArray alloc] init];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-        
+    
+    [self setup];
+    
     NSArray *items = @[
                        [UIImage imageNamed:@"ABC_icon"],
                        [UIImage imageNamed:@"style_icon"],
@@ -148,13 +167,13 @@
 
 - (void)textViewDidChangeSelection:(UITextView *)textView {
 
-    if (_lastSelectedRange.location != textView.selectedRange.location) {
+    if (self.lastSelectedRange.location != textView.selectedRange.location) {
         
-        if (_keepCurrentTextStyle) {
+        if (self.keepCurrentTextStyle) {
             // 如果当前行的内容为空，TextView 会自动使用上一行的 typingAttributes，所以在删除内容时，保持 typingAttributes 不变
             [self updateTextStyleTypingAttributes];
             [self updateParagraphTypingAttributes];
-            _keepCurrentTextStyle = NO;
+            self.keepCurrentTextStyle = NO;
         }
         else {
             self.currentTextStyle = [self textStyleForSelection];
@@ -164,7 +183,7 @@
             [self reloadSettingsView];
         }
     }
-    _lastSelectedRange = textView.selectedRange;
+    self.lastSelectedRange = textView.selectedRange;
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
@@ -174,9 +193,9 @@
         self.currentParagraphConfig.indentLevel = 0;
         [self updateParagraphTypingAttributes];
     }
-    _lastSelectedRange = NSMakeRange(range.location + text.length - range.length, 0);
+    self.lastSelectedRange = NSMakeRange(range.location + text.length - range.length, 0);
     if (text.length == 0 && range.length > 0) {
-        _keepCurrentTextStyle = YES;
+        self.keepCurrentTextStyle = YES;
     }
     return YES;
 }
@@ -348,8 +367,12 @@
     }
 }
 
-- (void)updateParagraphForSelectionWithKey:(NSString *)key {
+- (void)updateParagraphTypeForSelection {
+    
+    // 设置 exclusionPaths 会出现 exclusion 区域不正确的情况，加上 self.textView.scrollEnabled = NO; 后解决。
+    self.textView.scrollEnabled = NO;
     NSRange selectedRange = self.textView.selectedRange;
+    
     NSArray *ranges = [self rangesOfParagraphForCurrentSelection];
     if (!ranges) {
         if (self.currentParagraphConfig.type == 0) {
@@ -360,64 +383,54 @@
         }
         ranges = @[[NSValue valueWithRange:NSMakeRange(0, 0)]];
     }
-    NSInteger offset = 0;
-    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
     for (NSValue *rangeValue in ranges) {
         
-        NSRange range = NSMakeRange(rangeValue.rangeValue.location + offset, rangeValue.rangeValue.length);
-        LMParagraphType type;
-        if ([key isEqualToString:LMParagraphTypeName]) {
-            
-            type = self.currentParagraphConfig.type;
-            if (self.currentParagraphConfig.type == LMParagraphTypeNone) {
-                [attributedText deleteCharactersInRange:NSMakeRange(range.location, 1)];
-                offset -= 1;
+        NSRange range = NSMakeRange(rangeValue.rangeValue.location, rangeValue.rangeValue.length);
+        LMParagraphType type = self.currentParagraphConfig.type;
+        switch (type) {
+            case LMParagraphTypeNone:
+            {
+                LMParagraphStyle *paragraphStyle = [self.textView lm_paragraphStyleForTextRange:range];
+                [paragraphStyle removeFromTextView];
+                break;
             }
-            else {
-                NSTextAttachment *textAttachment = [NSTextAttachment checkBoxAttachment];
-                NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:[NSAttributedString attributedStringWithAttachment:textAttachment]];
-                [attributedString addAttributes:self.textView.typingAttributes range:NSMakeRange(0, 1)];
-                [attributedText insertAttributedString:attributedString atIndex:range.location];
-                offset += 1;
+            case LMParagraphTypeUnorderedList:
+            {                
+                LMParagraphStyle *paragraphStyle = [[LMParagraphStyle alloc] initWithType:LMParagraphStyleTypeUnorderedList textRange:range];
+                [paragraphStyle addToTextViewIfNeed:self.textView];
+                [_paragraphStyles addObject:paragraphStyle];
+                break;
             }
-            //            switch (self.currentParagraphConfig.type) {
-            //                case LMParagraphTypeNone:
-            //
-            //                    break;
-            //                case LMParagraphTypeNone:
-            //
-            //                    break;
-            //                case LMParagraphTypeNone:
-            //
-            //                    break;
-            //                case LMParagraphTypeNone:
-            //
-            //                    break;
-            //            }
-        }
-        else {
-            [attributedText addAttribute:NSParagraphStyleAttributeName value:self.currentParagraphConfig.paragraphStyle range:range];
+            case LMParagraphStyleTypeOrderedList:
+            {
+                LMParagraphStyle *paragraphStyle = [[LMParagraphStyle alloc] initWithType:LMParagraphStyleTypeOrderedList textRange:range];
+                [paragraphStyle addToTextViewIfNeed:self.textView];
+                [_paragraphStyles addObject:paragraphStyle];
+                break;
+            }
+            case LMParagraphTypeCheckbox:
+            {
+                LMParagraphStyle *paragraphStyle = [[LMParagraphStyle alloc] initWithType:LMParagraphStyleTypeCheckbox textRange:range];
+                [paragraphStyle addToTextViewIfNeed:self.textView];
+                [_paragraphStyles addObject:paragraphStyle];
+                break;
+            }
         }
     }
-    if (offset > 0) {
-        _keepCurrentTextStyle = YES;
-        selectedRange = NSMakeRange(selectedRange.location + 1, selectedRange.length + offset - 1);
-    }
-    self.textView.allowsEditingTextAttributes = YES;
-    self.textView.attributedText = attributedText;
-    self.textView.allowsEditingTextAttributes = NO;
+    // 还原现场
+    self.textView.scrollEnabled = YES;
     self.textView.selectedRange = selectedRange;
 }
 
 - (NSTextAttachment *)insertImage:(UIImage *)image {
     // textView 默认会有一些左右边距
     CGFloat width = CGRectGetWidth(self.textView.frame) - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12.f);
-    NSTextAttachment *textAttachment = [NSTextAttachment attachmentWithImage:image width:width];
+    NSTextAttachment *textAttachment;// = [NSTextAttachment attachmentWithImage:image width:width];
     NSAttributedString *attachmentString = [NSAttributedString attributedStringWithAttachment:textAttachment];
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"\n"];
     [attributedString insertAttributedString:attachmentString atIndex:0];
-    if (_lastSelectedRange.location != 0 &&
-        ![[self.textView.text substringWithRange:NSMakeRange(_lastSelectedRange.location - 1, 1)] isEqualToString:@"\n"]) {
+    if (self.lastSelectedRange.location != 0 &&
+        ![[self.textView.text substringWithRange:NSMakeRange(self.lastSelectedRange.location - 1, 1)] isEqualToString:@"\n"]) {
         // 上一个字符不为"\n"则图片前添加一个换行 且 不是第一个位置
         [attributedString insertAttributedString:[[NSAttributedString alloc] initWithString:@"\n"] atIndex:0];
     }
@@ -429,7 +442,7 @@
     [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, attributedString.length)];
     
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-    [attributedText replaceCharactersInRange:_lastSelectedRange withAttributedString:attributedString];
+    [attributedText replaceCharactersInRange:self.lastSelectedRange withAttributedString:attributedString];
     self.textView.allowsEditingTextAttributes = YES;
     self.textView.attributedText = attributedText;
     self.textView.allowsEditingTextAttributes = NO;
@@ -453,7 +466,7 @@
     NSRange selectedRange = self.textView.selectedRange;
     NSArray *ranges = [self rangesOfParagraphForCurrentSelection];
     if (ranges.count <= 1) {
-        [self updateParagraphForSelectionWithKey:LMParagraphIndentName];
+//        [self updateParagraphForSelectionWithKey:LMParagraphIndentName];
     }
     else {
         self.textView.allowsEditingTextAttributes = YES;
@@ -473,10 +486,10 @@
 }
 
 - (void)lm_didChangedParagraphType:(NSInteger)type {
-//    self.currentParagraphConfig.type = type;
-//    
-//    [self updateParagraphTypingAttributes];
-//    [self updateParagraphForSelectionWithKey:LMParagraphTypeName];
+
+    self.currentParagraphConfig.type = type;
+    [self updateParagraphTypingAttributes];
+    [self updateParagraphTypeForSelection];
 }
 
 #pragma mark - <LMImageSettingsControllerDelegate>
@@ -499,7 +512,7 @@
     
     NSTextAttachment *attachment = [self insertImage:degradedImage];
     [self.textView resignFirstResponder];
-    [self.textView scrollRangeToVisible:_lastSelectedRange];
+    [self.textView scrollRangeToVisible:self.lastSelectedRange];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         

@@ -15,7 +15,7 @@
 
 - (void)lm_didChangedTextStyle:(LMTextStyle *)textStyle;
 - (void)lm_didChangedParagraphIndentLevel:(NSInteger)level;
-- (void)lm_didChangedParagraphType:(NSInteger)type;
+- (void)lm_didChangedParagraphType:(NSInteger)type; // 切换段落格式，有序、无序、检查框
 
 @end
 

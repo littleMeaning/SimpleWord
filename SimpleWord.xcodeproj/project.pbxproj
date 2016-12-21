@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		742D7EF81E078B4500EA436F /* LMParagraphStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7EF71E078B4500EA436F /* LMParagraphStyle.m */; };
+		742D7EFE1E07D1E200EA436F /* LMParagraphCheckbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7EFD1E07D1E200EA436F /* LMParagraphCheckbox.m */; };
+		742D7F011E07D5BD00EA436F /* LMParagraphUnorderedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7F001E07D5BD00EA436F /* LMParagraphUnorderedList.m */; };
+		742D7F041E08B93800EA436F /* LMParagraphOrderedList.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7F031E08B93800EA436F /* LMParagraphOrderedList.m */; };
 		744FF1EB1CE45EF0008F06BF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF1EA1CE45EF0008F06BF /* main.m */; };
 		744FF1EE1CE45EF0008F06BF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF1ED1CE45EF0008F06BF /* AppDelegate.m */; };
 		744FF1F11CE45EF0008F06BF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF1F01CE45EF0008F06BF /* ViewController.m */; };
@@ -31,13 +35,20 @@
 		74C89A081CE8BDD400C63C56 /* LMParagraphConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A071CE8BDD400C63C56 /* LMParagraphConfig.m */; };
 		74C89A0B1CE9A89D00C63C56 /* NSTextAttachment+LMText.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A0A1CE9A89D00C63C56 /* NSTextAttachment+LMText.m */; };
 		74C89A0E1CE9F15C00C63C56 /* LMImageSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A0D1CE9F15C00C63C56 /* LMImageSettingsController.m */; };
-		74C89A121CE9FA6200C63C56 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74C89A111CE9FA6200C63C56 /* AssetsLibrary.framework */; };
 		74C89A151CE9FEEF00C63C56 /* LMPhotoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A141CE9FEEF00C63C56 /* LMPhotoCollectionCell.m */; };
 		74C89A181CEA100300C63C56 /* LMImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A171CEA100300C63C56 /* LMImagePreviewController.m */; };
 		74DA5FE71D253DF2009C3AAF /* UIFont+LMText.m in Sources */ = {isa = PBXBuildFile; fileRef = 74DA5FE61D253DF2009C3AAF /* UIFont+LMText.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		742D7EF61E078B4500EA436F /* LMParagraphStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphStyle.h; sourceTree = "<group>"; };
+		742D7EF71E078B4500EA436F /* LMParagraphStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphStyle.m; sourceTree = "<group>"; };
+		742D7EFC1E07D1E200EA436F /* LMParagraphCheckbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphCheckbox.h; sourceTree = "<group>"; };
+		742D7EFD1E07D1E200EA436F /* LMParagraphCheckbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphCheckbox.m; sourceTree = "<group>"; };
+		742D7EFF1E07D5BD00EA436F /* LMParagraphUnorderedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphUnorderedList.h; sourceTree = "<group>"; };
+		742D7F001E07D5BD00EA436F /* LMParagraphUnorderedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphUnorderedList.m; sourceTree = "<group>"; };
+		742D7F021E08B93800EA436F /* LMParagraphOrderedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphOrderedList.h; sourceTree = "<group>"; };
+		742D7F031E08B93800EA436F /* LMParagraphOrderedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphOrderedList.m; sourceTree = "<group>"; };
 		744FF1E61CE45EF0008F06BF /* SimpleWord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		744FF1EA1CE45EF0008F06BF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		744FF1EC1CE45EF0008F06BF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -84,7 +95,6 @@
 		74C89A0A1CE9A89D00C63C56 /* NSTextAttachment+LMText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTextAttachment+LMText.m"; sourceTree = "<group>"; };
 		74C89A0C1CE9F15C00C63C56 /* LMImageSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMImageSettingsController.h; sourceTree = "<group>"; };
 		74C89A0D1CE9F15C00C63C56 /* LMImageSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMImageSettingsController.m; sourceTree = "<group>"; };
-		74C89A111CE9FA6200C63C56 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		74C89A131CE9FEEF00C63C56 /* LMPhotoCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMPhotoCollectionCell.h; sourceTree = "<group>"; };
 		74C89A141CE9FEEF00C63C56 /* LMPhotoCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMPhotoCollectionCell.m; sourceTree = "<group>"; };
 		74C89A161CEA100300C63C56 /* LMImagePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMImagePreviewController.h; sourceTree = "<group>"; };
@@ -98,18 +108,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				74C89A121CE9FA6200C63C56 /* AssetsLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		742D7ECA1E0394E000EA436F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		744FF1DD1CE45EF0008F06BF = {
 			isa = PBXGroup;
 			children = (
-				74C89A111CE9FA6200C63C56 /* AssetsLibrary.framework */,
 				744FF1E81CE45EF0008F06BF /* SimpleWord */,
+				742D7ECA1E0394E000EA436F /* Frameworks */,
 				744FF1E71CE45EF0008F06BF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -126,17 +142,10 @@
 			isa = PBXGroup;
 			children = (
 				744FF2031CE45F1B008F06BF /* LMWordView */,
-				74DA5FE41D253871009C3AAF /* Categories */,
-				744FF1EC1CE45EF0008F06BF /* AppDelegate.h */,
-				744FF1ED1CE45EF0008F06BF /* AppDelegate.m */,
 				744FF1EF1CE45EF0008F06BF /* ViewController.h */,
 				744FF1F01CE45EF0008F06BF /* ViewController.m */,
 				74B08F7E1D6C3C6700856235 /* HTMLViewController.h */,
 				74B08F7F1D6C3C6700856235 /* HTMLViewController.m */,
-				744FF1F21CE45EF0008F06BF /* Main.storyboard */,
-				744FF1F51CE45EF0008F06BF /* Assets.xcassets */,
-				744FF1F71CE45EF0008F06BF /* LaunchScreen.storyboard */,
-				744FF1FA1CE45EF0008F06BF /* Info.plist */,
 				744FF1E91CE45EF0008F06BF /* Supporting Files */,
 			);
 			path = SimpleWord;
@@ -145,6 +154,12 @@
 		744FF1E91CE45EF0008F06BF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				744FF1F21CE45EF0008F06BF /* Main.storyboard */,
+				744FF1F51CE45EF0008F06BF /* Assets.xcassets */,
+				744FF1F71CE45EF0008F06BF /* LaunchScreen.storyboard */,
+				744FF1FA1CE45EF0008F06BF /* Info.plist */,
+				744FF1EC1CE45EF0008F06BF /* AppDelegate.h */,
+				744FF1ED1CE45EF0008F06BF /* AppDelegate.m */,
 				744FF1EA1CE45EF0008F06BF /* main.m */,
 			);
 			name = "Supporting Files";
@@ -153,10 +168,11 @@
 		744FF2031CE45F1B008F06BF /* LMWordView */ = {
 			isa = PBXGroup;
 			children = (
-				74C89A101CE9F19200C63C56 /* Views */,
-				74C899881CE5F0E700C63C56 /* Util */,
-				744FF2231CE5DADB008F06BF /* Cells */,
 				74C89A0F1CE9F18700C63C56 /* Models */,
+				74C89A101CE9F19200C63C56 /* Views */,
+				744FF2231CE5DADB008F06BF /* Cells */,
+				74DA5FE41D253871009C3AAF /* Categories */,
+				74C899881CE5F0E700C63C56 /* Util */,
 			);
 			name = LMWordView;
 			sourceTree = "<group>";
@@ -203,6 +219,14 @@
 				74C89A021CE727D300C63C56 /* LMTextStyle.m */,
 				74C89A061CE8BDD400C63C56 /* LMParagraphConfig.h */,
 				74C89A071CE8BDD400C63C56 /* LMParagraphConfig.m */,
+				742D7EF61E078B4500EA436F /* LMParagraphStyle.h */,
+				742D7EF71E078B4500EA436F /* LMParagraphStyle.m */,
+				742D7EFC1E07D1E200EA436F /* LMParagraphCheckbox.h */,
+				742D7EFD1E07D1E200EA436F /* LMParagraphCheckbox.m */,
+				742D7EFF1E07D5BD00EA436F /* LMParagraphUnorderedList.h */,
+				742D7F001E07D5BD00EA436F /* LMParagraphUnorderedList.m */,
+				742D7F021E08B93800EA436F /* LMParagraphOrderedList.h */,
+				742D7F031E08B93800EA436F /* LMParagraphOrderedList.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -262,12 +286,13 @@
 		744FF1DE1CE45EF0008F06BF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Little Meaning";
 				TargetAttributes = {
 					744FF1E51CE45EF0008F06BF = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 28G5Y8M7P8;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -308,6 +333,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				742D7F011E07D5BD00EA436F /* LMParagraphUnorderedList.m in Sources */,
 				744FF2181CE48910008F06BF /* LMStyleSettingsController.m in Sources */,
 				744FF2261CE5DB21008F06BF /* LMStyleColorCell.m in Sources */,
 				744FF21F1CE59C30008F06BF /* LMSegmentedControl.m in Sources */,
@@ -324,11 +350,14 @@
 				74DA5FE71D253DF2009C3AAF /* UIFont+LMText.m in Sources */,
 				748B40991D20F324004C1365 /* LMTextHTMLParser.m in Sources */,
 				744FF2221CE5DAD5008F06BF /* LMStyleFontSizeCell.m in Sources */,
+				742D7EFE1E07D1E200EA436F /* LMParagraphCheckbox.m in Sources */,
 				74C89A151CE9FEEF00C63C56 /* LMPhotoCollectionCell.m in Sources */,
 				744FF22F1CE5DBEE008F06BF /* LMStyleParagraphCell.m in Sources */,
 				74C89A081CE8BDD400C63C56 /* LMParagraphConfig.m in Sources */,
 				744FF2021CE45F15008F06BF /* LMWordView.m in Sources */,
 				744FF21C1CE592F7008F06BF /* LMWordViewController.m in Sources */,
+				742D7F041E08B93800EA436F /* LMParagraphOrderedList.m in Sources */,
+				742D7EF81E078B4500EA436F /* LMParagraphStyle.m in Sources */,
 				74C89A0E1CE9F15C00C63C56 /* LMImageSettingsController.m in Sources */,
 				74C89A181CEA100300C63C56 /* LMImagePreviewController.m in Sources */,
 			);
@@ -370,8 +399,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -415,8 +446,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -444,9 +477,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 28G5Y8M7P8;
 				INFOPLIST_FILE = SimpleWord/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = lm.SimpleWord;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lm.SimpleWord;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -456,9 +492,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 28G5Y8M7P8;
 				INFOPLIST_FILE = SimpleWord/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = lm.SimpleWord;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lm.SimpleWord;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

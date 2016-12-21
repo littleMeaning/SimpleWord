@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, LMTextAttachmentType) {
 @interface NSTextAttachment (LMText)
 
 + (instancetype)checkBoxAttachment;
-+ (instancetype)attachmentWithImage:(UIImage *)image width:(CGFloat)width;
+//+ (instancetype)attachmentWithImage:(UIImage *)image width:(CGFloat)width;
 
 @property (nonatomic, assign) LMTextAttachmentType attachmentType;
 @property (nonatomic, strong) id userInfo;

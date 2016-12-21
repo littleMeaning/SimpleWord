@@ -78,4 +78,15 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     }
 }
 
+// 处理光标大小
+- (CGRect)caretRectForPosition:(UITextPosition *)position {
+    CGRect rect = [super caretRectForPosition:position];
+    NSParagraphStyle *paragraphStyle = self.typingAttributes[NSParagraphStyleAttributeName];
+    if (paragraphStyle) {
+        rect.origin.y += paragraphStyle.lineSpacing;
+        rect.size.height -= paragraphStyle.lineSpacing * 2;
+    }
+    return rect;
+}
+
 @end

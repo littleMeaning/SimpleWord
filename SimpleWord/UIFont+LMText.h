@@ -14,6 +14,7 @@
 @property (nonatomic, readonly) BOOL italic;
 @property (nonatomic, readonly) float fontSize;
 
++ (instancetype)lm_systemFont;
 + (instancetype)lm_fontWithFontSize:(float)fontSize bold:(BOOL)bold italic:(BOOL)italic;
 
 @end

@@ -16,6 +16,7 @@
 #import "NSTextAttachment+LMText.h"
 #import "UIFont+LMText.h"
 #import "LMTextHTMLParser.h"
+#import "LMParagraph.h"
 #import "LMParagraphStyle.h"
 
 @interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, LMStyleSettingsControllerDelegate, LMImageSettingsControllerDelegate>
@@ -36,6 +37,7 @@
 @property (nonatomic, assign) NSRange lastSelectedRange;
 @property (nonatomic, assign) BOOL keepCurrentTextStyle;
 
+@property (nonatomic, strong) NSMutableArray<LMParagraph *> *paragraphs;
 @property (nonatomic, readonly) NSArray *paragraphStyles;
 
 @end
@@ -46,6 +48,13 @@
 }
 
 #pragma mark - getter & setter
+
+- (NSMutableArray *)paragraphs {
+    if (!_paragraphs) {
+        _paragraphs = [[NSMutableArray alloc] init];
+    }
+    return _paragraphs;
+}
 
 - (NSArray *)paragraphStyles {
     return [_paragraphStyles copy];
@@ -79,9 +88,9 @@
     _textView.titleTextField.delegate = self;
     [self.view addSubview:_textView];
     
-    [self setCurrentParagraphConfig:[[LMParagraphConfig alloc] init]];
+//    [self setCurrentParagraphConfig:[[LMParagraphConfig alloc] init]];
     [self setCurrentTextStyle:[LMTextStyle textStyleWithType:LMTextStyleFormatNormal]];
-    [self updateParagraphTypingAttributes];
+//    [self updateParagraphTypingAttributes];
     [self updateTextStyleTypingAttributes];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -172,32 +181,146 @@
         if (self.keepCurrentTextStyle) {
             // 如果当前行的内容为空，TextView 会自动使用上一行的 typingAttributes，所以在删除内容时，保持 typingAttributes 不变
             [self updateTextStyleTypingAttributes];
-            [self updateParagraphTypingAttributes];
+//            [self updateParagraphTypingAttributes];
             self.keepCurrentTextStyle = NO;
         }
         else {
             self.currentTextStyle = [self textStyleForSelection];
-            self.currentParagraphConfig = [self paragraphForSelection];
+//            self.currentParagraphConfig = [self paragraphForSelection];
             [self updateTextStyleTypingAttributes];
-            [self updateParagraphTypingAttributes];
+//            [self updateParagraphTypingAttributes];
             [self reloadSettingsView];
         }
     }
     self.lastSelectedRange = textView.selectedRange;
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+static BOOL __needUpdateParagraph = NO;
+static LMParagraph *__paragraph;
 
-    if (range.location == 0 && range.length == 0 && text.length == 0) {
-        // 光标在第一个位置时，按下退格键，则删除段落设置
-        self.currentParagraphConfig.indentLevel = 0;
-        [self updateParagraphTypingAttributes];
+- (void)updateParagrphs {
+    NSAttributedString *attributedText = self.textView.attributedText;
+    NSArray *ranges = [self rangesOfParagraphForRange:NSMakeRange(0, attributedText.length)];
+    
+    [self.paragraphs removeAllObjects];
+    for (NSValue *rangeValue in ranges) {
+        NSRange range = rangeValue.rangeValue;
+        
+        LMParagraph *paragraph = [[LMParagraph alloc] init];
+        LMParagraphStyle *paragraphStyle = [attributedText attribute:LMParagraphAttributeName
+                                                             atIndex:range.location
+                                                      effectiveRange:nil];
+        paragraph.textRange = range;
+        paragraph.paragraphStyle = paragraphStyle;
+        [self.paragraphs addObject:paragraph];
     }
-    self.lastSelectedRange = NSMakeRange(range.location + text.length - range.length, 0);
-    if (text.length == 0 && range.length > 0) {
-        self.keepCurrentTextStyle = YES;
+}
+
+// 获取所有选中的段落，通过"\n"来判断段落。
+- (NSArray *)rangesOfParagraphForRange:(NSRange)selectedRange {
+    
+    NSInteger location;
+    NSInteger length;
+    
+    NSInteger start = 0;
+    NSInteger end = selectedRange.location;
+    NSRange range = [self.textView.text rangeOfString:@"\n"
+                                              options:NSBackwardsSearch
+                                                range:NSMakeRange(start, end - start)];
+    location = (range.location != NSNotFound) ? range.location + 1 : 0;
+    
+    start = selectedRange.location + selectedRange.length;
+    end = self.textView.text.length;
+    range = [self.textView.text rangeOfString:@"\n"
+                                      options:0
+                                        range:NSMakeRange(start, end - start)];
+    length = (range.location != NSNotFound) ? (range.location + 1 - location) : (self.textView.text.length - location);
+    
+    range = NSMakeRange(location, length);
+    NSString *textInRange = [self.textView.text substringWithRange:range];
+    NSArray *components = [textInRange componentsSeparatedByString:@"\n"];
+    
+    NSMutableArray *ranges = [NSMutableArray array];
+    for (NSInteger i = 0; i < components.count; i++) {
+        NSString *component = components[i];
+        if (i == components.count - 1) {
+            if (component.length == 0) {
+                break;
+            }
+            else {
+                [ranges addObject:[NSValue valueWithRange:NSMakeRange(location, component.length)]];
+            }
+        }
+        else {
+            [ranges addObject:[NSValue valueWithRange:NSMakeRange(location, component.length + 1)]];
+            location += component.length + 1;
+        }
+    }
+    if (ranges.count == 0) {
+        return nil;
+    }
+    return ranges;
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    
+    if (__needUpdateParagraph) {
+        
+        LMParagraph *paragraph = [__paragraph copy];
+        paragraph.textRange = textView.selectedRange;
+        
+        NSMutableDictionary *typingAttributes = [textView.typingAttributes mutableCopy];
+        typingAttributes[LMParagraphAttributeName] = paragraph;
+        textView.typingAttributes = typingAttributes;
+        [paragraph addToTextViewIfNeed:textView];
+        
+        __needUpdateParagraph = NO;
+    }
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if ([text isEqualToString:@"\n"]) {
+        __paragraph = textView.typingAttributes[LMParagraphAttributeName];
+        __needUpdateParagraph = YES;
     }
     return YES;
+//    NSString *replacedText = [textView.text substringWithRange:range];
+//    LMParagraph *currentParagraph = [replacedText hasSuffix:@"\n"] ? nil : textView.typingAttributes[LMParagraphAttributeName];
+//    
+//    if ([replacedText containsString:@"\n"] || [text containsString:@"\n"]) {
+//        // 包含 "\n" 表示段落有变化
+//        if (range.length == 0 && [text isEqualToString:@"\n"]) {
+//            
+//            
+//            if (currentParagraph) {
+//                currentParagraph = [currentParagraph copy];
+//                currentParagraph.textRange = NSMakeRange(range.location + 1, 0);
+//                
+//            }
+//        }
+//        
+//        NSArray *ranges = [self rangesOfParagraphForRange:range];
+//        NSAttributedString *attributedText = textView.attributedText;
+//        for (NSValue *rangeValue in ranges) {
+//            NSRange textRange = rangeValue.rangeValue;
+//            LMParagraph *paragraph = [attributedText attribute:LMParagraphAttributeName
+//                                                       atIndex:textRange.location
+//                                                effectiveRange:nil];
+//            
+//        }
+//    }
+//    
+//    if (range.location == 0 && range.length == 0 && text.length == 0) {
+//        // 光标在第一个位置时，按下退格键，则删除段落设置
+//        self.currentParagraphConfig.indentLevel = 0;
+//        [self updateParagraphTypingAttributes];
+//    }
+//    self.lastSelectedRange = NSMakeRange(range.location + text.length - range.length, 0);
+//    if (text.length == 0 && range.length > 0) {
+//        self.keepCurrentTextStyle = YES;
+//    }
+//    return YES;
 }
 
 #pragma mark - Change InputView
@@ -273,7 +396,7 @@
 - (void)reloadSettingsView {
     
     self.styleSettingsViewController.textStyle = self.currentTextStyle;
-    [self.styleSettingsViewController setParagraphConfig:self.currentParagraphConfig];
+//    [self.styleSettingsViewController setParagraphConfig:self.currentParagraphConfig];
     [self.styleSettingsViewController reload];
 }
 
@@ -291,13 +414,13 @@
     return textStyle;
 }
 
-- (LMParagraphConfig *)paragraphForSelection {
-    
-    NSParagraphStyle *paragraphStyle = self.textView.typingAttributes[NSParagraphStyleAttributeName];
-    LMParagraphType type = [self.textView.typingAttributes[LMParagraphTypeName] integerValue];
-    LMParagraphConfig *paragraphConfig = [[LMParagraphConfig alloc] initWithParagraphStyle:paragraphStyle type:type];
-    return paragraphConfig;
-}
+//- (LMParagraphConfig *)paragraphForSelection {
+//    
+//    NSParagraphStyle *paragraphStyle = self.textView.typingAttributes[NSParagraphStyleAttributeName];
+//    LMParagraphType type = [self.textView.typingAttributes[LMParagraphTypeName] integerValue];
+//    LMParagraphConfig *paragraphConfig = [[LMParagraphConfig alloc] initWithParagraphStyle:paragraphStyle type:type];
+//    return paragraphConfig;
+//}
 
 // 获取所有选中的段落，通过"\n"来判断段落。
 - (NSArray *)rangesOfParagraphForCurrentSelection {
@@ -354,12 +477,12 @@
     self.textView.typingAttributes = typingAttributes;
 }
 
-- (void)updateParagraphTypingAttributes {
-    NSMutableDictionary *typingAttributes = [self.textView.typingAttributes mutableCopy];
-    typingAttributes[LMParagraphTypeName] = @(self.currentParagraphConfig.type);
-    typingAttributes[NSParagraphStyleAttributeName] = self.currentParagraphConfig.paragraphStyle;
-    self.textView.typingAttributes = typingAttributes;
-}
+//- (void)updateParagraphTypingAttributes {
+//    NSMutableDictionary *typingAttributes = [self.textView.typingAttributes mutableCopy];
+//    typingAttributes[LMParagraphTypeName] = @(self.currentParagraphConfig.type);
+//    typingAttributes[NSParagraphStyleAttributeName] = self.currentParagraphConfig.paragraphStyle;
+//    self.textView.typingAttributes = typingAttributes;
+//}
 
 - (void)updateTextStyleForSelection {
     if (self.textView.selectedRange.length > 0) {
@@ -374,47 +497,25 @@
     NSRange selectedRange = self.textView.selectedRange;
     
     NSArray *ranges = [self rangesOfParagraphForCurrentSelection];
-    if (!ranges) {
-        if (self.currentParagraphConfig.type == 0) {
-            NSMutableDictionary *typingAttributes = [self.textView.typingAttributes mutableCopy];
-            typingAttributes[NSParagraphStyleAttributeName] = self.currentParagraphConfig.paragraphStyle;
-            self.textView.typingAttributes = typingAttributes;
-            return;
-        }
-        ranges = @[[NSValue valueWithRange:NSMakeRange(0, 0)]];
-    }
+//    if (!ranges) {
+//        return;
+//        if (self.currentParagraphConfig.type == 0) {
+//            NSMutableDictionary *typingAttributes = [self.textView.typingAttributes mutableCopy];
+//            typingAttributes[NSParagraphStyleAttributeName] = self.currentParagraphConfig.paragraphStyle;
+//            self.textView.typingAttributes = typingAttributes;
+//            return;
+//        }
+//        ranges = @[[NSValue valueWithRange:NSMakeRange(0, 0)]];
+//    }
     for (NSValue *rangeValue in ranges) {
         
         NSRange range = NSMakeRange(rangeValue.rangeValue.location, rangeValue.rangeValue.length);
-        LMParagraphType type = self.currentParagraphConfig.type;
-        switch (type) {
-            case LMParagraphTypeNone:
-            {
-                LMParagraphStyle *paragraphStyle = [self.textView lm_paragraphStyleForTextRange:range];
-                [paragraphStyle removeFromTextView];
-                break;
-            }
-            case LMParagraphTypeUnorderedList:
-            {                
-                LMParagraphStyle *paragraphStyle = [[LMParagraphStyle alloc] initWithType:LMParagraphStyleTypeUnorderedList textRange:range];
-                [paragraphStyle addToTextViewIfNeed:self.textView];
-                [_paragraphStyles addObject:paragraphStyle];
-                break;
-            }
-            case LMParagraphStyleTypeOrderedList:
-            {
-                LMParagraphStyle *paragraphStyle = [[LMParagraphStyle alloc] initWithType:LMParagraphStyleTypeOrderedList textRange:range];
-                [paragraphStyle addToTextViewIfNeed:self.textView];
-                [_paragraphStyles addObject:paragraphStyle];
-                break;
-            }
-            case LMParagraphTypeCheckbox:
-            {
-                LMParagraphStyle *paragraphStyle = [[LMParagraphStyle alloc] initWithType:LMParagraphStyleTypeCheckbox textRange:range];
-                [paragraphStyle addToTextViewIfNeed:self.textView];
-                [_paragraphStyles addObject:paragraphStyle];
-                break;
-            }
+        LMParagraph *paragraph = [[LMParagraph alloc] initWithType:_paragraphType textRange:range];
+        [paragraph addToTextViewIfNeed:self.textView];
+        if (rangeValue == ranges.firstObject) {
+            NSMutableDictionary *typingAttributes = [self.textView.typingAttributes mutableCopy];
+            typingAttributes[LMParagraphAttributeName] = paragraph;
+            self.textView.typingAttributes = typingAttributes;
         }
     }
     // 还原现场
@@ -459,36 +560,39 @@
     [self updateTextStyleForSelection];
 }
 
-- (void)lm_didChangedParagraphIndentLevel:(NSInteger)level {
-    
-    self.currentParagraphConfig.indentLevel += level;
-    
-    NSRange selectedRange = self.textView.selectedRange;
-    NSArray *ranges = [self rangesOfParagraphForCurrentSelection];
-    if (ranges.count <= 1) {
-//        [self updateParagraphForSelectionWithKey:LMParagraphIndentName];
-    }
-    else {
-        self.textView.allowsEditingTextAttributes = YES;
-        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-        for (NSValue *rangeValue in ranges) {
-            NSRange range = rangeValue.rangeValue;
-            self.textView.selectedRange = range;
-            LMParagraphConfig *paragraphConfig = [self paragraphForSelection];
-            paragraphConfig.indentLevel += level;
-            [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphConfig.paragraphStyle range:range];
-        }
-        self.textView.attributedText = attributedText;
-        self.textView.allowsEditingTextAttributes = NO;
-        self.textView.selectedRange = selectedRange;
-    }
-    [self updateParagraphTypingAttributes];
-}
+//- (void)lm_didChangedParagraphIndentLevel:(NSInteger)level {
+//    
+//    self.currentParagraphConfig.indentLevel += level;
+//    
+//    NSRange selectedRange = self.textView.selectedRange;
+//    NSArray *ranges = [self rangesOfParagraphForCurrentSelection];
+//    if (ranges.count <= 1) {
+////        [self updateParagraphForSelectionWithKey:LMParagraphIndentName];
+//    }
+//    else {
+//        self.textView.allowsEditingTextAttributes = YES;
+//        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
+//        for (NSValue *rangeValue in ranges) {
+//            NSRange range = rangeValue.rangeValue;
+//            self.textView.selectedRange = range;
+//            LMParagraphConfig *paragraphConfig = [self paragraphForSelection];
+//            paragraphConfig.indentLevel += level;
+//            [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphConfig.paragraphStyle range:range];
+//        }
+//        self.textView.attributedText = attributedText;
+//        self.textView.allowsEditingTextAttributes = NO;
+//        self.textView.selectedRange = selectedRange;
+//    }
+//    [self updateParagraphTypingAttributes];
+//}
+
+static NSInteger _paragraphType = 0;
 
 - (void)lm_didChangedParagraphType:(NSInteger)type {
 
-    self.currentParagraphConfig.type = type;
-    [self updateParagraphTypingAttributes];
+//    self.currentParagraphConfig.type = type;
+//    [self updateParagraphTypingAttributes];
+    _paragraphType = type;
     [self updateParagraphTypeForSelection];
 }
 

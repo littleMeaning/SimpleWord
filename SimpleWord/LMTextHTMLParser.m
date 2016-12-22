@@ -30,7 +30,7 @@
         NSDictionary *attributes = [attributedString attributesAtIndex:effectiveRange.location effectiveRange:&effectiveRange];
         NSTextAttachment *attachment = attributes[@"NSAttachment"];
         NSParagraphStyle *paragraph = attributes[@"NSParagraphStyle"];
-        LMParagraphConfig *paragraphConfig = [[LMParagraphConfig alloc] initWithParagraphStyle:paragraph type:LMParagraphTypeNone];
+//        LMParagraphConfig *paragraphConfig = [[LMParagraphConfig alloc] initWithParagraphStyle:paragraph type:LMParagraphTypeNone];
         if (attachment) {
             switch (attachment.attachmentType) {
                 case LMTextAttachmentTypeImage:
@@ -59,7 +59,7 @@
                     isNewParagraph = YES;
                 }
                 if (isNewParagraph && (content.length > 0 || i < components.count - 1)) {
-                    [htmlContent appendString:[NSString stringWithFormat:@"<p style=\"text-indent:%@em;margin:4px auto 0px auto;\">", @(2 * paragraphConfig.indentLevel).stringValue]];
+//                    [htmlContent appendString:[NSString stringWithFormat:@"<p style=\"text-indent:%@em;margin:4px auto 0px auto;\">", @(2 * paragraphConfig.indentLevel).stringValue]];
                     isNewParagraph = NO;
                 }
                 [htmlContent appendString:[self HTMLWithContent:content font:font underline:underline color:color]];

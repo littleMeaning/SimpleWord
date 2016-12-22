@@ -56,10 +56,10 @@
 
 #pragma mark - setParagraph
 
-- (void)setParagraphConfig:(LMParagraphConfig *)paragraphConfig {
-    _paragraphType = paragraphConfig.type;
-    self.needReload = YES;
-}
+//- (void)setParagraphConfig:(LMParagraphConfig *)paragraphConfig {
+//    _paragraphType = paragraphConfig.type;
+//    self.needReload = YES;
+//}
 
 #pragma mark - UITableViewDataSource
 

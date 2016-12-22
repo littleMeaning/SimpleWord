@@ -8,6 +8,11 @@
 
 #import "LMWordView.h"
 #import <objc/runtime.h>
+#import "UIFont+LMText.h"
+
+@interface LMWordView ()
+
+@end
 
 @implementation LMWordView {
     UIView *_titleView;
@@ -83,8 +88,12 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     CGRect rect = [super caretRectForPosition:position];
     NSParagraphStyle *paragraphStyle = self.typingAttributes[NSParagraphStyleAttributeName];
     if (paragraphStyle) {
-        rect.origin.y += paragraphStyle.lineSpacing;
-        rect.size.height -= paragraphStyle.lineSpacing * 2;
+        UIFont *font = self.typingAttributes[NSFontAttributeName] ?: [UIFont lm_systemFont];
+        CGFloat height = CGRectGetHeight(rect) - paragraphStyle.lineSpacing * 2;
+        if (height > font.lineHeight) {
+            rect.origin.y += paragraphStyle.lineSpacing;
+            rect.size.height -= paragraphStyle.lineSpacing * 2;
+        }
     }
     return rect;
 }

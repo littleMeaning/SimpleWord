@@ -11,7 +11,12 @@
 @implementation UIFont (LMText)
 
 + (instancetype)lm_systemFont {
-    return [UIFont systemFontOfSize:[UIFont systemFontSize]];
+    static dispatch_once_t onceToken;
+    static UIFont *font;
+    dispatch_once(&onceToken, ^{
+        font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+    });
+    return font;
 }
 
 + (instancetype)lm_fontWithFontSize:(float)fontSize bold:(BOOL)bold italic:(BOOL)italic {

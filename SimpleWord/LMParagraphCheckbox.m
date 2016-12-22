@@ -15,70 +15,20 @@ static CGFloat const LMParagraphCheckboxLineSpacing = 4.f;
 
 @interface LMParagraphCheckbox ()
 
-@property (nonatomic, assign) UITextView *textView;
+@property (nonatomic, assign) NSRange textRange;
 @property (nonatomic, strong) UIView *view;
-@property (nonatomic, strong) UIBezierPath *exclusionPath;
 
 @end
 
 @implementation LMParagraphCheckbox
 
-- (void)addToTextViewIfNeed:(UITextView *)textView {
-    
-    if (self.textView) {
-        return;
-    }
-    
-    self.textView = textView;
-    [self textAttributesToFit];
-    
-    NSTextContainer *textContainer = self.textView.textContainer;
-    NSLayoutManager *layoutManager = self.textView.layoutManager;
-    UIEdgeInsets textContainerInset = self.textView.textContainerInset;
-    
-    CGRect rect = [layoutManager boundingRectForGlyphRange:self.textRange inTextContainer:textContainer];
-    CGSize checkboxSize = [self viewSize];
-    rect.size = checkboxSize;
-    
-    // 在 TextView 中留出放置 checkbox 的区域
-    self.exclusionPath = [UIBezierPath bezierPathWithRect:rect];
-    NSMutableArray *exclusionPaths = [textContainer.exclusionPaths mutableCopy];
-    [exclusionPaths addObject:self.exclusionPath];
-    textContainer.exclusionPaths = exclusionPaths;
-    
-    rect.origin.x += textContainerInset.left;
-    rect.origin.y += textContainerInset.top;
-    
-    UIView *view = [self viewForParagraphStyle];
-    view.frame = rect;
-    [self.textView addSubview:view];
-}
-
-- (void)removeFromTextView {
-    
-    if (!self.textView) {
-        return;
-    }
-    [self.view removeFromSuperview];
-    [self removeTextAttributes];
-    
-    NSMutableArray *exclusionPaths = [self.textView.textContainer.exclusionPaths mutableCopy];
-    if ([exclusionPaths containsObject:self.exclusionPath]) {
-        [exclusionPaths removeObject:self.exclusionPath];
-        self.exclusionPath = nil;
-    }
-    self.textView.textContainer.exclusionPaths = exclusionPaths;
-}
-
-- (CGSize)viewSize {
+- (CGSize)size {
     return CGSizeMake(LMParagraphCheckboxHeight, LMParagraphCheckboxHeight);
 }
 
-// 给段落文本添加对应风格属性
-- (void)textAttributesToFit {
+- (NSDictionary *)textAttributes {
     
     UIFont *font = [UIFont lm_systemFont];
-    
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineSpacing = (LMParagraphCheckboxHeight - font.lineHeight) / 2 + LMParagraphCheckboxLineSpacing;
     paragraphStyle.paragraphSpacingBefore = paragraphStyle.lineSpacing;
@@ -87,35 +37,11 @@ static CGFloat const LMParagraphCheckboxLineSpacing = 4.f;
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
                                  NSParagraphStyleAttributeName: paragraphStyle,
-                                 LMParagraphStyleAttributeName: self,
                                  };
-    NSMutableAttributedString *attributedText = [self.textView.attributedText mutableCopy];
-    NSAttributedString *text = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
-    NSAttributedString *formattedText = [[NSAttributedString alloc] initWithString:text.string attributes:attributes];
-    [attributedText replaceCharactersInRange:self.textRange withAttributedString:formattedText];
-    
-    self.textView.allowsEditingTextAttributes = YES;
-    self.textView.attributedText = attributedText;
-    self.textView.allowsEditingTextAttributes = NO;
+    return attributes;
 }
 
-// 将段落文本属性初始化
-- (void)removeTextAttributes {
-    
-    NSDictionary *attributes = @{
-                                 NSFontAttributeName: [UIFont lm_systemFont],
-                                 };
-    NSMutableAttributedString *attributedText = [self.textView.attributedText mutableCopy];
-    NSAttributedString *text = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
-    NSAttributedString *formattedText = [[NSAttributedString alloc] initWithString:text.string attributes:attributes];
-    [attributedText replaceCharactersInRange:self.textRange withAttributedString:formattedText];
-    
-    self.textView.allowsEditingTextAttributes = YES;
-    self.textView.attributedText = attributedText;
-    self.textView.allowsEditingTextAttributes = NO;
-}
-
-- (UIView *)viewForParagraphStyle {
+- (UIView *)view {
     
     if (!_view) {
         _view = ({
@@ -139,7 +65,7 @@ static CGFloat const LMParagraphCheckboxLineSpacing = 4.f;
     static UIImage *image;
     dispatch_once(&onceToken, ^{
         CGRect rect = CGRectZero;
-        rect.size = [self viewSize];
+        rect.size = [self size];
         CGFloat lineWidth = 1.f;
         
         UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
@@ -159,7 +85,7 @@ static CGFloat const LMParagraphCheckboxLineSpacing = 4.f;
     static UIImage *image;
     dispatch_once(&onceToken, ^{
         CGRect rect = CGRectZero;
-        rect.size = [self viewSize];
+        rect.size = [self size];
         CGFloat lineWidth = 1.f;
         
         UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);

@@ -10,10 +10,4 @@
 
 @interface LMParagraphOrderedList : NSObject <LMParagraphStyle>
 
-@property (nonatomic, assign) LMParagraphStyleType type;
-@property (nonatomic, assign) NSRange textRange;
-
-- (void)addToTextViewIfNeed:(UITextView *)textView;
-- (void)removeFromTextView;
-
 @end

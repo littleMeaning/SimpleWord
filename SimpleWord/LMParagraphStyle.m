@@ -12,51 +12,35 @@
 #import "LMParagraphOrderedList.h"
 #import "LMParagraphCheckbox.h"
 
-NSString * const LMParagraphStyleAttributeName = @"LMParagraphStyleAttributeName";
-
 @interface LMParagraphStyle ()
 
+@property (nonatomic, assign) UITextView *textView;
 @property (nonatomic, strong) id<LMParagraphStyle> child;
 
 @end
 
 @implementation LMParagraphStyle
 
-- (instancetype)initWithType:(LMParagraphStyleType)type textRange:(NSRange)textRange {
+- (instancetype)initWithType:(LMParagraphType)type {
     
     if (self = [super init]) {
         switch (type) {
-            case LMParagraphStyleTypeNone:
+            case LMParagraphTypeNone:
                 _child = nil;
                 break;
-            case LMParagraphStyleTypeUnorderedList:
+            case LMParagraphTypeUnorderedList:
             {
-                _child = ({
-                    LMParagraphUnorderedList *child = [[LMParagraphUnorderedList alloc] init];
-                    child.textRange = textRange;
-                    child.type = type;
-                    child;
-                });
+                _child = [[LMParagraphUnorderedList alloc] init];
                 break;
             }
-            case LMParagraphStyleTypeOrderedList:
+            case LMParagraphTypeOrderedList:
             {
-                _child = ({
-                    LMParagraphOrderedList *child = [[LMParagraphOrderedList alloc] init];
-                    child.textRange = textRange;
-                    child.type = type;
-                    child;
-                });
+                _child = [[LMParagraphOrderedList alloc] init];
                 break;
             }
-            case LMParagraphStyleTypeCheckbox:
+            case LMParagraphTypeCheckbox:
             {
-                _child = ({
-                    LMParagraphCheckbox *child = [[LMParagraphCheckbox alloc] init];
-                    child.textRange = textRange;
-                    child.type = type;
-                    child;
-                });
+                _child = [[LMParagraphCheckbox alloc] init];
                 break;
             }
             default:
@@ -66,31 +50,16 @@ NSString * const LMParagraphStyleAttributeName = @"LMParagraphStyleAttributeName
     return self;
 }
 
-- (LMParagraphStyleType)type {
-    return self.child.type;
+- (CGSize)size {
+    return [self.child size];
 }
 
-- (NSRange)textRange {
-    return self.child.textRange;
+- (UIView *)view {
+    return [self.child view];
 }
 
-- (void)addToTextViewIfNeed:(UITextView *)textView {
-    [self.child addToTextViewIfNeed:textView];
-}
-
-- (void)removeFromTextView {
-    [self.child removeFromTextView];
-}
-
-@end
-
-@implementation UITextView (LMParagraphStyle)
-
-- (LMParagraphStyle *)lm_paragraphStyleForTextRange:(NSRange)textRange {
-
-    NSAttributedString *text = [self.attributedText attributedSubstringFromRange:textRange];
-    NSDictionary *attributes = [text attributesAtIndex:0 effectiveRange:NULL];
-    return attributes[LMParagraphStyleAttributeName];
+- (NSDictionary *)textAttributes {
+    return [self.child textAttributes];
 }
 
 @end

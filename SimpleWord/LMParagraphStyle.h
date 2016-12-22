@@ -7,34 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-
-extern NSString * const LMParagraphStyleAttributeName;
-
-typedef NS_ENUM(NSUInteger, LMParagraphStyleType) {
-    LMParagraphStyleTypeNone = 0,
-    LMParagraphStyleTypeUnorderedList,
-    LMParagraphStyleTypeOrderedList,
-    LMParagraphStyleTypeCheckbox,
-};
+#import "LMParagraph.h"
 
 @protocol LMParagraphStyle <NSObject>
 
-@property (nonatomic, readonly) LMParagraphStyleType type;
-@property (nonatomic, readonly) NSRange textRange;
-
-- (void)addToTextViewIfNeed:(UITextView *)textView;
-- (void)removeFromTextView;
+- (CGSize)size;
+- (UIView *)view;
+- (NSDictionary *)textAttributes;
 
 @end
 
 @interface LMParagraphStyle : NSObject <LMParagraphStyle>
 
-- (instancetype)initWithType:(LMParagraphStyleType)type textRange:(NSRange)textRange;
-
-@end
-
-@interface UITextView (LMParagraphStyle)
-
-- (LMParagraphStyle *)lm_paragraphStyleForTextRange:(NSRange)textRange;
+- (instancetype)initWithType:(LMParagraphType)type;
 
 @end

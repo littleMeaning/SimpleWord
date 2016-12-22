@@ -10,8 +10,6 @@
 #import "UIFont+LMText.h"
 
 static CGFloat const LMParagraphCheckboxHeight = 20.f;
-static CGFloat const LMParagraphCheckboxLineSpacing = 4.f;
-
 
 @interface LMParagraphCheckbox ()
 
@@ -30,12 +28,14 @@ static CGFloat const LMParagraphCheckboxLineSpacing = 4.f;
     
     UIFont *font = [UIFont lm_systemFont];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.lineSpacing = (LMParagraphCheckboxHeight - font.lineHeight) / 2 + LMParagraphCheckboxLineSpacing;
-    paragraphStyle.paragraphSpacingBefore = paragraphStyle.lineSpacing;
-    paragraphStyle.paragraphSpacing = paragraphStyle.lineSpacing;
+    paragraphStyle.paragraphSpacing = 4.f;
+    paragraphStyle.minimumLineHeight = LMParagraphCheckboxHeight;
+    paragraphStyle.maximumLineHeight = paragraphStyle.minimumLineHeight;
     
+    CGFloat baselineOffset = (LMParagraphCheckboxHeight - font.lineHeight) / 2;
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
+                                 NSBaselineOffsetAttributeName: @(baselineOffset),
                                  NSParagraphStyleAttributeName: paragraphStyle,
                                  };
     return attributes;

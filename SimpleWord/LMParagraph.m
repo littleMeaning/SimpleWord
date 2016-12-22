@@ -28,13 +28,17 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     return [[LMParagraph alloc] initWithType:self.type textRange:self.textRange];
 }
 
-- (void)textAttributesToFit {
+- (NSDictionary *)typingAttributes {
     NSMutableDictionary *attributes = [[self.paragraphStyle textAttributes] mutableCopy];
     attributes[LMParagraphAttributeName] = self;
-    
+    return [attributes copy];
+}
+
+// 添加段落文本属性以适应当前段落样式
+- (void)textAttributesToFit {
     NSMutableAttributedString *attributedText = [self.textView.attributedText mutableCopy];
     NSAttributedString *text = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
-    NSAttributedString *formattedText = [[NSAttributedString alloc] initWithString:text.string attributes:attributes];
+    NSAttributedString *formattedText = [[NSAttributedString alloc] initWithString:text.string attributes:[self typingAttributes]];
     [attributedText replaceCharactersInRange:self.textRange withAttributedString:formattedText];
     
     self.textView.allowsEditingTextAttributes = YES;
@@ -75,7 +79,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     CGSize size = [self.paragraphStyle size];
     rect.size = size;
     
-    // 在 TextView 中留出放置 checkbox 的区域
+    // 在 TextView 中留出空白区域
     self.exclusionPath = [UIBezierPath bezierPathWithRect:rect];
     NSMutableArray *exclusionPaths = [textContainer.exclusionPaths mutableCopy];
     [exclusionPaths addObject:self.exclusionPath];
@@ -105,12 +109,92 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     self.textView.textContainer.exclusionPaths = exclusionPaths;
 }
 
+static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f;
+
+- (void)updateForTextChanging {
+    
+    NSTextContainer *textContainer = self.textView.textContainer;
+    NSLayoutManager *layoutManager = self.textView.layoutManager;
+    UIEdgeInsets textContainerInset = self.textView.textContainerInset;
+    
+    CGFloat boundingWidth = (textContainer.size.width - 3 * kUITextViewDefaultEdgeSpacing - self.paragraphStyle.size.width);
+    NSAttributedString *attributedText = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
+    CGRect boundingRect = [attributedText boundingRectWithSize:CGSizeMake(boundingWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+    
+    NSInteger index = [textContainer.exclusionPaths indexOfObject:self.exclusionPath];
+    
+    CGFloat y = [layoutManager boundingRectForGlyphRange:NSMakeRange(self.textRange.location, 1) inTextContainer:textContainer].origin.y;
+    
+    UIView *view = [self.paragraphStyle view];
+    CGRect rect = view.frame;
+    rect.origin.y = y + textContainerInset.top;
+    view.frame = rect;
+    
+    rect.origin.x -= textContainerInset.left;
+    rect.origin.y = y;
+    rect.size.height = boundingRect.size.height;
+    
+    self.exclusionPath = [UIBezierPath bezierPathWithRect:rect];
+    NSMutableArray *exclusionPaths = [textContainer.exclusionPaths mutableCopy];
+    [exclusionPaths replaceObjectAtIndex:index withObject:self.exclusionPath];
+    textContainer.exclusionPaths = exclusionPaths;
+}
+
 @end
 
-//@implementation UITextView (LMParagraphStyle)
-//
-//- (LMParagraphStyle *)lm_paragraphStyleForTextRange:(NSRange)textRange {
-//    return [self.attributedText attribute:LMParagraphAttributeName atIndex:textRange.location effectiveRange:NULL];
-//}
-//
-//@end
+@implementation UITextView (LMParagraphStyle)
+
+- (NSArray *)rangesOfParagraphForRange:(NSRange)selectedRange {
+    
+    NSInteger location;
+    NSInteger length;
+    
+    NSInteger start = 0;
+    NSInteger end = selectedRange.location;
+    NSRange range = [self.text rangeOfString:@"\n"
+                                              options:NSBackwardsSearch
+                                                range:NSMakeRange(start, end - start)];
+    location = (range.location != NSNotFound) ? range.location + 1 : 0;
+    
+    start = selectedRange.location + selectedRange.length;
+    end = self.text.length;
+    range = [self.text rangeOfString:@"\n"
+                                      options:0
+                                        range:NSMakeRange(start, end - start)];
+    length = (range.location != NSNotFound) ? (range.location + 1 - location) : (self.text.length - location);
+    
+    range = NSMakeRange(location, length);
+    NSString *textInRange = [self.text substringWithRange:range];
+    NSArray *components = [textInRange componentsSeparatedByString:@"\n"];
+    
+    NSMutableArray *ranges = [NSMutableArray array];
+    for (NSInteger i = 0; i < components.count; i++) {
+        NSString *component = components[i];
+        if (i == components.count - 1) {
+            if (component.length == 0) {
+                break;
+            }
+            else {
+                [ranges addObject:[NSValue valueWithRange:NSMakeRange(location, component.length)]];
+            }
+        }
+        else {
+            [ranges addObject:[NSValue valueWithRange:NSMakeRange(location, component.length + 1)]];
+            location += component.length + 1;
+        }
+    }
+    if (ranges.count == 0) {
+        return nil;
+    }
+    return ranges;
+}
+
+- (NSArray *)rangesOfParagraph {
+    return [self rangesOfParagraphForRange:NSMakeRange(0, self.text.length)];
+}
+
+- (LMParagraphStyle *)lm_paragraphStyleForTextRange:(NSRange)textRange {
+    return [self.attributedText attribute:LMParagraphAttributeName atIndex:textRange.location effectiveRange:NULL];
+}
+
+@end

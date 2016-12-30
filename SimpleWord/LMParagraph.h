@@ -19,30 +19,29 @@ typedef NS_ENUM(NSUInteger, LMParagraphType) {
     LMParagraphTypeCheckbox,
 };
 
-@interface LMParagraph : NSObject <NSCopying>
+
+@interface LMParagraph : NSObject
+
+// 使用链表结构
+@property (nonatomic, weak) LMParagraph *previous;
+@property (nonatomic, strong) LMParagraph *next;
 
 @property (nonatomic, assign) LMParagraphType type;
-@property (nonatomic, assign) NSRange textRange;
-
-@property (nonatomic, assign) UITextView *textView;
 @property (nonatomic, strong) LMParagraphStyle *paragraphStyle;
+@property (nonatomic, assign) NSInteger length;
+@property (nonatomic, assign) CGFloat height;
+
+@property (nonatomic, readonly) NSRange textRange;
+
+@property (nonatomic, weak) UITextView *textView;
+
 @property (nonatomic, readonly) NSDictionary *typingAttributes;
 @property (nonatomic, strong) UIBezierPath *exclusionPath;
 
-- (instancetype)initWithType:(LMParagraphType)type textRange:(NSRange)textRange;
+- (instancetype)initWithType:(LMParagraphType)type textView:(UITextView *)textView;
 
-- (void)addToTextViewIfNeed:(UITextView *)textView;
-- (void)removeFromTextView;
-- (void)updateForTextChanging;
-
-@end
-
-@interface UITextView (LMParagraphStyle)
-
-// 获取所有选中的段落，通过"\n"来判断段落。
-- (NSArray *)rangesOfParagraphForRange:(NSRange)selectedRange;
-- (NSArray *)rangesOfParagraph;
-
-- (LMParagraphStyle *)lm_paragraphStyleForTextRange:(NSRange)textRange;
+- (void)formatParagraph;
+- (void)updateLayout;
+- (void)updateFrameWithYOffset:(CGFloat)yOffset;
 
 @end

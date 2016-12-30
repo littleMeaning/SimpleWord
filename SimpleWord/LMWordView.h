@@ -8,8 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+#import "LMParagraph.h"
+
 @interface LMWordView : UITextView
 
 @property (nonatomic, strong) UITextField *titleTextField;
+
+@property (nonatomic, strong) LMParagraph *beginningParagraph;
+- (void)insertNewlineWithSelectedRange:(NSRange)selectedRange;
+- (void)setParagraphType:(LMParagraphType)type forRange:(NSRange)range;
+- (void)setTypingAttributesForSelection;
+- (void)willChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
 @end

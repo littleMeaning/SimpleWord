@@ -50,8 +50,12 @@
     return self;
 }
 
-- (CGSize)size {
-    return [self.child size];
+- (CGFloat)indent {
+    return [self.child indent];
+}
+
+- (CGFloat)paragraphSpacing {
+    return [self.child paragraphSpacing];
 }
 
 - (UIView *)view {

@@ -9,6 +9,7 @@
 #import "LMWordView.h"
 #import <objc/runtime.h>
 #import "UIFont+LMText.h"
+#import "LMParagraph.h"
 
 @interface LMWordView ()
 
@@ -61,6 +62,9 @@ static CGFloat const kLMWCommonSpacing = 16.f;
                                                kLMWCommonSpacing,
                                                kLMWCommonSpacing,
                                                kLMWCommonSpacing);
+    
+    self.beginningParagraph = [[LMParagraph alloc] initWithType:LMParagraphTypeNone textView:self];
+    self.typingAttributes = self.beginningParagraph.typingAttributes;
 }
 
 - (void)layoutSubviews {
@@ -96,6 +100,99 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         }
     }
     return rect;
+}
+
+#pragma mark - LMParagraph
+
+- (void)insertNewlineWithSelectedRange:(NSRange)selectedRange {
+    
+    self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
+    
+    LMParagraph *begin = [self paragraphAtLocation:selectedRange.location];
+    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(selectedRange)];
+    
+    LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:begin.type textView:self];
+    newParagraph.previous = begin;
+    
+    LMParagraph *nextParagraph = end.next;
+    if (nextParagraph) {
+        newParagraph.next = nextParagraph;
+        nextParagraph.previous = newParagraph;
+    }
+    newParagraph.length = NSMaxRange(end.textRange) - NSMaxRange(selectedRange);
+    begin.length = selectedRange.location - begin.textRange.location;
+    begin.next = newParagraph;
+    
+    // 截断的地方加上"\n"
+    NSMutableAttributedString *attributedText = [self.attributedText mutableCopy];
+    NSAttributedString *lineBreak = [[NSAttributedString alloc] initWithString:@"\n" attributes:begin.typingAttributes];
+    [attributedText replaceCharactersInRange:selectedRange withAttributedString:lineBreak];
+    self.allowsEditingTextAttributes = YES;
+    self.attributedText = attributedText;
+    self.allowsEditingTextAttributes = NO;
+    begin.length += 1;
+    
+    // 格式化新加入的段落
+    [newParagraph formatParagraph];
+    
+    // 新插入行后之后的段落都需要调整位置
+    CGFloat yOffset = newParagraph.height;
+    LMParagraph *item = newParagraph;
+    while ((item = item.next)) {
+        [item updateFrameWithYOffset:yOffset];
+    }
+    self.selectedRange = NSMakeRange(newParagraph.textRange.location, 0);   // 设置光标位置
+    self.scrollEnabled = YES;
+    
+    // TODO: 光标位置变换后，如果在行末点击换行就会出问题。
+    // TODO: 无格式的处理
+}
+
+- (void)setParagraphType:(LMParagraphType)type forRange:(NSRange)range {
+    
+    LMParagraph *paragraph = [self paragraphAtLocation:range.location];
+    LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:type textView:self];
+    if (paragraph == self.beginningParagraph) {
+        self.beginningParagraph = newParagraph;
+    }
+    else {
+        paragraph.previous.next = newParagraph;
+    }
+    newParagraph.length = paragraph.length;
+    newParagraph.next = paragraph.next;
+    paragraph.next.previous = newParagraph;
+    [newParagraph formatParagraph];
+    self.typingAttributes = newParagraph.typingAttributes;
+}
+
+- (void)setTypingAttributesForSelection {
+    
+    LMParagraph *paragraph = [self paragraphAtLocation:self.selectedRange.location];
+    self.typingAttributes = paragraph.typingAttributes;
+}
+
+- (void)willChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    
+    LMParagraph *begin = [self paragraphAtLocation:range.location];
+//    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
+    
+    begin.length += (text.length - range.length);
+//    
+//    LMParagraph *paragraph = [self paragraphAtLocation:range.location];
+    
+}
+
+- (LMParagraph *)paragraphAtLocation:(NSUInteger)loc {
+    // 通过 Location 查找 Paragraph
+    LMParagraph *paragraph = self.beginningParagraph;
+    while (paragraph && !(loc == paragraph.textRange.location || NSLocationInRange(loc, paragraph.textRange))) {
+        if (!paragraph.next) {
+            break;
+        }
+        paragraph = paragraph.next;
+    }
+    NSAssert(paragraph, @"paragraphForTextRange: 错误");
+    return paragraph;
 }
 
 @end

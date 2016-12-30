@@ -28,7 +28,6 @@
 @property (nonatomic, strong) LMStyleSettingsController *styleSettingsViewController;
 @property (nonatomic, strong) LMImageSettingsController *imageSettingsViewController;
 
-
 @property (nonatomic, assign) CGFloat inputViewHeight;
 
 @property (nonatomic, strong) LMTextStyle *currentTextStyle;
@@ -163,7 +162,12 @@
 }
 
 - (void)textViewDidChangeSelection:(UITextView *)textView {
-
+    
+    if (__keepTypingAttributes) {
+        return;
+    }
+    [self.textView setTypingAttributesForSelection];
+    __keepTypingAttributes = NO;
 //    if (self.lastSelectedRange.location != textView.selectedRange.location) {
 //        
 //        if (self.keepCurrentTextStyle) {
@@ -180,34 +184,39 @@
 //            [self reloadSettingsView];
 //        }
 //    }
-//    self.lastSelectedRange = textView.selectedRange;
 }
 
-static BOOL __needUpdateParagraph = NO;
+static BOOL __keepTypingAttributes = YES;
+static BOOL __isNewParagraph = NO;
 static LMParagraph *__paragraph;
+static LMParagraph *__lastParagraph;
 
-- (void)updateParagrphs {
-    
-    BOOL needUpdate = NO;
-    NSArray *ranges = [self.textView rangesOfParagraph];
-    for (NSValue *rangeValue in ranges) {
-        NSRange range = rangeValue.rangeValue;
-        LMParagraph *paragraph = [self.textView.attributedText attribute:LMParagraphAttributeName
-                                                                 atIndex:range.location
-                                                          effectiveRange:NULL];
-        if (paragraph == __paragraph) {
-            needUpdate = YES;
-        }
-        paragraph.textRange = range;
-        [paragraph updateForTextChanging];
-    }
-}
+//- (void)updateParagrphs {
+//    
+//    BOOL needUpdate = NO;
+//    NSArray *ranges = [self.textView rangesOfParagraph];
+//    for (NSValue *rangeValue in ranges) {
+//        NSRange range = rangeValue.rangeValue;
+//        LMParagraph *paragraph = [self.textView.attributedText attribute:LMParagraphAttributeName
+//                                                                 atIndex:range.location
+//                                                          effectiveRange:NULL];
+//        if (paragraph == __paragraph) {
+//            needUpdate = YES;
+//        }
+//        paragraph.textRange = range;
+//        [paragraph updateForTextChanging];
+//    }
+//}
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    __paragraph = textView.typingAttributes[LMParagraphAttributeName];
     if ([text isEqualToString:@"\n"]) {
-        __needUpdateParagraph = YES;
+        [self.textView insertNewlineWithSelectedRange:range];
+        return NO;
+    }
+    else {
+        [self.textView willChangeTextInRange:range replacementText:text];
+        __keepTypingAttributes = YES;
     }
     return YES;
 //    NSString *replacedText = [textView.text substringWithRange:range];
@@ -250,26 +259,28 @@ static LMParagraph *__paragraph;
 
 - (void)textViewDidChange:(UITextView *)textView {
     
-    if (__needUpdateParagraph) {
-        
-        LMParagraph *paragraph = [__paragraph copy];
-        paragraph.textRange = textView.selectedRange;
-        [paragraph addToTextViewIfNeed:textView];
-        
-        NSMutableDictionary *typingAttributes = [textView.typingAttributes mutableCopy];
-        typingAttributes[LMParagraphAttributeName] = paragraph;
-        textView.typingAttributes = typingAttributes;
-        
-        __needUpdateParagraph = NO;
-    }
-    else {
-        NSMutableDictionary *typingAttributes = [textView.typingAttributes mutableCopy];
-        typingAttributes[LMParagraphAttributeName] = __paragraph;
-        textView.typingAttributes = typingAttributes;
-        
-        [self updateParagrphs];
-    }
-    __paragraph = nil;
+//    if (__isNewParagraph) {
+//        
+//        [self.textView paragraphForNewlineWithSelectedRange:<#(NSRange)#>]
+//        
+//        LMParagraph *paragraph = [__paragraph copy];
+//        paragraph.textRange = textView.selectedRange;
+//        [paragraph addToTextViewIfNeed:textView];
+//        
+//        NSMutableDictionary *typingAttributes = [textView.typingAttributes mutableCopy];
+//        typingAttributes[LMParagraphAttributeName] = paragraph;
+//        textView.typingAttributes = typingAttributes;
+//        
+//        __needUpdateParagraph = NO;
+//    }
+//    else {
+//        NSMutableDictionary *typingAttributes = [textView.typingAttributes mutableCopy];
+//        typingAttributes[LMParagraphAttributeName] = __paragraph;
+//        textView.typingAttributes = typingAttributes;
+//        
+//        [self updateParagrphs];
+//    }
+//    __paragraph = nil;
 }
 
 #pragma mark - Change InputView
@@ -363,61 +374,6 @@ static LMParagraph *__paragraph;
     return textStyle;
 }
 
-//- (LMParagraphConfig *)paragraphForSelection {
-//    
-//    NSParagraphStyle *paragraphStyle = self.textView.typingAttributes[NSParagraphStyleAttributeName];
-//    LMParagraphType type = [self.textView.typingAttributes[LMParagraphTypeName] integerValue];
-//    LMParagraphConfig *paragraphConfig = [[LMParagraphConfig alloc] initWithParagraphStyle:paragraphStyle type:type];
-//    return paragraphConfig;
-//}
-
-// 获取所有选中的段落，通过"\n"来判断段落。
-- (NSArray *)rangesOfParagraphForCurrentSelection {
-    
-    NSRange selection = self.textView.selectedRange;
-    NSInteger location;
-    NSInteger length;
-    
-    NSInteger start = 0;
-    NSInteger end = selection.location;
-    NSRange range = [self.textView.text rangeOfString:@"\n"
-                                              options:NSBackwardsSearch
-                                                range:NSMakeRange(start, end - start)];
-    location = (range.location != NSNotFound) ? range.location + 1 : 0;
-    
-    start = selection.location + selection.length;
-    end = self.textView.text.length;
-    range = [self.textView.text rangeOfString:@"\n"
-                                      options:0
-                                        range:NSMakeRange(start, end - start)];
-    length = (range.location != NSNotFound) ? (range.location + 1 - location) : (self.textView.text.length - location);
-    
-    range = NSMakeRange(location, length);
-    NSString *textInRange = [self.textView.text substringWithRange:range];
-    NSArray *components = [textInRange componentsSeparatedByString:@"\n"];
-    
-    NSMutableArray *ranges = [NSMutableArray array];
-    for (NSInteger i = 0; i < components.count; i++) {
-        NSString *component = components[i];
-        if (i == components.count - 1) {
-            if (component.length == 0) {
-                break;
-            }
-            else {
-                [ranges addObject:[NSValue valueWithRange:NSMakeRange(location, component.length)]];
-            }
-        }
-        else {
-            [ranges addObject:[NSValue valueWithRange:NSMakeRange(location, component.length + 1)]];
-            location += component.length + 1;
-        }
-    }
-    if (ranges.count == 0) {
-        return nil;
-    }
-    return ranges;
-}
-
 - (void)updateTextStyleTypingAttributes {
     NSMutableDictionary *typingAttributes = [self.textView.typingAttributes mutableCopy];
     typingAttributes[NSFontAttributeName] = self.currentTextStyle.font;
@@ -426,38 +382,10 @@ static LMParagraph *__paragraph;
     self.textView.typingAttributes = typingAttributes;
 }
 
-//- (void)updateParagraphTypingAttributes {
-//    NSMutableDictionary *typingAttributes = [self.textView.typingAttributes mutableCopy];
-//    typingAttributes[LMParagraphTypeName] = @(self.currentParagraphConfig.type);
-//    typingAttributes[NSParagraphStyleAttributeName] = self.currentParagraphConfig.paragraphStyle;
-//    self.textView.typingAttributes = typingAttributes;
-//}
-
 - (void)updateTextStyleForSelection {
     if (self.textView.selectedRange.length > 0) {
         [self.textView.textStorage addAttributes:self.textView.typingAttributes range:self.textView.selectedRange];
     }
-}
-
-- (void)updateParagraphTypeForSelection {
-    
-    // 设置 exclusionPaths 会出现 exclusion 区域不正确的情况，加上 self.textView.scrollEnabled = NO; 后解决。
-    self.textView.scrollEnabled = NO;
-    NSRange selectedRange = self.textView.selectedRange;
-    
-    NSArray *ranges = [self rangesOfParagraphForCurrentSelection];
-    for (NSValue *rangeValue in ranges) {
-        
-        NSRange range = NSMakeRange(rangeValue.rangeValue.location, rangeValue.rangeValue.length);
-        LMParagraph *paragraph = [[LMParagraph alloc] initWithType:_paragraphType textRange:range];
-        [paragraph addToTextViewIfNeed:self.textView];
-        if (rangeValue == ranges.firstObject) {
-            self.textView.typingAttributes = paragraph.typingAttributes;
-        }
-    }
-    // 还原现场
-    self.textView.scrollEnabled = YES;
-    self.textView.selectedRange = selectedRange;
 }
 
 - (NSTextAttachment *)insertImage:(UIImage *)image {
@@ -523,14 +451,8 @@ static LMParagraph *__paragraph;
 //    [self updateParagraphTypingAttributes];
 //}
 
-static NSInteger _paragraphType = 0;
-
 - (void)lm_didChangedParagraphType:(NSInteger)type {
-
-//    self.currentParagraphConfig.type = type;
-//    [self updateParagraphTypingAttributes];
-    _paragraphType = type;
-    [self updateParagraphTypeForSelection];
+    [self.textView setParagraphType:type forRange:self.textView.selectedRange];
 }
 
 #pragma mark - <LMImageSettingsControllerDelegate>

@@ -11,7 +11,8 @@
 
 @protocol LMParagraphStyle <NSObject>
 
-- (CGSize)size;
+- (CGFloat)indent;              // 缩进
+- (CGFloat)paragraphSpacing;    // 段间距
 - (UIView *)view;
 - (NSDictionary *)textAttributes;
 

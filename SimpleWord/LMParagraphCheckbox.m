@@ -9,7 +9,8 @@
 #import "LMParagraphCheckbox.h"
 #import "UIFont+LMText.h"
 
-static CGFloat const LMParagraphCheckboxHeight = 20.f;
+static CGFloat const LMParagraphCheckboxWidth = 20.f;
+static CGFloat const LMParagraphCheckboxParagraphSpacing = 4.f;
 
 @interface LMParagraphCheckbox ()
 
@@ -20,19 +21,23 @@ static CGFloat const LMParagraphCheckboxHeight = 20.f;
 
 @implementation LMParagraphCheckbox
 
-- (CGSize)size {
-    return CGSizeMake(LMParagraphCheckboxHeight, LMParagraphCheckboxHeight);
+- (CGFloat)indent {
+    return LMParagraphCheckboxWidth;
+}
+
+- (CGFloat)paragraphSpacing {
+    return LMParagraphCheckboxParagraphSpacing;
 }
 
 - (NSDictionary *)textAttributes {
     
     UIFont *font = [UIFont lm_systemFont];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.paragraphSpacing = 4.f;
-    paragraphStyle.minimumLineHeight = LMParagraphCheckboxHeight;
+    paragraphStyle.paragraphSpacing = LMParagraphCheckboxParagraphSpacing;
+    paragraphStyle.minimumLineHeight = LMParagraphCheckboxWidth;
     paragraphStyle.maximumLineHeight = paragraphStyle.minimumLineHeight;
     
-    CGFloat baselineOffset = (LMParagraphCheckboxHeight - font.lineHeight) / 2;
+    CGFloat baselineOffset = (LMParagraphCheckboxWidth - font.lineHeight) / 2;
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
                                  NSBaselineOffsetAttributeName: @(baselineOffset),
@@ -45,9 +50,13 @@ static CGFloat const LMParagraphCheckboxHeight = 20.f;
     
     if (!_view) {
         _view = ({
+            static NSInteger i = 0;
+            i ++;
             UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-            [button setImage:[self checkboxImage] forState:UIControlStateNormal];
-            [button setImage:[self checkboxHighlightImage] forState:UIControlStateSelected];
+            [button setTitle:@(i).stringValue forState:UIControlStateNormal];
+            button.backgroundColor = [UIColor redColor];
+//            [button setImage:[self checkboxImage] forState:UIControlStateNormal];
+//            [button setImage:[self checkboxHighlightImage] forState:UIControlStateSelected];
             [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
             button;
         });
@@ -65,7 +74,7 @@ static CGFloat const LMParagraphCheckboxHeight = 20.f;
     static UIImage *image;
     dispatch_once(&onceToken, ^{
         CGRect rect = CGRectZero;
-        rect.size = [self size];
+        rect.size = CGSizeMake(LMParagraphCheckboxWidth, LMParagraphCheckboxWidth);
         CGFloat lineWidth = 1.f;
         
         UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
@@ -85,7 +94,7 @@ static CGFloat const LMParagraphCheckboxHeight = 20.f;
     static UIImage *image;
     dispatch_once(&onceToken, ^{
         CGRect rect = CGRectZero;
-        rect.size = [self size];
+        rect.size = CGSizeMake(LMParagraphCheckboxWidth, LMParagraphCheckboxWidth);
         CGFloat lineWidth = 1.f;
         
         UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);

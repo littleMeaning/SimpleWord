@@ -134,35 +134,73 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     
     // 格式化新加入的段落
     [newParagraph formatParagraph];
+    self.typingAttributes = newParagraph.typingAttributes;
     
     // 新插入行后之后的段落都需要调整位置
-    CGFloat yOffset = newParagraph.height;
+    CGFloat offset = newParagraph.height;
     LMParagraph *item = newParagraph;
     while ((item = item.next)) {
-        [item updateFrameWithYOffset:yOffset];
+        [item updateFrameWithYOffset:offset];
     }
+    
+    // 如果是有序列表则需要重新编写序号
+    item = begin;
+    while (item.type == LMParagraphTypeOrderedList) {
+        [item updateDisplay];
+        item = item.next;
+    }
+    
     self.selectedRange = NSMakeRange(newParagraph.textRange.location, 0);   // 设置光标位置
     self.scrollEnabled = YES;
-    
-    // TODO: 光标位置变换后，如果在行末点击换行就会出问题。
-    // TODO: 无格式的处理
 }
 
 - (void)setParagraphType:(LMParagraphType)type forRange:(NSRange)range {
     
-    LMParagraph *paragraph = [self paragraphAtLocation:range.location];
-    LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:type textView:self];
-    if (paragraph == self.beginningParagraph) {
-        self.beginningParagraph = newParagraph;
+    NSRange selectedRange = self.selectedRange;
+    self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
+    
+    LMParagraph *begin = [self paragraphAtLocation:range.location];
+    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
+    
+    CGFloat offset = 0;
+    LMParagraph *oldParagraph = begin;
+    do {
+        [oldParagraph restoreParagraph];
+        
+        LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:type textView:self];
+        if (oldParagraph == self.beginningParagraph) {
+            self.beginningParagraph = newParagraph;
+        }
+        else {
+            oldParagraph.previous.next = newParagraph;
+            newParagraph.previous = oldParagraph.previous;
+        }
+        newParagraph.length = oldParagraph.length;
+        newParagraph.next = oldParagraph.next;
+        oldParagraph.next.previous = newParagraph;
+        [newParagraph formatParagraph];
+        if (newParagraph.textRange.location == selectedRange.location) {
+            self.typingAttributes = newParagraph.typingAttributes;
+        }
+        offset += (newParagraph.height - oldParagraph.height);
+        
+    } while (oldParagraph != end && (oldParagraph = oldParagraph.next));
+    
+    // 调整后续段落的位置
+    LMParagraph *item = end;
+    while ((item = item.next)) {
+        [item updateFrameWithYOffset:offset];
     }
-    else {
-        paragraph.previous.next = newParagraph;
+    
+    // 如果是有序列表则需要重新编写序号
+    item = end.next;
+    while (item && item.type == LMParagraphTypeOrderedList) {
+        [item updateDisplay];
+        item = item.next;
     }
-    newParagraph.length = paragraph.length;
-    newParagraph.next = paragraph.next;
-    paragraph.next.previous = newParagraph;
-    [newParagraph formatParagraph];
-    self.typingAttributes = newParagraph.typingAttributes;
+    
+    self.selectedRange = selectedRange;
+    self.scrollEnabled = YES;
 }
 
 - (void)setTypingAttributesForSelection {
@@ -173,13 +211,24 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 - (void)willChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
+    self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
+    
     LMParagraph *begin = [self paragraphAtLocation:range.location];
 //    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
     
+    CGFloat height = begin.height;
     begin.length += (text.length - range.length);
-//    
+    [begin updateLayout];
+    CGFloat offset = begin.height - height;
 //    LMParagraph *paragraph = [self paragraphAtLocation:range.location];
     
+    if (offset != 0) {
+        LMParagraph *item = begin;
+        while ((item = item.next)) {
+            [item updateFrameWithYOffset:offset];
+        }
+    }
+    self.scrollEnabled = YES;
 }
 
 - (LMParagraph *)paragraphAtLocation:(NSUInteger)loc {

@@ -8,6 +8,6 @@
 
 #import "LMParagraphStyle.h"
 
-@interface LMParagraphCheckbox : NSObject <LMParagraphStyle>
+@interface LMParagraphCheckbox : LMParagraphStyle
 
 @end

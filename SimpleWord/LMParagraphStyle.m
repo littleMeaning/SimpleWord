@@ -7,63 +7,46 @@
 //
 
 #import "LMParagraphStyle.h"
-#import "UIFont+LMText.h"
-#import "LMParagraphUnorderedList.h"
-#import "LMParagraphOrderedList.h"
-#import "LMParagraphCheckbox.h"
 
 @interface LMParagraphStyle ()
-
-@property (nonatomic, assign) UITextView *textView;
-@property (nonatomic, strong) id<LMParagraphStyle> child;
 
 @end
 
 @implementation LMParagraphStyle
 
 - (instancetype)initWithType:(LMParagraphType)type {
-    
-    if (self = [super init]) {
-        switch (type) {
-            case LMParagraphTypeNone:
-                _child = nil;
-                break;
-            case LMParagraphTypeUnorderedList:
-            {
-                _child = [[LMParagraphUnorderedList alloc] init];
-                break;
-            }
-            case LMParagraphTypeOrderedList:
-            {
-                _child = [[LMParagraphOrderedList alloc] init];
-                break;
-            }
-            case LMParagraphTypeCheckbox:
-            {
-                _child = [[LMParagraphCheckbox alloc] init];
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    return self;
+    return [LMParagraphStyle paragraphStyleWithType:type];
+}
+
++ (instancetype)paragraphStyleWithType:(LMParagraphType)type {
+    NSArray *classNameOfStyles = @[
+                                   @"LMParagraphNormal",
+                                   @"LMParagraphUnorderedList",
+                                   @"LMParagraphOrderedList",
+                                   @"LMParagraphCheckbox"
+                                   ];
+    LMParagraphStyle *instance = [[NSClassFromString(classNameOfStyles[type]) alloc] init];
+    return instance;
 }
 
 - (CGFloat)indent {
-    return [self.child indent];
+    return 0;
 }
 
 - (CGFloat)paragraphSpacing {
-    return [self.child paragraphSpacing];
+    return 0;
 }
 
 - (UIView *)view {
-    return [self.child view];
+    return nil;
 }
 
 - (NSDictionary *)textAttributes {
-    return [self.child textAttributes];
+    return nil;
+}
+
+- (void)updateDisplayWithParagraph:(LMParagraph *)paragraph {
+    return;
 }
 
 @end

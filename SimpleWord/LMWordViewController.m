@@ -187,9 +187,7 @@
 }
 
 static BOOL __keepTypingAttributes = YES;
-static BOOL __isNewParagraph = NO;
-static LMParagraph *__paragraph;
-static LMParagraph *__lastParagraph;
+static void(^__afterChangingText)(void);
 
 //- (void)updateParagrphs {
 //    
@@ -215,7 +213,9 @@ static LMParagraph *__lastParagraph;
         return NO;
     }
     else {
-        [self.textView willChangeTextInRange:range replacementText:text];
+        __afterChangingText = ^{
+            [self.textView willChangeTextInRange:range replacementText:text];
+        };
         __keepTypingAttributes = YES;
     }
     return YES;
@@ -259,6 +259,10 @@ static LMParagraph *__lastParagraph;
 
 - (void)textViewDidChange:(UITextView *)textView {
     
+    if (__afterChangingText) {
+        __afterChangingText();
+        __afterChangingText = nil;
+    }
 //    if (__isNewParagraph) {
 //        
 //        [self.textView paragraphForNewlineWithSelectedRange:<#(NSRange)#>]

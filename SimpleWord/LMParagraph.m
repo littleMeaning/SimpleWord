@@ -20,7 +20,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     if (self = [super init]) {
         _type = type;
         _textView = textView;
-        _paragraphStyle = [[LMParagraphStyle alloc] initWithType:type];
+        _paragraphStyle = [LMParagraphStyle paragraphStyleWithType:type];
     }
     return self;
 }
@@ -58,63 +58,23 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     self.textView.allowsEditingTextAttributes = NO;
 }
 
-// 将段落文本属性初始化
-- (void)removeTextAttributes {
-    
-    NSDictionary *attributes = @{
-                                 NSFontAttributeName: [UIFont lm_systemFont],
-                                 };
-    NSMutableAttributedString *attributedText = [self.textView.attributedText mutableCopy];
-    NSAttributedString *text = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
-    NSAttributedString *formattedText = [[NSAttributedString alloc] initWithString:text.string attributes:attributes];
-    [attributedText replaceCharactersInRange:self.textRange withAttributedString:formattedText];
-    
-    self.textView.allowsEditingTextAttributes = YES;
-    self.textView.attributedText = attributedText;
-    self.textView.allowsEditingTextAttributes = NO;
-}
-
 - (void)formatParagraph {
-    
+    // 格式化段落样式
     if (!self.textView) {
         return;
     }
-
     [self textAttributesToFit];
-    
     UIView *view = [self.paragraphStyle view];
     [self.textView addSubview:view];
-    
-    NSTextContainer *textContainer = self.textView.textContainer;
-    NSLayoutManager *layoutManager = self.textView.layoutManager;
-    UIEdgeInsets textContainerInset = self.textView.textContainerInset;
-    
-    CGFloat boundingWidth = (textContainer.size.width - 3 * kUITextViewDefaultEdgeSpacing - self.paragraphStyle.indent);
-    NSAttributedString *attributedText = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
-    if (attributedText.length == 0) {
-        attributedText = [[NSAttributedString alloc] initWithString:@"A" attributes:self.typingAttributes];
+    [self updateLayout];
+    if (self.type == LMParagraphTypeOrderedList) {
+        [self updateDisplay];
     }
-    CGRect boundingRect = [attributedText boundingRectWithSize:CGSizeMake(boundingWidth, 0)
-                                                       options:NSStringDrawingTruncatesLastVisibleLine
-                                                       context:nil];
-    CGFloat y = [layoutManager boundingRectForGlyphRange:self.textRange inTextContainer:textContainer].origin.y;
-    
-    CGRect rect = CGRectZero;
-    rect.origin.x = textContainerInset.left + kUITextViewDefaultEdgeSpacing;
-    rect.origin.y = textContainerInset.top + y;
-    rect.size.width = [self.paragraphStyle indent];
-    rect.size.height = boundingRect.size.height;
-    [self updateFrameWithViewRect:rect];
 }
 
-- (void)removeFromTextView {
-    
-    if (!self.textView) {
-        return;
-    }
+- (void)restoreParagraph {
+    // 移除段落样式
     [self.paragraphStyle.view removeFromSuperview];
-    [self removeTextAttributes];
-    
     NSMutableArray *exclusionPaths = [self.textView.textContainer.exclusionPaths mutableCopy];
     if ([exclusionPaths containsObject:self.exclusionPath]) {
         [exclusionPaths removeObject:self.exclusionPath];
@@ -133,14 +93,30 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     
     CGFloat boundingWidth = (textContainer.size.width - 3 * kUITextViewDefaultEdgeSpacing - self.paragraphStyle.indent);
     NSAttributedString *attributedText = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
-    CGRect boundingRect = [attributedText boundingRectWithSize:CGSizeMake(boundingWidth, 0) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+    if (attributedText.length == 0 || [attributedText.string isEqualToString:@"\n"]) {
+        attributedText = [[NSAttributedString alloc] initWithString:@"A" attributes:self.typingAttributes];
+    }
+    else if ([attributedText.string hasSuffix:@"\n"]) {
+        // 计算时去掉最后一个换行符的高度
+        NSRange subRange = NSMakeRange(0, attributedText.length - 1);
+        attributedText = [attributedText attributedSubstringFromRange:subRange];
+    }
+    CGRect boundingRect = [attributedText boundingRectWithSize:CGSizeMake(boundingWidth, MAXFLOAT)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                       context:nil];
+    CGFloat y = [layoutManager boundingRectForGlyphRange:self.textRange inTextContainer:textContainer].origin.y;
     
-    CGFloat y = [layoutManager boundingRectForGlyphRange:NSMakeRange(self.textRange.location, 1) inTextContainer:textContainer].origin.y;
-    UIView *view = [self.paragraphStyle view];
-    CGRect rect = view.frame;
-    rect.origin.y = y + textContainerInset.top;
+    CGRect rect = CGRectZero;
+    if ([self.paragraphStyle indent] == 0) {
+        // Normal 样式无需缩进
+        rect.origin.x = textContainerInset.left;
+    }
+    else {
+        rect.origin.x = textContainerInset.left + kUITextViewDefaultEdgeSpacing;
+    }
+    rect.origin.y = textContainerInset.top + y;
+    rect.size.width = [self.paragraphStyle indent];
     rect.size.height = boundingRect.size.height;
-    
     [self updateFrameWithViewRect:rect];
 }
 
@@ -150,6 +126,10 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     CGRect rect = view.frame;
     rect.origin.y += yOffset;
     [self updateFrameWithViewRect:rect];
+}
+
+- (void)updateDisplay {
+    [self.paragraphStyle updateDisplayWithParagraph:self];
 }
 
 #pragma mark - private method

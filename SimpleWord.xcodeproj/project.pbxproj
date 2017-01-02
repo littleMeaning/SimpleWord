@@ -30,6 +30,7 @@
 		744FF22F1CE5DBEE008F06BF /* LMStyleParagraphCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF22E1CE5DBEE008F06BF /* LMStyleParagraphCell.m */; };
 		748B40991D20F324004C1365 /* LMTextHTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 748B40981D20F324004C1365 /* LMTextHTMLParser.m */; };
 		74B08F801D6C3C6700856235 /* HTMLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B08F7F1D6C3C6700856235 /* HTMLViewController.m */; };
+		74B2BBBD1E18F5170008C953 /* LMParagraphNormal.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B2BBBC1E18F5170008C953 /* LMParagraphNormal.m */; };
 		74C899871CE5F0D900C63C56 /* LMFontSizePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C899861CE5F0D900C63C56 /* LMFontSizePickerView.m */; };
 		74C899FD1CE6F53700C63C56 /* LMColorPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C899FC1CE6F53700C63C56 /* LMColorPickerView.m */; };
 		74C89A031CE727D400C63C56 /* LMTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A021CE727D300C63C56 /* LMTextStyle.m */; };
@@ -85,6 +86,8 @@
 		748B40981D20F324004C1365 /* LMTextHTMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMTextHTMLParser.m; sourceTree = "<group>"; };
 		74B08F7E1D6C3C6700856235 /* HTMLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLViewController.h; sourceTree = "<group>"; };
 		74B08F7F1D6C3C6700856235 /* HTMLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLViewController.m; sourceTree = "<group>"; };
+		74B2BBBB1E18F5170008C953 /* LMParagraphNormal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphNormal.h; sourceTree = "<group>"; };
+		74B2BBBC1E18F5170008C953 /* LMParagraphNormal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphNormal.m; sourceTree = "<group>"; };
 		74C899851CE5F0D900C63C56 /* LMFontSizePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFontSizePickerView.h; sourceTree = "<group>"; };
 		74C899861CE5F0D900C63C56 /* LMFontSizePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFontSizePickerView.m; sourceTree = "<group>"; };
 		74C899FB1CE6F53700C63C56 /* LMColorPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMColorPickerView.h; sourceTree = "<group>"; };
@@ -222,16 +225,18 @@
 				74C89A021CE727D300C63C56 /* LMTextStyle.m */,
 				74C89A061CE8BDD400C63C56 /* LMParagraphConfig.h */,
 				74C89A071CE8BDD400C63C56 /* LMParagraphConfig.m */,
+				743EBC7A1E0A1057003829C8 /* LMParagraph.h */,
+				743EBC7B1E0A1057003829C8 /* LMParagraph.m */,
 				742D7EF61E078B4500EA436F /* LMParagraphStyle.h */,
 				742D7EF71E078B4500EA436F /* LMParagraphStyle.m */,
+				74B2BBBB1E18F5170008C953 /* LMParagraphNormal.h */,
+				74B2BBBC1E18F5170008C953 /* LMParagraphNormal.m */,
 				742D7EFC1E07D1E200EA436F /* LMParagraphCheckbox.h */,
 				742D7EFD1E07D1E200EA436F /* LMParagraphCheckbox.m */,
 				742D7EFF1E07D5BD00EA436F /* LMParagraphUnorderedList.h */,
 				742D7F001E07D5BD00EA436F /* LMParagraphUnorderedList.m */,
 				742D7F021E08B93800EA436F /* LMParagraphOrderedList.h */,
 				742D7F031E08B93800EA436F /* LMParagraphOrderedList.m */,
-				743EBC7A1E0A1057003829C8 /* LMParagraph.h */,
-				743EBC7B1E0A1057003829C8 /* LMParagraph.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -353,6 +358,7 @@
 				744FF2291CE5DB52008F06BF /* LMStyleFormatCell.m in Sources */,
 				744FF1EB1CE45EF0008F06BF /* main.m in Sources */,
 				744FF22C1CE5DBB0008F06BF /* LMStyleFontStyleCell.m in Sources */,
+				74B2BBBD1E18F5170008C953 /* LMParagraphNormal.m in Sources */,
 				74DA5FE71D253DF2009C3AAF /* UIFont+LMText.m in Sources */,
 				748B40991D20F324004C1365 /* LMTextHTMLParser.m in Sources */,
 				744FF2221CE5DAD5008F06BF /* LMStyleFontSizeCell.m in Sources */,

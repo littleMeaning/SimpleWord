@@ -8,6 +8,6 @@
 
 #import "LMParagraphStyle.h"
 
-@interface LMParagraphUnorderedList : NSObject <LMParagraphStyle>
+@interface LMParagraphUnorderedList : LMParagraphStyle
 
 @end

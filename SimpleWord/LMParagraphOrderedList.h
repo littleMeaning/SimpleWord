@@ -8,6 +8,8 @@
 
 #import "LMParagraphStyle.h"
 
-@interface LMParagraphOrderedList : NSObject <LMParagraphStyle>
+@interface LMParagraphOrderedList : LMParagraphStyle
+
+@property (nonatomic, assign) NSInteger number;
 
 @end

@@ -19,19 +19,17 @@ typedef NS_ENUM(NSUInteger, LMParagraphType) {
     LMParagraphTypeCheckbox,
 };
 
-
 @interface LMParagraph : NSObject
 
 // 使用链表结构
 @property (nonatomic, weak) LMParagraph *previous;
 @property (nonatomic, strong) LMParagraph *next;
 
-@property (nonatomic, assign) LMParagraphType type;
-@property (nonatomic, strong) LMParagraphStyle *paragraphStyle;
-@property (nonatomic, assign) NSInteger length;
-@property (nonatomic, assign) CGFloat height;
-
+@property (nonatomic, readonly) LMParagraphType type;
+@property (nonatomic, readonly) LMParagraphStyle *paragraphStyle;
+@property (nonatomic, readonly) CGFloat height;
 @property (nonatomic, readonly) NSRange textRange;
+@property (nonatomic, assign) NSInteger length;
 
 @property (nonatomic, weak) UITextView *textView;
 
@@ -41,7 +39,9 @@ typedef NS_ENUM(NSUInteger, LMParagraphType) {
 - (instancetype)initWithType:(LMParagraphType)type textView:(UITextView *)textView;
 
 - (void)formatParagraph;
+- (void)restoreParagraph;
 - (void)updateLayout;
 - (void)updateFrameWithYOffset:(CGFloat)yOffset;
+- (void)updateDisplay;
 
 @end

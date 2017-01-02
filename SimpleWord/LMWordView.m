@@ -111,6 +111,14 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     LMParagraph *begin = [self paragraphAtLocation:selectedRange.location];
     LMParagraph *end = [self paragraphAtLocation:NSMaxRange(selectedRange)];
     
+    // 去掉被删除的段落样式
+    CGFloat offset = 0;
+    LMParagraph *item = begin;
+    while (item != end && (item = item.next)) {
+        [item restoreParagraph];
+        offset -= item.height;
+    }
+    
     LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:begin.type textView:self];
     newParagraph.previous = begin;
     
@@ -135,17 +143,19 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     // 格式化新加入的段落
     [newParagraph formatParagraph];
     self.typingAttributes = newParagraph.typingAttributes;
+    offset += newParagraph.height;
     
     // 新插入行后之后的段落都需要调整位置
-    CGFloat offset = newParagraph.height;
-    LMParagraph *item = newParagraph;
-    while ((item = item.next)) {
-        [item updateFrameWithYOffset:offset];
+    if (offset != 0) {
+        LMParagraph *item = newParagraph;
+        while ((item = item.next)) {
+            [item updateFrameWithYOffset:offset];
+        }
     }
     
     // 如果是有序列表则需要重新编写序号
-    item = begin;
-    while (item.type == LMParagraphTypeOrderedList) {
+    item = end.next;
+    while (item && item.type == LMParagraphTypeOrderedList) {
         [item updateDisplay];
         item = item.next;
     }
@@ -187,13 +197,15 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     } while (oldParagraph != end && (oldParagraph = oldParagraph.next));
     
     // 调整后续段落的位置
-    LMParagraph *item = end;
-    while ((item = item.next)) {
-        [item updateFrameWithYOffset:offset];
+    if (offset != 0) {
+        LMParagraph *item = end;
+        while ((item = item.next)) {
+            [item updateFrameWithYOffset:offset];
+        }
     }
     
     // 如果是有序列表则需要重新编写序号
-    item = end.next;
+    LMParagraph *item = end.next;
     while (item && item.type == LMParagraphTypeOrderedList) {
         [item updateDisplay];
         item = item.next;

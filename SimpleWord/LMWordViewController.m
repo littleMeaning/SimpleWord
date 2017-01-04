@@ -163,98 +163,26 @@
 
 - (void)textViewDidChangeSelection:(UITextView *)textView {
     
-    if (__keepTypingAttributes) {
-        return;
-    }
-    [self.textView setTypingAttributesForSelection];
-    __keepTypingAttributes = NO;
-//    if (self.lastSelectedRange.location != textView.selectedRange.location) {
-//        
-//        if (self.keepCurrentTextStyle) {
-//            // 如果当前行的内容为空，TextView 会自动使用上一行的 typingAttributes，所以在删除内容时，保持 typingAttributes 不变
-//            [self updateTextStyleTypingAttributes];
-////            [self updateParagraphTypingAttributes];
-//            self.keepCurrentTextStyle = NO;
-//        }
-//        else {
-//            self.currentTextStyle = [self textStyleForSelection];
-////            self.currentParagraphConfig = [self paragraphForSelection];
-////            [self updateTextStyleTypingAttributes];
-////            [self updateParagraphTypingAttributes];
-//            [self reloadSettingsView];
-//        }
-//    }
 }
 
 static BOOL __keepTypingAttributes = YES;
 static void(^__afterChangingText)(void);
 
-//- (void)updateParagrphs {
-//    
-//    BOOL needUpdate = NO;
-//    NSArray *ranges = [self.textView rangesOfParagraph];
-//    for (NSValue *rangeValue in ranges) {
-//        NSRange range = rangeValue.rangeValue;
-//        LMParagraph *paragraph = [self.textView.attributedText attribute:LMParagraphAttributeName
-//                                                                 atIndex:range.location
-//                                                          effectiveRange:NULL];
-//        if (paragraph == __paragraph) {
-//            needUpdate = YES;
-//        }
-//        paragraph.textRange = range;
-//        [paragraph updateForTextChanging];
-//    }
-//}
-
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    if ([text isEqualToString:@"\n"]) {
-        [self.textView insertNewlineWithSelectedRange:range];
+    NSString *replacedText = [textView.text substringWithRange:range];
+    if ([text containsString:@"\n"] || [replacedText containsString:@"\n"]) {
+        // 段落发生改变
+        [self.textView changeTextInRange:range replacementText:text];
         return NO;
     }
     else {
         __afterChangingText = ^{
-            [self.textView willChangeTextInRange:range replacementText:text];
+            [self.textView didChangeTextInRange:range replacementText:text];
         };
         __keepTypingAttributes = YES;
     }
     return YES;
-//    NSString *replacedText = [textView.text substringWithRange:range];
-//    LMParagraph *currentParagraph = [replacedText hasSuffix:@"\n"] ? nil : textView.typingAttributes[LMParagraphAttributeName];
-//    
-//    if ([replacedText containsString:@"\n"] || [text containsString:@"\n"]) {
-//        // 包含 "\n" 表示段落有变化
-//        if (range.length == 0 && [text isEqualToString:@"\n"]) {
-//            
-//            
-//            if (currentParagraph) {
-//                currentParagraph = [currentParagraph copy];
-//                currentParagraph.textRange = NSMakeRange(range.location + 1, 0);
-//                
-//            }
-//        }
-//        
-//        NSArray *ranges = [self rangesOfParagraphForRange:range];
-//        NSAttributedString *attributedText = textView.attributedText;
-//        for (NSValue *rangeValue in ranges) {
-//            NSRange textRange = rangeValue.rangeValue;
-//            LMParagraph *paragraph = [attributedText attribute:LMParagraphAttributeName
-//                                                       atIndex:textRange.location
-//                                                effectiveRange:nil];
-//            
-//        }
-//    }
-//    
-//    if (range.location == 0 && range.length == 0 && text.length == 0) {
-//        // 光标在第一个位置时，按下退格键，则删除段落设置
-//        self.currentParagraphConfig.indentLevel = 0;
-//        [self updateParagraphTypingAttributes];
-//    }
-//    self.lastSelectedRange = NSMakeRange(range.location + text.length - range.length, 0);
-//    if (text.length == 0 && range.length > 0) {
-//        self.keepCurrentTextStyle = YES;
-//    }
-//    return YES;
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
@@ -358,14 +286,12 @@ static void(^__afterChangingText)(void);
 
 // 刷新设置界面
 - (void)reloadSettingsView {
-    
     self.styleSettingsViewController.textStyle = self.currentTextStyle;
 //    [self.styleSettingsViewController setParagraphConfig:self.currentParagraphConfig];
     [self.styleSettingsViewController reload];
 }
 
 - (LMTextStyle *)textStyleForSelection {
-    
     LMTextStyle *textStyle = [[LMTextStyle alloc] init];
     UIFont *font = self.textView.typingAttributes[NSFontAttributeName];
     textStyle.bold = font.bold;

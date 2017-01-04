@@ -18,6 +18,7 @@
 - (void)insertNewlineWithSelectedRange:(NSRange)selectedRange;
 - (void)setParagraphType:(LMParagraphType)type forRange:(NSRange)range;
 - (void)setTypingAttributesForSelection;
-- (void)willChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
+- (void)changeTextInRange:(NSRange)range replacementText:(NSString *)text;
+- (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
 @end

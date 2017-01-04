@@ -51,7 +51,7 @@
         _view = ({
             UILabel *label = [[UILabel alloc] init];
             label.font = [UIFont lm_systemFont];
-            label.textAlignment = NSTextAlignmentCenter;
+            label.textAlignment = NSTextAlignmentRight;
             label.frame = CGRectMake(0, 0, [self indent], [self indent]);
             _numberLabel = label;
             self.number = 1;
@@ -67,7 +67,7 @@
 
 - (void)setNumber:(NSInteger)number {
     _number = number;
-    self.numberLabel.text = [NSString stringWithFormat:@"%ld. ", number];
+    self.numberLabel.text = [NSString stringWithFormat:@"%ld.", number];
 }
 
 - (void)updateDisplayWithParagraph:(LMParagraph *)paragraph {    

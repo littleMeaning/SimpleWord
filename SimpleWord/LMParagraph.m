@@ -32,8 +32,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     if (!self.previous) {
         return NSMakeRange(0, self.length);
     }
-    NSInteger location = self.previous.textRange.location + self.previous.textRange.length;
-    return NSMakeRange(location, self.length);
+    return NSMakeRange(NSMaxRange(self.previous.textRange), self.length);
 }
 
 - (CGFloat)height {

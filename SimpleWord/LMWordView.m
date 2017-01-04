@@ -104,12 +104,12 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 #pragma mark - LMParagraph
 
-- (void)insertNewlineWithSelectedRange:(NSRange)selectedRange {
+- (void)insertNewlineWithSelectedRange:(NSRange)range {
     
     self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
     
-    LMParagraph *begin = [self paragraphAtLocation:selectedRange.location];
-    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(selectedRange)];
+    LMParagraph *begin = [self paragraphAtLocation:range.location];
+    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
     
     // 去掉被删除的段落样式
     CGFloat offset = 0;
@@ -120,25 +120,32 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     }
     
     LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:begin.type textView:self];
-    newParagraph.previous = begin;
-    
     LMParagraph *nextParagraph = end.next;
     if (nextParagraph) {
         newParagraph.next = nextParagraph;
         nextParagraph.previous = newParagraph;
     }
-    newParagraph.length = NSMaxRange(end.textRange) - NSMaxRange(selectedRange);
-    begin.length = selectedRange.location - begin.textRange.location;
+    newParagraph.length = NSMaxRange(end.textRange) - NSMaxRange(range);
+    if (newParagraph.length < 0) {
+        newParagraph.length = 0;
+    }
+    begin.length = range.location - begin.textRange.location;
+    
+    newParagraph.previous = begin;
     begin.next = newParagraph;
     
     // 截断的地方加上"\n"
     NSMutableAttributedString *attributedText = [self.attributedText mutableCopy];
     NSAttributedString *lineBreak = [[NSAttributedString alloc] initWithString:@"\n" attributes:begin.typingAttributes];
-    [attributedText replaceCharactersInRange:selectedRange withAttributedString:lineBreak];
+    [attributedText replaceCharactersInRange:range withAttributedString:lineBreak];
     self.allowsEditingTextAttributes = YES;
     self.attributedText = attributedText;
     self.allowsEditingTextAttributes = NO;
     begin.length += 1;
+    
+    offset -= begin.height;
+    [begin updateLayout];
+    offset += begin.height;
     
     // 格式化新加入的段落
     [newParagraph formatParagraph];
@@ -189,7 +196,8 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         newParagraph.next = oldParagraph.next;
         oldParagraph.next.previous = newParagraph;
         [newParagraph formatParagraph];
-        if (newParagraph.textRange.location == selectedRange.location) {
+        
+        if (NSLocationInRange(selectedRange.location, newParagraph.textRange)) {
             self.typingAttributes = newParagraph.typingAttributes;
         }
         offset += (newParagraph.height - oldParagraph.height);
@@ -221,26 +229,131 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     self.typingAttributes = paragraph.typingAttributes;
 }
 
-- (void)willChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    
+- (void)changeTextInRange:(NSRange)range replacementText:(NSString *)text {
+
     self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
     
     LMParagraph *begin = [self paragraphAtLocation:range.location];
-//    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
+    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
     
-    CGFloat height = begin.height;
-    begin.length += (text.length - range.length);
-    [begin updateLayout];
-    CGFloat offset = begin.height - height;
-//    LMParagraph *paragraph = [self paragraphAtLocation:range.location];
-    
-    if (offset != 0) {
+    // 去掉被删除的段落样式
+    CGFloat offset = 0;
+    if (begin != end) {
         LMParagraph *item = begin;
+        while ((item = item.next) && item != end) {
+            offset -= item.height;
+            [item restoreParagraph];
+        }
+    }
+    
+    NSMutableAttributedString *replacement = [[NSMutableAttributedString alloc] init];
+    NSMutableArray *newParagraphs = [[NSMutableArray alloc] init];
+    LMParagraph *paragraph;
+    CGFloat tailLength = NSMaxRange(end.textRange) - NSMaxRange(range);
+    NSArray *components = [text componentsSeparatedByString:@"\n"];
+    if (components.count == 1) {
+        // 仅一个
+        NSString *component = components.firstObject;
+        begin.length = range.location - begin.textRange.location + component.length + tailLength;
+        NSAttributedString *attributeStr = [[NSAttributedString alloc] initWithString:component attributes:begin.typingAttributes];
+        [replacement appendAttributedString:attributeStr];
+        if (begin != end) {
+            offset -= end.height;
+            [end restoreParagraph];
+        }
+        begin.next = end.next;
+        begin.next.previous = begin;
+        paragraph = begin;
+    }
+    else {
+        for (NSInteger idx = 0; idx < components.count; idx ++) {
+            NSString *component = components[idx];
+            NSAttributedString *attributeStr;
+            if (idx == 0) {
+                // 第一个
+                begin.length = range.location - begin.textRange.location + component.length + 1;
+                attributeStr = [[NSAttributedString alloc] initWithString:[component stringByAppendingString:@"\n"] attributes:begin.typingAttributes];
+                paragraph = begin;
+            }
+            else if (idx == components.count - 1) {
+                // 最后一个
+                LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:end.type textView:self];
+                newParagraph.previous = paragraph;
+                newParagraph.next = end.next;
+                newParagraph.next.previous = newParagraph;
+                newParagraph.previous.next = newParagraph;
+                if (begin != end) {
+                    offset -= end.height;
+                    [end restoreParagraph];
+                }
+                newParagraph.length = component.length + tailLength;
+                end = newParagraph;
+                [newParagraphs addObject:newParagraph];
+                attributeStr = [[NSAttributedString alloc] initWithString:component attributes:end.typingAttributes];
+            }
+            else {
+                LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:LMParagraphTypeNone textView:self];
+                newParagraph.previous = paragraph;
+                paragraph.next = newParagraph;
+                newParagraph.length = component.length + 1;
+                
+                [newParagraphs addObject:newParagraph];
+                paragraph = newParagraph;
+                
+                attributeStr = [[NSAttributedString alloc] initWithString:[component stringByAppendingString:@"\n"] attributes:paragraph.typingAttributes];
+            }
+            [replacement appendAttributedString:attributeStr];
+        }
+    }
+    NSMutableAttributedString *attributedText = [self.attributedText mutableCopy];
+    [attributedText replaceCharactersInRange:range withAttributedString:replacement];
+    self.allowsEditingTextAttributes = YES;
+    self.attributedText = attributedText;
+    self.allowsEditingTextAttributes = NO;
+    
+    offset -= begin.height;
+    [begin updateLayout];
+    offset += begin.height;
+    for (LMParagraph *newParagraph in newParagraphs) {
+        [newParagraph formatParagraph];
+        offset += newParagraph.height;
+    }
+    
+    // 调整后续段落位置
+    if (offset != 0) {
+        LMParagraph *item = end;
         while ((item = item.next)) {
             [item updateFrameWithYOffset:offset];
         }
     }
+    
+    // 如果是有序列表则需要重新编写序号
+    LMParagraph *item = end.next;
+    while (item && item.type == LMParagraphTypeOrderedList) {
+        [item updateDisplay];
+        item = item.next;
+    }
+    
+    self.selectedRange = NSMakeRange(range.location + text.length, 0);   // 设置光标位置
     self.scrollEnabled = YES;
+    
+    self.typingAttributes = begin.typingAttributes;
+}
+
+- (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    // 没有换行情况下，文本内容改变
+    LMParagraph *paragraph = [self paragraphAtLocation:range.location];
+    paragraph.length += (text.length - range.length);
+    
+    CGFloat offset = -paragraph.height;
+    [paragraph updateLayout];
+    offset += paragraph.height;
+    if (offset != 0) {
+        LMParagraph *item = paragraph;
+        while ((item = item.next)) {
+            [item updateFrameWithYOffset:offset];
+        }
+    }
 }
 
 - (LMParagraph *)paragraphAtLocation:(NSUInteger)loc {

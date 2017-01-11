@@ -165,24 +165,28 @@
     
 }
 
-static BOOL __keepTypingAttributes = YES;
 static void(^__afterChangingText)(void);
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
+    if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningParagraph != LMParagraphTypeNone) {
+        // 光标在文本的起始位置输入退格键
+        [self.textView setParagraphType:LMParagraphTypeNone forRange:range];
+        return NO;
+    }
+    
+    BOOL shouldChange = YES;
     NSString *replacedText = [textView.text substringWithRange:range];
     if ([text containsString:@"\n"] || [replacedText containsString:@"\n"]) {
         // 段落发生改变
-        [self.textView changeTextInRange:range replacementText:text];
-        return NO;
+        shouldChange = [self.textView changeTextInRange:range replacementText:text];
     }
-    else {
+    if (shouldChange) {
         __afterChangingText = ^{
             [self.textView didChangeTextInRange:range replacementText:text];
         };
-        __keepTypingAttributes = YES;
     }
-    return YES;
+    return shouldChange;
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
@@ -191,28 +195,6 @@ static void(^__afterChangingText)(void);
         __afterChangingText();
         __afterChangingText = nil;
     }
-//    if (__isNewParagraph) {
-//        
-//        [self.textView paragraphForNewlineWithSelectedRange:<#(NSRange)#>]
-//        
-//        LMParagraph *paragraph = [__paragraph copy];
-//        paragraph.textRange = textView.selectedRange;
-//        [paragraph addToTextViewIfNeed:textView];
-//        
-//        NSMutableDictionary *typingAttributes = [textView.typingAttributes mutableCopy];
-//        typingAttributes[LMParagraphAttributeName] = paragraph;
-//        textView.typingAttributes = typingAttributes;
-//        
-//        __needUpdateParagraph = NO;
-//    }
-//    else {
-//        NSMutableDictionary *typingAttributes = [textView.typingAttributes mutableCopy];
-//        typingAttributes[LMParagraphAttributeName] = __paragraph;
-//        textView.typingAttributes = typingAttributes;
-//        
-//        [self updateParagrphs];
-//    }
-//    __paragraph = nil;
 }
 
 #pragma mark - Change InputView

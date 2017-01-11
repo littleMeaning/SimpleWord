@@ -104,73 +104,6 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 #pragma mark - LMParagraph
 
-- (void)insertNewlineWithSelectedRange:(NSRange)range {
-    
-    self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
-    
-    LMParagraph *begin = [self paragraphAtLocation:range.location];
-    LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
-    
-    // 去掉被删除的段落样式
-    CGFloat offset = 0;
-    LMParagraph *item = begin;
-    while (item != end && (item = item.next)) {
-        [item restoreParagraph];
-        offset -= item.height;
-    }
-    
-    LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:begin.type textView:self];
-    LMParagraph *nextParagraph = end.next;
-    if (nextParagraph) {
-        newParagraph.next = nextParagraph;
-        nextParagraph.previous = newParagraph;
-    }
-    newParagraph.length = NSMaxRange(end.textRange) - NSMaxRange(range);
-    if (newParagraph.length < 0) {
-        newParagraph.length = 0;
-    }
-    begin.length = range.location - begin.textRange.location;
-    
-    newParagraph.previous = begin;
-    begin.next = newParagraph;
-    
-    // 截断的地方加上"\n"
-    NSMutableAttributedString *attributedText = [self.attributedText mutableCopy];
-    NSAttributedString *lineBreak = [[NSAttributedString alloc] initWithString:@"\n" attributes:begin.typingAttributes];
-    [attributedText replaceCharactersInRange:range withAttributedString:lineBreak];
-    self.allowsEditingTextAttributes = YES;
-    self.attributedText = attributedText;
-    self.allowsEditingTextAttributes = NO;
-    begin.length += 1;
-    
-    offset -= begin.height;
-    [begin updateLayout];
-    offset += begin.height;
-    
-    // 格式化新加入的段落
-    [newParagraph formatParagraph];
-    self.typingAttributes = newParagraph.typingAttributes;
-    offset += newParagraph.height;
-    
-    // 新插入行后之后的段落都需要调整位置
-    if (offset != 0) {
-        LMParagraph *item = newParagraph;
-        while ((item = item.next)) {
-            [item updateFrameWithYOffset:offset];
-        }
-    }
-    
-    // 如果是有序列表则需要重新编写序号
-    item = end.next;
-    while (item && item.type == LMParagraphTypeOrderedList) {
-        [item updateDisplay];
-        item = item.next;
-    }
-    
-    self.selectedRange = NSMakeRange(newParagraph.textRange.location, 0);   // 设置光标位置
-    self.scrollEnabled = YES;
-}
-
 - (void)setParagraphType:(LMParagraphType)type forRange:(NSRange)range {
     
     NSRange selectedRange = self.selectedRange;
@@ -197,7 +130,8 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         oldParagraph.next.previous = newParagraph;
         [newParagraph formatParagraph];
         
-        if (NSLocationInRange(selectedRange.location, newParagraph.textRange)) {
+        if (NSLocationInRange(selectedRange.location, newParagraph.textRange) ||
+            selectedRange.location == newParagraph.textRange.location) {
             self.typingAttributes = newParagraph.typingAttributes;
         }
         offset += (newParagraph.height - oldParagraph.height);
@@ -229,13 +163,31 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     self.typingAttributes = paragraph.typingAttributes;
 }
 
-- (void)changeTextInRange:(NSRange)range replacementText:(NSString *)text {
+- (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text {
 
-    self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
-    
     LMParagraph *begin = [self paragraphAtLocation:range.location];
     LMParagraph *end = [self paragraphAtLocation:NSMaxRange(range)];
     
+    if ([text isEqualToString:@"\n"] &&
+        range.length == 0 &&
+        begin.textRange.location == range.location &&
+        begin.type != LMParagraphTypeNone) {
+        if (begin.length == 0 || ([[self.text substringWithRange:begin.textRange] isEqualToString:@"\n"])) {
+            // 光标在段首且为空段落时输入换行则去掉改段落样式
+            [self setParagraphType:LMParagraphTypeNone forRange:range];
+            return NO;
+        }
+    }
+    else if (text.length == 0 && [[self.text substringWithRange:range] isEqualToString:@"\n"]) {
+        // 光标在段首且为空段落时输入退格则去掉改段落样式
+        LMParagraph *paragraph = [self paragraphAtLocation:range.location + 1];
+        if (paragraph.type != LMParagraphTypeNone) {
+            [self setParagraphType:LMParagraphTypeNone forRange:NSMakeRange(range.location + 1, 0)];
+            return NO;
+        }
+    }
+    
+    self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
     // 去掉被删除的段落样式
     CGFloat offset = 0;
     if (begin != end) {
@@ -252,7 +204,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     CGFloat tailLength = NSMaxRange(end.textRange) - NSMaxRange(range);
     NSArray *components = [text componentsSeparatedByString:@"\n"];
     if (components.count == 1) {
-        // 仅一个
+        // 不包含 "\n" 字符，不产生新的段落
         NSString *component = components.firstObject;
         begin.length = range.location - begin.textRange.location + component.length + tailLength;
         NSAttributedString *attributeStr = [[NSAttributedString alloc] initWithString:component attributes:begin.typingAttributes];
@@ -338,6 +290,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     self.scrollEnabled = YES;
     
     self.typingAttributes = begin.typingAttributes;
+    return NO;
 }
 
 - (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text {

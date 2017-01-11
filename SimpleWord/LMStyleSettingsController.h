@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class LMTextStyle;
-@class LMParagraphConfig;
+@class LMParagraph;
 
 @protocol LMStyleSettingsControllerDelegate <NSObject>
 
@@ -23,8 +23,9 @@
 
 @property (nonatomic, weak) id<LMStyleSettingsControllerDelegate> delegate;
 @property (nonatomic, strong) LMTextStyle *textStyle;
+@property (nonatomic, weak) LMParagraph *currentParagraph;
 
 - (void)reload;
-- (void)setParagraphConfig:(LMParagraphConfig *)paragraphConfig;
+- (void)setParagraph:(LMParagraph *)paragraph;
 
 @end

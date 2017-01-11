@@ -13,12 +13,11 @@
 #import "LMStyleColorCell.h"
 #import "LMStyleFormatCell.h"
 #import "LMTextStyle.h"
-#import "LMParagraphConfig.h"
+#import "LMParagraph.h"
 
 @interface LMStyleSettingsController () <LMStyleParagraphCellDelegate>
 
 @property (nonatomic, weak) NSIndexPath *selectedIndexPath;
-@property (nonatomic, assign) BOOL paragraphType;
 @property (nonatomic, assign) BOOL shouldScrollToSelectedRow;
 @property (nonatomic, assign) BOOL needReload;
 
@@ -47,19 +46,20 @@
     self.needReload = NO;
 }
 
+- (void)setParagraph:(LMParagraph *)paragraph {
+    if (self.currentParagraph == paragraph) {
+        return;
+    }
+    self.currentParagraph = paragraph;
+    [self reload];
+}
+
 #pragma mark - setTextStyle
 
 - (void)setTextStyle:(LMTextStyle *)textStyle {
     _textStyle = textStyle;
     self.needReload = YES;
 }
-
-#pragma mark - setParagraph
-
-//- (void)setParagraphConfig:(LMParagraphConfig *)paragraphConfig {
-//    _paragraphType = paragraphConfig.type;
-//    self.needReload = YES;
-//}
 
 #pragma mark - UITableViewDataSource
 
@@ -104,7 +104,7 @@
         case 1:
         {
             LMStyleParagraphCell *prargraphCell = [tableView dequeueReusableCellWithIdentifier:@"paragraph"];
-            prargraphCell.type = self.paragraphType;
+            prargraphCell.type = self.currentParagraph.type;
             prargraphCell.delegate = self;
             cell = prargraphCell;
             break;

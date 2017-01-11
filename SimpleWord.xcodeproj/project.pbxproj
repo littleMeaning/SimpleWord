@@ -34,7 +34,6 @@
 		74C899871CE5F0D900C63C56 /* LMFontSizePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C899861CE5F0D900C63C56 /* LMFontSizePickerView.m */; };
 		74C899FD1CE6F53700C63C56 /* LMColorPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C899FC1CE6F53700C63C56 /* LMColorPickerView.m */; };
 		74C89A031CE727D400C63C56 /* LMTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A021CE727D300C63C56 /* LMTextStyle.m */; };
-		74C89A081CE8BDD400C63C56 /* LMParagraphConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A071CE8BDD400C63C56 /* LMParagraphConfig.m */; };
 		74C89A0B1CE9A89D00C63C56 /* NSTextAttachment+LMText.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A0A1CE9A89D00C63C56 /* NSTextAttachment+LMText.m */; };
 		74C89A0E1CE9F15C00C63C56 /* LMImageSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A0D1CE9F15C00C63C56 /* LMImageSettingsController.m */; };
 		74C89A151CE9FEEF00C63C56 /* LMPhotoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C89A141CE9FEEF00C63C56 /* LMPhotoCollectionCell.m */; };
@@ -95,8 +94,6 @@
 		74C89A011CE727D300C63C56 /* LMTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMTextStyle.h; sourceTree = "<group>"; };
 		74C89A021CE727D300C63C56 /* LMTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMTextStyle.m; sourceTree = "<group>"; };
 		74C89A051CE7E25B00C63C56 /* LMStyleSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMStyleSettings.h; sourceTree = "<group>"; };
-		74C89A061CE8BDD400C63C56 /* LMParagraphConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphConfig.h; sourceTree = "<group>"; };
-		74C89A071CE8BDD400C63C56 /* LMParagraphConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphConfig.m; sourceTree = "<group>"; };
 		74C89A091CE9A89D00C63C56 /* NSTextAttachment+LMText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextAttachment+LMText.h"; sourceTree = "<group>"; };
 		74C89A0A1CE9A89D00C63C56 /* NSTextAttachment+LMText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTextAttachment+LMText.m"; sourceTree = "<group>"; };
 		74C89A0C1CE9F15C00C63C56 /* LMImageSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMImageSettingsController.h; sourceTree = "<group>"; };
@@ -223,8 +220,6 @@
 			children = (
 				74C89A011CE727D300C63C56 /* LMTextStyle.h */,
 				74C89A021CE727D300C63C56 /* LMTextStyle.m */,
-				74C89A061CE8BDD400C63C56 /* LMParagraphConfig.h */,
-				74C89A071CE8BDD400C63C56 /* LMParagraphConfig.m */,
 				743EBC7A1E0A1057003829C8 /* LMParagraph.h */,
 				743EBC7B1E0A1057003829C8 /* LMParagraph.m */,
 				742D7EF61E078B4500EA436F /* LMParagraphStyle.h */,
@@ -365,7 +360,6 @@
 				742D7EFE1E07D1E200EA436F /* LMParagraphCheckbox.m in Sources */,
 				74C89A151CE9FEEF00C63C56 /* LMPhotoCollectionCell.m in Sources */,
 				744FF22F1CE5DBEE008F06BF /* LMStyleParagraphCell.m in Sources */,
-				74C89A081CE8BDD400C63C56 /* LMParagraphConfig.m in Sources */,
 				744FF2021CE45F15008F06BF /* LMWordView.m in Sources */,
 				744FF21C1CE592F7008F06BF /* LMWordViewController.m in Sources */,
 				742D7F041E08B93800EA436F /* LMParagraphOrderedList.m in Sources */,

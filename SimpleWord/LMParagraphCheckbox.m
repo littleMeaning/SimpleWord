@@ -36,7 +36,6 @@
     CGFloat baselineOffset = ([self indent] - font.lineHeight) / 2;
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
-                                 NSForegroundColorAttributeName: [UIColor redColor],
                                  NSBaselineOffsetAttributeName: @(baselineOffset),
                                  NSParagraphStyleAttributeName: paragraphStyle,
                                  };

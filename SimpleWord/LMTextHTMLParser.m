@@ -7,7 +7,6 @@
 //
 
 #import "LMTextHTMLParser.h"
-#import "LMParagraphConfig.h"
 #import "UIFont+LMText.m"
 #import "NSTextAttachment+LMText.h"
 

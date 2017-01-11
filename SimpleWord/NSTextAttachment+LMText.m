@@ -7,7 +7,6 @@
 //
 
 #import "NSTextAttachment+LMText.h"
-#import "LMParagraphConfig.h"
 #import "UIFont+LMText.h"
 #import <objc/runtime.h>
 

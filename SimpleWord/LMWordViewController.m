@@ -12,7 +12,6 @@
 #import "LMStyleSettingsController.h"
 #import "LMImageSettingsController.h"
 #import "LMTextStyle.h"
-#import "LMParagraphConfig.h"
 #import "NSTextAttachment+LMText.h"
 #import "UIFont+LMText.h"
 #import "LMTextHTMLParser.h"
@@ -31,7 +30,6 @@
 @property (nonatomic, assign) CGFloat inputViewHeight;
 
 @property (nonatomic, strong) LMTextStyle *currentTextStyle;
-@property (nonatomic, strong) LMParagraphConfig *currentParagraphConfig;
 
 @property (nonatomic, assign) NSRange lastSelectedRange;
 @property (nonatomic, assign) BOOL keepCurrentTextStyle;
@@ -163,6 +161,27 @@
 
 - (void)textViewDidChangeSelection:(UITextView *)textView {
     
+    LMParagraph *paragraph = [self.textView paragraphAtLocation:self.textView.selectedRange.location];
+    [self.styleSettingsViewController setParagraph:paragraph];
+    
+    if (self.lastSelectedRange.location != textView.selectedRange.location) {
+        
+        
+//
+//        if (_keepCurrentTextStyle) {
+//            // 如果当前行的内容为空，TextView 会自动使用上一行的 typingAttributes，所以在删除内容时，保持 typingAttributes 不变
+//            [self updateTextStyleTypingAttributes];
+//            [self updateParagraphTypingAttributes];
+//            _keepCurrentTextStyle = NO;
+//        }
+//        else {
+//            self.currentTextStyle = [self textStyleForSelection];
+//            self.currentParagraphConfig = [self paragraphForSelection];
+//            [self updateTextStyleTypingAttributes];
+//            [self updateParagraphTypingAttributes];
+//            [self reloadSettingsView];
+//        }
+    }
 }
 
 static void(^__afterChangingText)(void);
@@ -172,6 +191,7 @@ static void(^__afterChangingText)(void);
     if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningParagraph != LMParagraphTypeNone) {
         // 光标在文本的起始位置输入退格键
         [self.textView setParagraphType:LMParagraphTypeNone forRange:range];
+        self.lastSelectedRange = self.textView.selectedRange;
         return NO;
     }
     
@@ -186,6 +206,7 @@ static void(^__afterChangingText)(void);
             [self.textView didChangeTextInRange:range replacementText:text];
         };
     }
+    self.lastSelectedRange = self.textView.selectedRange;
     return shouldChange;
 }
 
@@ -336,32 +357,6 @@ static void(^__afterChangingText)(void);
     [self updateTextStyleTypingAttributes];
     [self updateTextStyleForSelection];
 }
-
-//- (void)lm_didChangedParagraphIndentLevel:(NSInteger)level {
-//    
-//    self.currentParagraphConfig.indentLevel += level;
-//    
-//    NSRange selectedRange = self.textView.selectedRange;
-//    NSArray *ranges = [self rangesOfParagraphForCurrentSelection];
-//    if (ranges.count <= 1) {
-////        [self updateParagraphForSelectionWithKey:LMParagraphIndentName];
-//    }
-//    else {
-//        self.textView.allowsEditingTextAttributes = YES;
-//        NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
-//        for (NSValue *rangeValue in ranges) {
-//            NSRange range = rangeValue.rangeValue;
-//            self.textView.selectedRange = range;
-//            LMParagraphConfig *paragraphConfig = [self paragraphForSelection];
-//            paragraphConfig.indentLevel += level;
-//            [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphConfig.paragraphStyle range:range];
-//        }
-//        self.textView.attributedText = attributedText;
-//        self.textView.allowsEditingTextAttributes = NO;
-//        self.textView.selectedRange = selectedRange;
-//    }
-//    [self updateParagraphTypingAttributes];
-//}
 
 - (void)lm_didChangedParagraphType:(NSInteger)type {
     [self.textView setParagraphType:type forRange:self.textView.selectedRange];

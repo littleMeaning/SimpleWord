@@ -20,4 +20,6 @@
 - (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text;
 - (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
+- (LMParagraph *)paragraphAtLocation:(NSUInteger)loc;
+
 @end

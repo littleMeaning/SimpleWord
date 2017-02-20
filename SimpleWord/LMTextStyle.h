@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, LMTextStyleType) {
-    LMTextStyleFormatNormal = 0,
-    LMTextStyleFormatTitleSmall,
-    LMTextStyleFormatTitleMedium,
-    LMTextStyleFormatTitleLarge,
+typedef NS_ENUM(NSUInteger, LMFontFormat) {
+    LMFontFormatNone,
+    LMFontFormatBody,
+    LMFontFormatTitle,
+    LMFontFormatSubTitle,
 };
 
 @interface LMTextStyle : NSObject
@@ -26,7 +26,6 @@ typedef NS_ENUM(NSUInteger, LMTextStyleType) {
 
 @property (nonatomic, readonly) UIFont *font;
 
-@property (nonatomic, readonly) LMTextStyleType type;
-+ (instancetype)textStyleWithType:(LMTextStyleType)type;
++ (instancetype)textStyleWithFontFormat:(LMFontFormat)format;
 
 @end

@@ -6,17 +6,17 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMStyleFontSizeCell.h"
+#import "LMFontSizeCell.h"
 #import "LMFontSizePickerView.h"
 
-@interface LMStyleFontSizeCell () <LMFontSizePickerViewDataSource, LMFontSizePickerViewDelegate>
+@interface LMFontSizeCell () <LMFontSizePickerViewDataSource, LMFontSizePickerViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeLabel;
 @property (weak, nonatomic) IBOutlet LMFontSizePickerView *pickerView;
 
 @end
 
-@implementation LMStyleFontSizeCell
+@implementation LMFontSizeCell
 {
     CAShapeLayer *_lineLayer;
 }
@@ -98,7 +98,7 @@
 - (void)lm_pickerView:(LMFontSizePickerView *)pickerView didSelectIndex:(NSInteger)index {
     _currentFontSize = self.fontSizeNumbers[index].integerValue;
     self.fontSizeLabel.text = [@(self.currentFontSize).stringValue stringByAppendingString:@"px"];
-    [self.delegate lm_didChangeStyleSettings:@{LMStyleSettingsFontSizeName: @(self.currentFontSize)}];
+    [self.delegate lm_didChangeStyleSettings:@{LMFontSettingsFontSizeName: @(self.currentFontSize)}];
 }
 
 @end

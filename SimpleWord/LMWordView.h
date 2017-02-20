@@ -15,7 +15,7 @@
 @property (nonatomic, strong) UITextField *titleTextField;
 
 @property (nonatomic, strong) LMParagraph *beginningParagraph;
-- (void)setParagraphType:(LMParagraphType)type forRange:(NSRange)range;
+- (void)setParagraphType:(LMFormatType)type forRange:(NSRange)range;
 - (void)setTypingAttributesForSelection;
 - (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text;
 - (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text;

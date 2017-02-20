@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,7 +23,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Xfk-fa-UWh" id="4rZ-dE-as9">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="59.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="59"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yhe-Bi-hzG">
@@ -74,87 +74,11 @@
                                     <outlet property="underLineButton" destination="0s4-ev-nnB" id="wrs-Jq-HYs"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="paragraph" id="Xaf-s4-Euv" customClass="LMStyleParagraphCell">
-                                <rect key="frame" x="0.0" y="88" width="375" height="60"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Xaf-s4-Euv" id="CXd-PT-boy">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="59.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KCt-Du-Igo">
-                                            <rect key="frame" x="16" y="4.5" width="60.5" height="51.5"/>
-                                            <inset key="contentEdgeInsets" minX="0.0" minY="18" maxX="0.0" maxY="18"/>
-                                            <state key="normal" image="list_icon"/>
-                                            <state key="selected" image="list_select_icon"/>
-                                        </button>
-                                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tgs-Gr-QhW">
-                                            <rect key="frame" x="80.5" y="4" width="60.5" height="51.5"/>
-                                            <inset key="contentEdgeInsets" minX="0.0" minY="16" maxX="0.0" maxY="16"/>
-                                            <state key="normal" image="123_icon"/>
-                                            <state key="selected" image="123_select_icon"/>
-                                        </button>
-                                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ayS-yQ-7AU">
-                                            <rect key="frame" x="157" y="4" width="61" height="51.5"/>
-                                            <inset key="contentEdgeInsets" minX="0.0" minY="16" maxX="0.0" maxY="16"/>
-                                            <state key="normal" image="check_icon"/>
-                                            <state key="selected" image="check_select_icon"/>
-                                        </button>
-                                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a6a-6c-ZSg">
-                                            <rect key="frame" x="234" y="4" width="60.5" height="51.5"/>
-                                            <inset key="contentEdgeInsets" minX="0.0" minY="16" maxX="0.0" maxY="16"/>
-                                            <state key="normal" image="left_icon"/>
-                                        </button>
-                                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jxu-o2-gJ6">
-                                            <rect key="frame" x="298.5" y="4" width="60.5" height="51.5"/>
-                                            <inset key="contentEdgeInsets" minX="0.0" minY="16" maxX="0.0" maxY="16"/>
-                                            <state key="normal" image="right_icon"/>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="Tgs-Gr-QhW" firstAttribute="centerY" secondItem="CXd-PT-boy" secondAttribute="centerY" id="3Sw-KJ-KQz"/>
-                                        <constraint firstItem="a6a-6c-ZSg" firstAttribute="top" secondItem="CXd-PT-boy" secondAttribute="top" constant="4" id="56A-Lx-xjj"/>
-                                        <constraint firstItem="KCt-Du-Igo" firstAttribute="centerY" secondItem="CXd-PT-boy" secondAttribute="centerY" id="7Cs-f2-rs2"/>
-                                        <constraint firstItem="a6a-6c-ZSg" firstAttribute="width" secondItem="KCt-Du-Igo" secondAttribute="width" id="8E9-hU-Mml"/>
-                                        <constraint firstItem="a6a-6c-ZSg" firstAttribute="centerY" secondItem="CXd-PT-boy" secondAttribute="centerY" id="9ir-1Z-pQP"/>
-                                        <constraint firstAttribute="bottom" secondItem="a6a-6c-ZSg" secondAttribute="bottom" constant="4" id="Ag6-uK-RQo"/>
-                                        <constraint firstItem="KCt-Du-Igo" firstAttribute="top" secondItem="CXd-PT-boy" secondAttribute="top" constant="4" id="DmD-Hu-J3G"/>
-                                        <constraint firstItem="jxu-o2-gJ6" firstAttribute="width" secondItem="KCt-Du-Igo" secondAttribute="width" id="H2w-f3-lJh"/>
-                                        <constraint firstItem="jxu-o2-gJ6" firstAttribute="top" secondItem="CXd-PT-boy" secondAttribute="top" constant="4" id="HD4-Vo-bB5"/>
-                                        <constraint firstItem="Tgs-Gr-QhW" firstAttribute="width" secondItem="KCt-Du-Igo" secondAttribute="width" id="Krg-Av-PdD"/>
-                                        <constraint firstItem="ayS-yQ-7AU" firstAttribute="centerY" secondItem="CXd-PT-boy" secondAttribute="centerY" id="OoR-3E-Glk"/>
-                                        <constraint firstItem="a6a-6c-ZSg" firstAttribute="height" secondItem="KCt-Du-Igo" secondAttribute="height" id="PJa-Gw-sbw"/>
-                                        <constraint firstItem="jxu-o2-gJ6" firstAttribute="leading" secondItem="a6a-6c-ZSg" secondAttribute="trailing" constant="4" id="Pxd-bo-6aN"/>
-                                        <constraint firstItem="ayS-yQ-7AU" firstAttribute="height" secondItem="KCt-Du-Igo" secondAttribute="height" id="SW1-WX-VkU"/>
-                                        <constraint firstItem="KCt-Du-Igo" firstAttribute="leading" secondItem="CXd-PT-boy" secondAttribute="leading" constant="16" id="VHf-Wd-jqv"/>
-                                        <constraint firstItem="Tgs-Gr-QhW" firstAttribute="height" secondItem="KCt-Du-Igo" secondAttribute="height" id="ZWN-p9-awD"/>
-                                        <constraint firstAttribute="trailing" secondItem="jxu-o2-gJ6" secondAttribute="trailing" constant="16" id="a2R-6v-TBt"/>
-                                        <constraint firstAttribute="bottom" secondItem="KCt-Du-Igo" secondAttribute="bottom" constant="4" id="c3m-WD-E7r"/>
-                                        <constraint firstItem="ayS-yQ-7AU" firstAttribute="top" secondItem="CXd-PT-boy" secondAttribute="top" constant="4" id="cSx-FM-WUU"/>
-                                        <constraint firstItem="ayS-yQ-7AU" firstAttribute="leading" secondItem="Tgs-Gr-QhW" secondAttribute="trailing" constant="16" id="dC3-RO-a36"/>
-                                        <constraint firstItem="Tgs-Gr-QhW" firstAttribute="leading" secondItem="KCt-Du-Igo" secondAttribute="trailing" constant="4" id="iJe-TH-I9N"/>
-                                        <constraint firstItem="Tgs-Gr-QhW" firstAttribute="top" secondItem="CXd-PT-boy" secondAttribute="top" constant="4" id="iof-AD-5h5"/>
-                                        <constraint firstItem="jxu-o2-gJ6" firstAttribute="centerY" secondItem="CXd-PT-boy" secondAttribute="centerY" id="kyQ-ti-Uhm"/>
-                                        <constraint firstItem="ayS-yQ-7AU" firstAttribute="width" secondItem="KCt-Du-Igo" secondAttribute="width" id="lAm-iu-QYH"/>
-                                        <constraint firstAttribute="bottom" secondItem="Tgs-Gr-QhW" secondAttribute="bottom" constant="4" id="qGT-XU-Oxu"/>
-                                        <constraint firstAttribute="bottom" secondItem="ayS-yQ-7AU" secondAttribute="bottom" constant="4" id="sQN-TB-hAE"/>
-                                        <constraint firstAttribute="bottom" secondItem="jxu-o2-gJ6" secondAttribute="bottom" constant="4" id="tXl-mD-Qdd"/>
-                                        <constraint firstItem="a6a-6c-ZSg" firstAttribute="leading" secondItem="ayS-yQ-7AU" secondAttribute="trailing" constant="16" id="v5L-Mw-rnv"/>
-                                        <constraint firstItem="jxu-o2-gJ6" firstAttribute="height" secondItem="KCt-Du-Igo" secondAttribute="height" id="wz1-Ih-RgD"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="checkboxButton" destination="ayS-yQ-7AU" id="eEJ-3m-278"/>
-                                    <outlet property="leftButton" destination="a6a-6c-ZSg" id="w81-HO-wv7"/>
-                                    <outlet property="listButton" destination="KCt-Du-Igo" id="E31-Eh-bGr"/>
-                                    <outlet property="numberListButton" destination="Tgs-Gr-QhW" id="RNy-af-c8a"/>
-                                    <outlet property="rightButton" destination="jxu-o2-gJ6" id="0wA-B8-vCW"/>
-                                </connections>
-                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="fontSize" rowHeight="120" id="H2G-Am-mdo" customClass="LMStyleFontSizeCell">
-                                <rect key="frame" x="0.0" y="148" width="375" height="120"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="120"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="H2G-Am-mdo" id="6e0-o0-hxy">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="119.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="119"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="字号" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s1L-D1-JdU">
@@ -201,10 +125,10 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="color" rowHeight="180" id="j4s-oW-hfB" customClass="LMStyleColorCell">
-                                <rect key="frame" x="0.0" y="268" width="375" height="180"/>
+                                <rect key="frame" x="0.0" y="208" width="375" height="180"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="j4s-oW-hfB" id="qEe-R5-XLK">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="179.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="179"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="颜色" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9QH-WR-KCL">
@@ -257,27 +181,27 @@
                                     <outlet property="colorPickerView" destination="78l-M3-v9e" id="KX6-uo-IhS"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="format" rowHeight="120" id="YPH-aQ-T4k" customClass="LMStyleFormatCell">
-                                <rect key="frame" x="0.0" y="448" width="375" height="120"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="format" rowHeight="120" id="YPH-aQ-T4k" customClass="LMFontFormatCell">
+                                <rect key="frame" x="0.0" y="388" width="375" height="120"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YPH-aQ-T4k" id="A4I-fd-NAO">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="119.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="119"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="标题" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PS8-rj-rSD">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="格式" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PS8-rj-rSD">
                                             <rect key="frame" x="20" y="20" width="31" height="18"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="keyboard_detail_icon" translatesAutoresizingMaskIntoConstraints="NO" id="PIA-Gp-4pf">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="F9E12785-5027-4BC4-B624-9E0F6869EBDA" translatesAutoresizingMaskIntoConstraints="NO" id="PIA-Gp-4pf">
                                             <rect key="frame" x="341.5" y="25" width="13.5" height="8"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="8" id="IhO-Zg-s0y"/>
                                                 <constraint firstAttribute="width" constant="13.5" id="mKF-yG-s4n"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="普通" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tzJ-r4-qcR">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="正文" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tzJ-r4-qcR">
                                             <rect key="frame" x="303" y="20" width="31" height="18"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -289,7 +213,7 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Tr-O8-IKs">
                                                     <rect key="frame" x="20" y="0.0" width="74" height="40"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <state key="normal" title="普通">
+                                                    <state key="normal" title="正文">
                                                         <color key="titleColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <state key="disabled">
@@ -394,10 +318,10 @@
             </objects>
             <point key="canvasLocation" x="733" y="274"/>
         </scene>
-        <!--Image Settings Controller-->
+        <!--Image Input View Controller-->
         <scene sceneID="aJH-yr-EbY">
             <objects>
-                <viewController storyboardIdentifier="image" automaticallyAdjustsScrollViewInsets="NO" id="NrQ-hI-2KX" customClass="LMImageSettingsController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="image" automaticallyAdjustsScrollViewInsets="NO" id="NrQ-hI-2KX" customClass="LMImageInputViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="YPe-iF-CQR"/>
                         <viewControllerLayoutGuide type="bottom" id="CC6-3p-QOI"/>
@@ -609,24 +533,141 @@
             </objects>
             <point key="canvasLocation" x="2006" y="274"/>
         </scene>
+        <!--Format Input View Controller-->
+        <scene sceneID="nff-1n-heW">
+            <objects>
+                <tableViewController storyboardIdentifier="format" id="mH6-ep-gLP" customClass="LMFormatInputViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="z3I-GQ-FW3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="format" id="CEz-ls-FJp" customClass="LMFormatCell">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CEz-ls-FJp" id="jpN-rT-pnz">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vxW-lt-k0b">
+                                            <rect key="frame" x="169" y="13" width="37.5" height="18"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="vxW-lt-k0b" firstAttribute="centerY" secondItem="CEz-ls-FJp" secondAttribute="centerY" id="3Xu-Kg-Pev"/>
+                                    <constraint firstItem="vxW-lt-k0b" firstAttribute="centerX" secondItem="CEz-ls-FJp" secondAttribute="centerX" id="Dtw-Ml-LMG"/>
+                                </constraints>
+                                <inset key="separatorInset" minX="16" minY="0.0" maxX="16" maxY="0.0"/>
+                                <connections>
+                                    <outlet property="formatLabel" destination="vxW-lt-k0b" id="muD-xr-zfk"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="mH6-ep-gLP" id="bRh-uh-aae"/>
+                            <outlet property="delegate" destination="mH6-ep-gLP" id="HeH-OI-8vY"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5zb-Pj-NAy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2644" y="274"/>
+        </scene>
     </scenes>
     <resources>
-        <image name="123_icon" width="35" height="35"/>
-        <image name="123_select_icon" width="35" height="35"/>
+        <image name="F9E12785-5027-4BC4-B624-9E0F6869EBDA" width="27" height="16">
+            <mutableData key="keyedArchiveRepresentation">
+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
+b1JPAAAAJAAAA2ZkZURFAAAALAAAA4prb0tSAAAAFgAAA7ZzdlNFAAAAJgAAAth6aENOAAAAFgAAA8xq
+YUpQAAAAGgAAA+JlbEdSAAAAIgAAA/xwdFBPAAAAJgAABB5ubE5MAAAAKAAABERlc0VTAAAAJgAABB50
+aFRIAAAAJAAABGx0clRSAAAAIgAABJBmaUZJAAAAKAAABLJockhSAAAAKAAABNpwbFBMAAAALAAABQJy
+dVJVAAAAIgAABS5hckVHAAAAJgAABVBlblVTAAAAJgAABXYAVgFhAGUAbwBiAGUAYwBuAP0AIABSAEcA
+QgAgAHAAcgBvAGYAaQBsAEcAZQBuAGUAcgBlAGwAIABSAEcAQgAtAGIAZQBzAGsAcgBpAHYAZQBsAHMA
+ZQBQAGUAcgBmAGkAbAAgAFIARwBCACAAZwBlAG4A6AByAGkAYwBDHqUAdQAgAGgA7ABuAGgAIABSAEcA
+QgAgAEMAaAB1AG4AZwBQAGUAcgBmAGkAbAAgAFIARwBCACAARwBlAG4A6QByAGkAYwBvBBcEMAQzBDAE
+OwRMBD0EOAQ5ACAEPwRABD4ERAQwBDkEOwAgAFIARwBCAFAAcgBvAGYAaQBsACAAZwDpAG4A6QByAGkA
+cQB1AGUAIABSAFYAQgDBAGwAdABhAGwA4QBuAG8AcwAgAFIARwBCACAAcAByAG8AZgBpAGyQGnUoACAA
+UgBHAEIAIIJyX2ljz4/wAEcAZQBuAGUAcgBpAHMAawAgAFIARwBCAC0AcAByAG8AZgBpAGwATwBiAGUA
+YwBuAP0AIABSAEcAQgAgAHAAcgBvAGYAaQBsBeQF6AXVBeQF2QXcACAAUgBHAEIAIAXbBdwF3AXZAFAA
+cgBvAGYAaQBsAG8AIABSAEcAQgAgAGcAZQBuAGUAcgBpAGMAbwBQAHIAbwBmAGkAbAAgAFIARwBCACAA
+ZwBlAG4AZQByAGkAYwBBAGwAbABnAGUAbQBlAGkAbgBlAHMAIABSAEcAQgAtAFAAcgBvAGYAaQBsx3y8
+GAAgAFIARwBCACDVBLhc0wzHfGZukBoAIABSAEcAQgAgY8+P8GWHTvZOAIIsACAAUgBHAEIAIDDXMO0w
+1TChMKQw6wOTA7UDvQO5A7oDzAAgA8ADwQO/A8YDrwO7ACAAUgBHAEIAUABlAHIAZgBpAGwAIABSAEcA
+QgAgAGcAZQBuAOkAcgBpAGMAbwBBAGwAZwBlAG0AZQBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBlAGwO
+Qg4bDiMORA4fDiUOTAAgAFIARwBCACAOFw4xDkgOJw5EDhsARwBlAG4AZQBsACAAUgBHAEIAIABQAHIA
+bwBmAGkAbABpAFkAbABlAGkAbgBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBpAGwAaQBHAGUAbgBlAHIA
+aQENAGsAaQAgAFIARwBCACAAcAByAG8AZgBpAGwAVQBuAGkAdwBlAHIAcwBhAGwAbgB5ACAAcAByAG8A
+ZgBpAGwAIABSAEcAQgQeBDEESQQ4BDkAIAQ/BEAEPgREBDgEOwRMACAAUgBHAEIGRQZEBkEAIAYqBjkG
+MQZKBkEAIABSAEcAQgAgBicGRAY5BicGRQBHAGUAbgBlAHIAaQBjACAAUgBHAEIAIABQAHIAbwBmAGkA
+bABldGV4dAAAAABDb3B5cmlnaHQgMjAwNyBBcHBsZSBJbmMuLCBhbGwgcmlnaHRzIHJlc2VydmVkLgBY
+WVogAAAAAAAA81IAAQAAAAEWz1hZWiAAAAAAAAB0TQAAPe4AAAPQWFlaIAAAAAAAAFp1AACscwAAFzRY
+WVogAAAAAAAAKBoAABWfAAC4NmN1cnYAAAAAAAAAAQHNAABzZjMyAAAAAAABDEIAAAXe///zJgAAB5IA
+AP2R///7ov///aMAAAPcAADAbNIlJicoWiRjbGFzc25hbWVYJGNsYXNzZXNfEBBOU0JpdG1hcEltYWdl
+UmVwoycpKlpOU0ltYWdlUmVwWE5TT2JqZWN00iUmLC1XTlNBcnJheaIsKtIlJi8wXk5TTXV0YWJsZUFy
+cmF5oy8sKtMyMwo0NTZXTlNXaGl0ZVxOU0NvbG9yU3BhY2VEMCAwABADgAzSJSY4OVdOU0NvbG9yojgq
+0iUmOzxXTlNJbWFnZaI7Kl8QD05TS2V5ZWRBcmNoaXZlctE/QFRyb290gAEACAARABoAIwAtADIANwBG
+AEwAVwBeAGUAcgB5AIEAgwCFAIoAjACOAJcAnACnAKkAqwCtALIAtQC3ALkAuwC9AMIA2QDbAN0QPxBE
+EE8QWBBrEG8QehCDEIgQkBCTEJgQpxCrELIQuhDHEMwQzhDQENUQ3RDgEOUQ7RDwEQIRBREKAAAAAAAA
+AgEAAAAAAAAAQQAAAAAAAAAAAAAAAAAAEQw
+</mutableData>
+        </image>
         <image name="b_icon" width="26" height="31"/>
         <image name="b_select_icon" width="26" height="31"/>
-        <image name="check_icon" width="36" height="34"/>
-        <image name="check_select_icon" width="36" height="34"/>
         <image name="i_icon" width="21" height="31"/>
         <image name="i_select_icon" width="21" height="31"/>
         <image name="keyboard_detail_icon" width="27" height="16"/>
-        <image name="left_icon" width="34" height="35"/>
-        <image name="list_icon" width="36" height="33"/>
-        <image name="list_select_icon" width="36" height="33"/>
         <image name="photo_gallery_icon" width="27" height="26"/>
         <image name="photo_send_icon" width="36" height="36"/>
         <image name="photo_take_icon" width="31" height="27"/>
-        <image name="right_icon" width="34" height="35"/>
         <image name="under_icon" width="29" height="39"/>
         <image name="under_select_icon" width="29" height="39"/>
     </resources>

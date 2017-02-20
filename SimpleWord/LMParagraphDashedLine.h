@@ -1,5 +1,5 @@
 //
-//  LMParagraphCheckbox.h
+//  LMParagraphUnorderedList.h
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/19.
@@ -8,6 +8,6 @@
 
 #import "LMParagraphFormat.h"
 
-@interface LMParagraphCheckbox : LMParagraphFormat
+@interface LMParagraphDashedLine : LMParagraphFormat
 
 @end

@@ -63,7 +63,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
                                                kLMWCommonSpacing,
                                                kLMWCommonSpacing);
     
-    self.beginningParagraph = [[LMParagraph alloc] initWithType:LMParagraphTypeNone textView:self];
+    self.beginningParagraph = [[LMParagraph alloc] initWithFormatType:LMFormatTypeNormal textView:self];
     self.typingAttributes = self.beginningParagraph.typingAttributes;
 }
 
@@ -104,7 +104,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 #pragma mark - LMParagraph
 
-- (void)setParagraphType:(LMParagraphType)type forRange:(NSRange)range {
+- (void)setParagraphType:(LMFormatType)type forRange:(NSRange)range {
     
     NSRange selectedRange = self.selectedRange;
     self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
@@ -114,10 +114,11 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     
     CGFloat offset = 0;
     LMParagraph *oldParagraph = begin;
+    LMParagraph *newParagraph;
     do {
         [oldParagraph restoreParagraph];
         
-        LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:type textView:self];
+        newParagraph = [[LMParagraph alloc] initWithFormatType:type textView:self];
         if (oldParagraph == self.beginningParagraph) {
             self.beginningParagraph = newParagraph;
         }
@@ -137,6 +138,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         offset += (newParagraph.height - oldParagraph.height);
         
     } while (oldParagraph != end && (oldParagraph = oldParagraph.next));
+    end = newParagraph;
     
     // 调整后续段落的位置
     if (offset != 0) {
@@ -147,10 +149,11 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     }
     
     // 如果是有序列表则需要重新编写序号
-    LMParagraph *item = end.next;
-    while (item && item.type == LMParagraphTypeOrderedList) {
-        [item updateDisplay];
-        item = item.next;
+    if (end.type == LMFormatTypeNumber) {
+        [end updateDisplayRecursion];
+    }
+    else if (end.next.type == LMFormatTypeNumber) {
+        [end.next updateDisplayRecursion];
     }
     
     self.selectedRange = selectedRange;
@@ -171,18 +174,18 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     if ([text isEqualToString:@"\n"] &&
         range.length == 0 &&
         begin.textRange.location == range.location &&
-        begin.type != LMParagraphTypeNone) {
+        begin.type != LMFormatTypeNormal) {
         if (begin.length == 0 || ([[self.text substringWithRange:begin.textRange] isEqualToString:@"\n"])) {
             // 光标在段首且为空段落时输入换行则去掉改段落样式
-            [self setParagraphType:LMParagraphTypeNone forRange:range];
+            [self setParagraphType:LMFormatTypeNormal forRange:range];
             return NO;
         }
     }
     else if (text.length == 0 && [[self.text substringWithRange:range] isEqualToString:@"\n"]) {
         // 光标在段首且为空段落时输入退格则去掉改段落样式
         LMParagraph *paragraph = [self paragraphAtLocation:range.location + 1];
-        if (paragraph.type != LMParagraphTypeNone) {
-            [self setParagraphType:LMParagraphTypeNone forRange:NSMakeRange(range.location + 1, 0)];
+        if (paragraph.type != LMFormatTypeNormal) {
+            [self setParagraphType:LMFormatTypeNormal forRange:NSMakeRange(range.location + 1, 0)];
             return NO;
         }
     }
@@ -216,6 +219,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         begin.next = end.next;
         begin.next.previous = begin;
         paragraph = begin;
+        end = begin;
     }
     else {
         for (NSInteger idx = 0; idx < components.count; idx ++) {
@@ -229,7 +233,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
             }
             else if (idx == components.count - 1) {
                 // 最后一个
-                LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:end.type textView:self];
+                LMParagraph *newParagraph = [[LMParagraph alloc] initWithFormatType:end.type textView:self];
                 newParagraph.previous = paragraph;
                 newParagraph.next = end.next;
                 newParagraph.next.previous = newParagraph;
@@ -244,7 +248,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
                 attributeStr = [[NSAttributedString alloc] initWithString:component attributes:end.typingAttributes];
             }
             else {
-                LMParagraph *newParagraph = [[LMParagraph alloc] initWithType:LMParagraphTypeNone textView:self];
+                LMParagraph *newParagraph = [[LMParagraph alloc] initWithFormatType:LMFormatTypeNormal textView:self];
                 newParagraph.previous = paragraph;
                 paragraph.next = newParagraph;
                 newParagraph.length = component.length + 1;
@@ -280,10 +284,8 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     }
     
     // 如果是有序列表则需要重新编写序号
-    LMParagraph *item = end.next;
-    while (item && item.type == LMParagraphTypeOrderedList) {
-        [item updateDisplay];
-        item = item.next;
+    if (end.type == LMFormatTypeNumber) {
+        [end updateDisplayRecursion];
     }
     
     self.selectedRange = NSMakeRange(range.location + text.length, 0);   // 设置光标位置

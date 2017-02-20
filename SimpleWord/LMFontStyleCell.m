@@ -6,9 +6,9 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMStyleFontStyleCell.h"
+#import "LMFontStyleCell.h"
 
-@interface LMStyleFontStyleCell ()
+@interface LMFontStyleCell ()
 
 @property (weak, nonatomic) IBOutlet UIButton *boldButton;
 @property (weak, nonatomic) IBOutlet UIButton *italicButton;
@@ -16,7 +16,7 @@
 
 @end
 
-@implementation LMStyleFontStyleCell
+@implementation LMFontStyleCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -33,13 +33,20 @@
     // Configure the view for the selected state
 }
 
+- (void)setEnable:(BOOL)enable {
+    self.boldButton.enabled = enable;
+    self.italicButton.enabled = enable;
+    self.underLineButton.enabled = enable;
+    _enable = enable;
+}
+
 - (void)buttonAction:(UIButton *)button {
     button.selected = !button.selected;
     
     NSDictionary *settings;
-    if (button == self.boldButton) settings = @{ LMStyleSettingsBoldName: @(self.bold) };
-    if (button == self.italicButton) settings = @{ LMStyleSettingsItalicName: @(self.italic) };
-    if (button == self.underLineButton) settings = @{ LMStyleSettingsUnderlineName: @(self.underline) };
+    if (button == self.boldButton) settings = @{ LMFontSettingsBoldName: @(self.bold) };
+    if (button == self.italicButton) settings = @{ LMFontSettingsItalicName: @(self.italic) };
+    if (button == self.underLineButton) settings = @{ LMFontSettingsUnderlineName: @(self.underline) };
     [self.delegate lm_didChangeStyleSettings:settings];
 }
 

@@ -7,7 +7,7 @@
 //
 
 #import "LMParagraph.h"
-#import "LMParagraphStyle.h"
+#import "LMParagraphFormat.h"
 #import "UIFont+LMText.h"
 #import "LMParagraphCheckbox.h"
 #import "LMWordView.h"
@@ -16,11 +16,11 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
 
 @implementation LMParagraph
 
-- (instancetype)initWithType:(LMParagraphType)type textView:(UITextView *)textView {
+- (instancetype)initWithFormatType:(LMFormatType)type textView:(UITextView *)textView {
     if (self = [super init]) {
         _type = type;
         _textView = textView;
-        _paragraphStyle = [LMParagraphStyle paragraphStyleWithType:type];
+        _paragraphStyle = [LMParagraphFormat paragraphStyleWithType:type];
     }
     return self;
 }
@@ -66,8 +66,8 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     UIView *view = [self.paragraphStyle view];
     [self.textView addSubview:view];
     [self updateLayout];
-    if (self.type == LMParagraphTypeOrderedList) {
-        [self updateDisplay];
+    if (self.type == LMFormatTypeNormal) {
+        [self updateDisplayRecursion];
     }
 }
 
@@ -127,8 +127,11 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     [self updateFrameWithViewRect:rect];
 }
 
-- (void)updateDisplay {
+- (void)updateDisplayRecursion {
     [self.paragraphStyle updateDisplayWithParagraph:self];
+    if (self.next && self.next.type == self.type) {
+        [self.next updateDisplayRecursion];
+    }
 }
 
 #pragma mark - private method

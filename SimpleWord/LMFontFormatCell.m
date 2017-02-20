@@ -1,15 +1,15 @@
 //
-//  LMStyleFormatCell.m
+//  LMFontFormatCell.m
 //  SimpleWord
 //
-//  Created by Chenly on 16/5/13.
-//  Copyright © 2016年 Little Meaning. All rights reserved.
+//  Created by Chenly on 2017/2/10.
+//  Copyright © 2017年 Little Meaning. All rights reserved.
 //
 
-#import "LMStyleFormatCell.h"
+#import "LMFontFormatCell.h"
 #import "LMTextStyle.h"
 
-@interface LMStyleFormatCell ()
+@interface LMFontFormatCell ()
 
 @property (weak, nonatomic) IBOutlet UILabel *formatTitleLabel;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *buttons;
@@ -18,7 +18,7 @@
 
 @end
 
-@implementation LMStyleFormatCell
+@implementation LMFontFormatCell
 {
     CAShapeLayer *_lineLayer;
 }
@@ -44,7 +44,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 
@@ -76,9 +76,8 @@
     
     [self setSelectedIndex:[self.buttons indexOfObject:button]];
     
-    LMTextStyleType type = [self.buttons indexOfObject:button];
-    NSDictionary *settings = @{LMStyleSettingsFormatName : @(type)};
-    [self.delegate lm_didChangeStyleSettings:settings];
+    LMFontFormat format = [self.buttons indexOfObject:button];
+    [self.delegate lm_didChangeFontFormat:format];
 }
 
 - (void)setSelectedIndex:(NSInteger)selectedIndex {

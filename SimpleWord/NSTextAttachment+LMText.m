@@ -35,7 +35,7 @@
 //    return textAttachment;
 //}
 
-//+ (UIImage *)imageWithType:(LMParagraphType)type {
+//+ (UIImage *)imageWithType:(LMFormatType)type {
 //    CGRect rect = [self attachmentBounds];
 //    UIGraphicsBeginImageContextWithOptions(CGSizeMake(rect.size.width + kSpaceWidth, rect.size.height), NO, [UIScreen mainScreen].scale);
 //    UIBezierPath *path = [UIBezierPath bezierPathWithRect:CGRectInset(rect, 1, 1)];

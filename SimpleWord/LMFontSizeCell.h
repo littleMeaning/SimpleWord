@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LMStyleSettings.h"
+#import "LMFontSettings.h"
 
-@interface LMStyleFontSizeCell : UITableViewCell
+@interface LMFontSizeCell : UITableViewCell
 
-@property (nonatomic, weak) id<LMStyleSettings> delegate;
+@property (nonatomic, weak) id<LMFontSettings> delegate;
 
 @property (nonatomic, copy) NSArray<NSNumber *> *fontSizeNumbers;
 @property (nonatomic, assign) NSInteger currentFontSize;

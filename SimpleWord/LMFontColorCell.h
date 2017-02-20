@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LMStyleSettings.h"
+#import "LMFontSettings.h"
 
-@interface LMStyleColorCell : UITableViewCell
+@interface LMFontColorCell : UITableViewCell
 
-@property (nonatomic, weak) id<LMStyleSettings> delegate;
+@property (nonatomic, weak) id<LMFontSettings> delegate;
 
 @property (nonatomic, strong) UIColor *selectedColor;
 @property (nonatomic, copy) NSArray *colors;

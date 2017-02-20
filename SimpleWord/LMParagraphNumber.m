@@ -6,17 +6,17 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphOrderedList.h"
+#import "LMParagraphNumber.h"
 #import "UIFont+LMText.h"
 #import "UIFont+LMText.h"
 
-@interface LMParagraphOrderedList ()
+@interface LMParagraphNumber ()
 
 @property (nonatomic, strong) UILabel *numberLabel;
 
 @end
 
-@implementation LMParagraphOrderedList
+@implementation LMParagraphNumber
 
 @synthesize view = _view;
 
@@ -71,8 +71,8 @@
 }
 
 - (void)updateDisplayWithParagraph:(LMParagraph *)paragraph {    
-    if (paragraph.previous.type == LMParagraphTypeOrderedList) {
-        self.number = ((LMParagraphOrderedList *)paragraph.previous.paragraphStyle).number + 1;
+    if (paragraph.previous.type == LMFormatTypeNumber) {
+        self.number = ((LMParagraphNumber *)paragraph.previous.paragraphStyle).number + 1;
     }
     else {
         self.number = 1;

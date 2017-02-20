@@ -7,17 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LMFormatType.h"
 
 extern NSString * const LMParagraphAttributeName;
 
-@class LMParagraphStyle;
-
-typedef NS_ENUM(NSUInteger, LMParagraphType) {
-    LMParagraphTypeNone = 0,
-    LMParagraphTypeUnorderedList,
-    LMParagraphTypeOrderedList,
-    LMParagraphTypeCheckbox,
-};
+@class LMParagraphFormat;
 
 @interface LMParagraph : NSObject
 
@@ -25,8 +19,8 @@ typedef NS_ENUM(NSUInteger, LMParagraphType) {
 @property (nonatomic, weak) LMParagraph *previous;
 @property (nonatomic, strong) LMParagraph *next;
 
-@property (nonatomic, readonly) LMParagraphType type;
-@property (nonatomic, readonly) LMParagraphStyle *paragraphStyle;
+@property (nonatomic, readonly) LMFormatType type;
+@property (nonatomic, readonly) LMParagraphFormat *paragraphStyle;
 @property (nonatomic, readonly) CGFloat height;
 @property (nonatomic, readonly) NSRange textRange;
 @property (nonatomic, assign) NSInteger length;
@@ -36,12 +30,12 @@ typedef NS_ENUM(NSUInteger, LMParagraphType) {
 @property (nonatomic, readonly) NSDictionary *typingAttributes;
 @property (nonatomic, strong) UIBezierPath *exclusionPath;
 
-- (instancetype)initWithType:(LMParagraphType)type textView:(UITextView *)textView;
+- (instancetype)initWithFormatType:(LMFormatType)type textView:(UITextView *)textView;
 
 - (void)formatParagraph;
 - (void)restoreParagraph;
 - (void)updateLayout;
 - (void)updateFrameWithYOffset:(CGFloat)yOffset;
-- (void)updateDisplay;
+- (void)updateDisplayRecursion;
 
 @end

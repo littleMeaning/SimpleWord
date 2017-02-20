@@ -1,21 +1,19 @@
 //
-//  LMTextStyleController.m
+//  LMFontInputViewController.m
 //  SimpleWord
 //
-//  Created by Chenly on 16/5/12.
-//  Copyright © 2016年 Little Meaning. All rights reserved.
+//  Created by Chenly on 2017/2/10.
+//  Copyright © 2017年 Little Meaning. All rights reserved.
 //
 
-#import "LMStyleSettingsController.h"
-#import "LMStyleFontStyleCell.h"
-#import "LMStyleParagraphCell.h"
-#import "LMStyleFontSizeCell.h"
-#import "LMStyleColorCell.h"
-#import "LMStyleFormatCell.h"
+#import "LMFontInputViewController.h"
+#import "LMFontStyleCell.h"
+#import "LMFontSizeCell.h"
+#import "LMFontColorCell.h"
 #import "LMTextStyle.h"
-#import "LMParagraph.h"
+#import "LMFontSettings.h"
 
-@interface LMStyleSettingsController () <LMStyleParagraphCellDelegate>
+@interface LMFontInputViewController () <LMFontSettings>
 
 @property (nonatomic, weak) NSIndexPath *selectedIndexPath;
 @property (nonatomic, assign) BOOL shouldScrollToSelectedRow;
@@ -23,8 +21,7 @@
 
 @end
 
-@implementation LMStyleSettingsController
-
+@implementation LMFontInputViewController
 - (void)viewDidLoad {
     [super viewDidLoad];
 }
@@ -36,23 +33,9 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    if (self.needReload) {
-        [self reload];
-    }
 }
 
-- (void)reload {
-    [self.tableView reloadData];
-    self.needReload = NO;
-}
-
-- (void)setParagraph:(LMParagraph *)paragraph {
-    if (self.currentParagraph == paragraph) {
-        return;
-    }
-    self.currentParagraph = paragraph;
-    [self reload];
-}
+- (void)reload {}
 
 #pragma mark - setTextStyle
 
@@ -67,7 +50,7 @@
     if (!self.textStyle) {
         return 0;
     }
-    return 5;
+    return 3;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -93,7 +76,7 @@
     switch (indexPath.row) {
         case 0:
         {
-            LMStyleFontStyleCell *fontStyleCell = [tableView dequeueReusableCellWithIdentifier:@"fontStyle"];
+            LMFontStyleCell *fontStyleCell = [tableView dequeueReusableCellWithIdentifier:@"fontStyle"];
             fontStyleCell.bold = self.textStyle.bold;
             fontStyleCell.italic = self.textStyle.italic;
             fontStyleCell.underline = self.textStyle.underline;
@@ -103,15 +86,7 @@
         }
         case 1:
         {
-            LMStyleParagraphCell *prargraphCell = [tableView dequeueReusableCellWithIdentifier:@"paragraph"];
-            prargraphCell.type = self.currentParagraph.type;
-            prargraphCell.delegate = self;
-            cell = prargraphCell;
-            break;
-        }
-        case 2:
-        {
-            LMStyleFontSizeCell *fontSizeCell = [tableView dequeueReusableCellWithIdentifier:@"fontSize"];
+            LMFontSizeCell *fontSizeCell = [tableView dequeueReusableCellWithIdentifier:@"fontSize"];
             if (!fontSizeCell.fontSizeNumbers) {
                 fontSizeCell.fontSizeNumbers = @[@9, @10, @11, @12, @14, @16, @18, @24, @30, @36];
                 fontSizeCell.delegate = self;
@@ -122,18 +97,10 @@
         }
         case 3:
         {
-            LMStyleColorCell *colorCell = [tableView dequeueReusableCellWithIdentifier:@"color"];
+            LMFontColorCell *colorCell = [tableView dequeueReusableCellWithIdentifier:@"color"];
             colorCell.selectedColor = self.textStyle.textColor;
             colorCell.delegate = self;
             cell = colorCell;
-            break;
-        }
-        case 4:
-        {
-            LMStyleFormatCell *formatCell = [tableView dequeueReusableCellWithIdentifier:@"format"];
-            formatCell.selectedIndex = (self.textStyle.type == 0) ? -1 : self.textStyle.type;
-            formatCell.delegate = self;
-            cell = formatCell;
             break;
         }
         default:
@@ -164,7 +131,7 @@
     else {
         if (self.selectedIndexPath) {
             [indexPaths addObject:self.selectedIndexPath];
-        }        
+        }
         self.selectedIndexPath = indexPath;
     }
     [indexPaths addObject:indexPath];
@@ -172,31 +139,31 @@
     [tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-#pragma mark - <LMStyleSettings>
+#pragma mark - <LMFontSettings>
 
 - (void)lm_didChangeStyleSettings:(NSDictionary *)settings {
     
     __block BOOL needReload = NO;
     [settings enumerateKeysAndObjectsUsingBlock:^(NSString *key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         
-        if ([key isEqualToString:LMStyleSettingsBoldName]) {
+        if ([key isEqualToString:LMFontSettingsBoldName]) {
             self.textStyle.bold = [(NSNumber *)obj boolValue];
         }
-        else if ([key isEqualToString:LMStyleSettingsItalicName]) {
+        else if ([key isEqualToString:LMFontSettingsItalicName]) {
             self.textStyle.italic = [(NSNumber *)obj boolValue];
         }
-        else if ([key isEqualToString:LMStyleSettingsUnderlineName]) {
+        else if ([key isEqualToString:LMFontSettingsUnderlineName]) {
             self.textStyle.underline = [(NSNumber *)obj boolValue];
         }
-        else if ([key isEqualToString:LMStyleSettingsFontSizeName]) {
+        else if ([key isEqualToString:LMFontSettingsFontSizeName]) {
             self.textStyle.fontSize = [(NSNumber *)obj integerValue];
         }
-        else if ([key isEqualToString:LMStyleSettingsTextColorName]) {
+        else if ([key isEqualToString:LMFontSettingsTextColorName]) {
             self.textStyle.textColor = obj;
         }
-        else if ([key isEqualToString:LMStyleSettingsFormatName]) {
+        else if ([key isEqualToString:LMFontSettingsFormatName]) {
             UIColor *textColor = self.textStyle.textColor;
-            self.textStyle = [LMTextStyle textStyleWithType:[obj integerValue]];
+            self.textStyle = [LMTextStyle textStyleWithFontFormat:[obj integerValue]];
             self.textStyle.textColor = textColor;
             needReload = YES;
         }
@@ -205,16 +172,6 @@
         [self.tableView reloadData];
     }
     [self.delegate lm_didChangedTextStyle:self.textStyle];
-}
-
-#pragma mark - <LMStyleParagraphCellDelegate>
-
-- (void)lm_paragraphChangeIndentWithDirection:(LMStyleIndentDirection)direction {
-    [self.delegate lm_didChangedParagraphIndentLevel:direction];
-}
-
-- (void)lm_paragraphChangeType:(NSInteger)type {
-    [self.delegate lm_didChangedParagraphType:type];
 }
 
 @end

@@ -23,41 +23,27 @@
     return self;
 }
 
-+ (instancetype)textStyleWithType:(LMTextStyleType)type {
++ (instancetype)textStyleWithFontFormat:(LMFontFormat)format {
     
     LMTextStyle *textStyle = [[self alloc] init];
-    switch (type) {
-        case LMTextStyleFormatTitleSmall:
+    switch (format) {
+        case LMFontFormatNone:
+        case LMFontFormatBody:
             textStyle.fontSize = 18.f;
+            textStyle.bold = NO;
             break;
-        case LMTextStyleFormatTitleMedium:
+        case LMFontFormatSubTitle:
             textStyle.fontSize = 24.f;
+            textStyle.bold = YES;
             break;
-        case LMTextStyleFormatTitleLarge:
+        case LMFontFormatTitle:
             textStyle.fontSize = 30.f;
+            textStyle.bold = YES;
             break;
         default:
-            return textStyle;
+            return nil;
     }
-    textStyle.bold = type == LMTextStyleFormatNormal ? NO : YES;
     return textStyle;
-}
-
-#pragma mark - setter & getter
-
-- (LMTextStyleType)type {
-    if (self.bold == YES && self.italic == NO && self.underline == NO) {
-        if (self.fontSize == 18.f) {
-            return LMTextStyleFormatTitleSmall;
-        }
-        else if (self.fontSize == 24.f) {
-            return LMTextStyleFormatTitleMedium;
-        }
-        else if (self.fontSize == 30.f) {
-            return LMTextStyleFormatTitleLarge;
-        }
-    }
-    return LMTextStyleFormatNormal;
 }
 
 - (UIFont *)font {

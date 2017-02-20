@@ -1,18 +1,18 @@
 //
-//  LMImageSettingsController.m
+//  LMImageInputViewController.m
 //  SimpleWord
 //
 //  Created by Chenly on 16/5/16.
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMImageSettingsController.h"
+#import "LMImageInputViewController.h"
 #import "LMPhotoCollectionCell.h"
 #import "LMImagePreviewController.h"
 
 @import Photos;
 
-@interface LMImageSettingsController () <UICollectionViewDataSource, UICollectionViewDelegate, LMImagePreviewControllerDelegate, PHPhotoLibraryChangeObserver, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface LMImageInputViewController () <UICollectionViewDataSource, UICollectionViewDelegate, LMImagePreviewControllerDelegate, PHPhotoLibraryChangeObserver, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *button1;
@@ -28,7 +28,7 @@
 
 @end
 
-@implementation LMImageSettingsController
+@implementation LMImageInputViewController
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -104,7 +104,7 @@
             previewController.delegate = self;
             previewController.asset = self.photosResult[self.selectedIndexPath.item];;
             UINavigationController *naviController = [[UINavigationController alloc] initWithRootViewController:previewController];
-            [self.delegate lm_imageSettingsController:self presentPreview:naviController];;
+            [self.delegate lm_imageInputViewController:self presentPreview:naviController];;
         }
         else {
             // 发送
@@ -120,7 +120,7 @@
                                                         // 会调用两次，第一次先给预览图片，用PHImageResultIsDegradedKey的值判断
                                                         BOOL isDegraded = [info[PHImageResultIsDegradedKey] boolValue];
                                                         if (!isDegraded) {
-                                                            [self.delegate lm_imageSettingsController:self insertImage:result];
+                                                            [self.delegate lm_imageInputViewController:self insertImage:result];
                                                         }
                                                     }];
         }
@@ -129,6 +129,10 @@
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         if (sender == self.button1) {
             // 拍照
+            if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                NSLog(@"模拟器不支持拍照!");
+                return;
+            }
             picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         }
         else {
@@ -136,7 +140,7 @@
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         }
         picker.delegate = self;
-        [self.delegate lm_imageSettingsController:self presentImagePickerView:picker];
+        [self.delegate lm_imageInputViewController:self presentImagePickerView:picker];
     }
 }
 
@@ -193,7 +197,7 @@
 
 - (void)lm_previewController:(LMImagePreviewController *)previewController dismissPreviewWithCancel:(BOOL)cancel {
     if (!cancel) {
-        [self.delegate lm_imageSettingsController:self insertImage:self.photos[self.selectedIndexPath]];
+        [self.delegate lm_imageInputViewController:self insertImage:self.photos[self.selectedIndexPath]];
     }
 }
 
@@ -213,7 +217,7 @@
     UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    [self.delegate lm_imageSettingsController:self insertImage:scaledImage];
+    [self.delegate lm_imageInputViewController:self insertImage:scaledImage];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {

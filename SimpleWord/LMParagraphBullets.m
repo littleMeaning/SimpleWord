@@ -6,14 +6,14 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphUnorderedList.h"
+#import "LMParagraphBullets.h"
 #import "UIFont+LMText.h"
 
-@interface LMParagraphUnorderedList ()
+@interface LMParagraphBullets ()
 
 @end
 
-@implementation LMParagraphUnorderedList
+@implementation LMParagraphBullets
 
 @synthesize view = _view;
 
@@ -70,7 +70,7 @@
         CGFloat radius = 4.f;
         UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
         UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:0 endAngle:M_PI * 2 clockwise:YES];
-        [[UIColor grayColor] setFill];
+        [[UIColor blackColor] setFill];
         [path fill];
         image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();

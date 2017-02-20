@@ -29,7 +29,7 @@
         NSDictionary *attributes = [attributedString attributesAtIndex:effectiveRange.location effectiveRange:&effectiveRange];
         NSTextAttachment *attachment = attributes[@"NSAttachment"];
         NSParagraphStyle *paragraph = attributes[@"NSParagraphStyle"];
-//        LMParagraphConfig *paragraphConfig = [[LMParagraphConfig alloc] initWithParagraphStyle:paragraph type:LMParagraphTypeNone];
+//        LMParagraphConfig *paragraphConfig = [[LMParagraphConfig alloc] initWithParagraphStyle:paragraph type:LMFormatTypeNormal];
         if (attachment) {
             switch (attachment.attachmentType) {
                 case LMTextAttachmentTypeImage:

@@ -6,9 +6,9 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphStyle.h"
+#import "LMParagraphFormat.h"
 
-@interface LMParagraphOrderedList : LMParagraphStyle
+@interface LMParagraphNumber : LMParagraphFormat
 
 @property (nonatomic, assign) NSInteger number;
 

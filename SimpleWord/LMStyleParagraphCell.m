@@ -36,6 +36,12 @@
     // Configure the view for the selected state
 }
 
+- (void)setEnable:(BOOL)enable {
+    self.leftButton.enabled = enable;
+    self.rightButton.enabled = enable;
+    _enable = enable;
+}
+
 - (void)setType:(NSInteger)type {
     self.listButton.selected = type == 1;
     self.numberListButton.selected = type == 2;

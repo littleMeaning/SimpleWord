@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LMStyleSettings.h"
+#import "LMFontSettings.h"
 
 typedef NS_ENUM(NSUInteger, LMStyleIndentDirection) {
     LMStyleIndentDirectionLeft = -1,
     LMStyleIndentDirectionRight = 1,
 };
 
-@protocol LMStyleParagraphCellDelegate <LMStyleSettings>
+@protocol LMStyleParagraphCellDelegate <LMFontSettings>
 
 - (void)lm_paragraphChangeIndentWithDirection:(LMStyleIndentDirection)direction;
 - (void)lm_paragraphChangeType:(NSInteger)type;
@@ -26,6 +26,7 @@ typedef NS_ENUM(NSUInteger, LMStyleIndentDirection) {
 @property (nonatomic, readonly) BOOL isList;
 @property (nonatomic, readonly) BOOL isNumberList;
 @property (nonatomic, readonly) BOOL isCheckbox;
+@property (nonatomic, assign) BOOL enable;
 
 @property (nonatomic, assign) NSInteger type;
 

@@ -1,31 +1,32 @@
 //
-//  LMParagraphStyle.m
+//  LMParagraphFormat.m
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/19.
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphStyle.h"
+#import "LMParagraphFormat.h"
 
-@interface LMParagraphStyle ()
+@interface LMParagraphFormat ()
 
 @end
 
-@implementation LMParagraphStyle
+@implementation LMParagraphFormat
 
-- (instancetype)initWithType:(LMParagraphType)type {
-    return [LMParagraphStyle paragraphStyleWithType:type];
+- (instancetype)initWithType:(LMFormatType)type {
+    return [LMParagraphFormat paragraphStyleWithType:type];
 }
 
-+ (instancetype)paragraphStyleWithType:(LMParagraphType)type {
++ (instancetype)paragraphStyleWithType:(LMFormatType)type {
     NSArray *classNameOfStyles = @[
                                    @"LMParagraphNormal",
-                                   @"LMParagraphUnorderedList",
-                                   @"LMParagraphOrderedList",
+                                   @"LMParagraphBullets",
+                                   @"LMParagraphDashedLine",
+                                   @"LMParagraphNumber",
                                    @"LMParagraphCheckbox"
                                    ];
-    LMParagraphStyle *instance = [[NSClassFromString(classNameOfStyles[type]) alloc] init];
+    LMParagraphFormat *instance = [[NSClassFromString(classNameOfStyles[type]) alloc] init];
     return instance;
 }
 

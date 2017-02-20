@@ -9,29 +9,31 @@
 #import "LMWordViewController.h"
 #import "LMWordView.h"
 #import "LMSegmentedControl.h"
-#import "LMStyleSettingsController.h"
-#import "LMImageSettingsController.h"
+#import "LMFontInputViewController.h"
+#import "LMImageInputViewController.h"
+#import "LMFormatInputViewController.h"
 #import "LMTextStyle.h"
 #import "NSTextAttachment+LMText.h"
 #import "UIFont+LMText.h"
 #import "LMTextHTMLParser.h"
 #import "LMParagraph.h"
-#import "LMParagraphStyle.h"
 
-@interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, LMStyleSettingsControllerDelegate, LMImageSettingsControllerDelegate>
-
-@property (nonatomic, assign) CGFloat keyboardSpacingHeight;
-@property (nonatomic, strong) LMSegmentedControl *contentInputAccessoryView;
+@interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, LMFontInputDelegate, LMImageInputDelegate, LMFormatInputDelegate>
 
 @property (nonatomic, readonly) UIStoryboard *lm_storyboard;
-@property (nonatomic, strong) LMStyleSettingsController *styleSettingsViewController;
-@property (nonatomic, strong) LMImageSettingsController *imageSettingsViewController;
 
+@property (nonatomic, assign) CGFloat keyboardSpacingHeight;
 @property (nonatomic, assign) CGFloat inputViewHeight;
+@property (nonatomic, strong) LMSegmentedControl *contentInputAccessoryView;
+
+@property (nonatomic, strong) LMFontInputViewController   *fontInputController;
+@property (nonatomic, strong) LMFormatInputViewController *formatInputController;
+@property (nonatomic, strong) LMImageInputViewController  *imageInputController;
 
 @property (nonatomic, strong) LMTextStyle *currentTextStyle;
 
 @property (nonatomic, assign) NSRange lastSelectedRange;
+@property (nonatomic, readonly) LMParagraph *currentParagraph;
 @property (nonatomic, assign) BOOL keepCurrentTextStyle;
 
 @end
@@ -53,8 +55,7 @@
                        [UIImage imageNamed:@"ABC_icon"],
                        [UIImage imageNamed:@"style_icon"],
                        [UIImage imageNamed:@"img_icon"],
-                       [UIImage imageNamed:@"@_icon"],
-                       [UIImage imageNamed:@"comment_icon"],
+                       [UIImage imageNamed:@"swipe_rename"],
                        [UIImage imageNamed:@"clear_icon"]
                        ];
     _contentInputAccessoryView = [[LMSegmentedControl alloc] initWithItems:items];
@@ -74,7 +75,7 @@
     [self.view addSubview:_textView];
     
 //    [self setCurrentParagraphConfig:[[LMParagraphConfig alloc] init]];
-    [self setCurrentTextStyle:[LMTextStyle textStyleWithType:LMTextStyleFormatNormal]];
+//    [self setCurrentTextStyle:[LMTextStyle textStyleWithType:LMTextStyleFormatNormal]];
 //    [self updateParagraphTypingAttributes];
     [self updateTextStyleTypingAttributes];
     
@@ -107,6 +108,17 @@
     UIEdgeInsets insets = self.textView.contentInset;
     insets.bottom = self.keyboardSpacingHeight;
     self.textView.contentInset = insets;
+}
+
+#pragma mark - getter & setter
+
+- (LMParagraph *)currentParagraph {
+    return [self.textView paragraphAtLocation:self.textView.selectedRange.location];
+}
+
+- (void)setCurrentParagraph {
+    // 设置 inputView 中当前段落风格的显示
+//    [self.fontInputController setParagraph:self.currentParagraph];
 }
 
 #pragma mark - Keyboard
@@ -150,7 +162,7 @@
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
     [self.contentInputAccessoryView setSelectedSegmentIndex:0 animated:NO];
     _textView.inputAccessoryView = self.contentInputAccessoryView;
-    [self.imageSettingsViewController reload];
+    [self.imageInputController reload];
     return YES;
 }
 
@@ -162,12 +174,10 @@
 - (void)textViewDidChangeSelection:(UITextView *)textView {
     
     LMParagraph *paragraph = [self.textView paragraphAtLocation:self.textView.selectedRange.location];
-    [self.styleSettingsViewController setParagraph:paragraph];
+    self.formatInputController.paragraph = paragraph;
     
-    if (self.lastSelectedRange.location != textView.selectedRange.location) {
-        
-        
-//
+//    if (self.lastSelectedRange.location != textView.selectedRange.location) {
+//        
 //        if (_keepCurrentTextStyle) {
 //            // 如果当前行的内容为空，TextView 会自动使用上一行的 typingAttributes，所以在删除内容时，保持 typingAttributes 不变
 //            [self updateTextStyleTypingAttributes];
@@ -181,17 +191,19 @@
 //            [self updateParagraphTypingAttributes];
 //            [self reloadSettingsView];
 //        }
-    }
+//    }
 }
 
 static void(^__afterChangingText)(void);
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningParagraph != LMParagraphTypeNone) {
+    if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningParagraph != LMFormatTypeNormal) {
         // 光标在文本的起始位置输入退格键
-        [self.textView setParagraphType:LMParagraphTypeNone forRange:range];
+        [self.textView setParagraphType:LMFormatTypeNormal forRange:range];
+        [self setCurrentParagraph];
         self.lastSelectedRange = self.textView.selectedRange;
+        [self setCurrentParagraph];
         return NO;
     }
     
@@ -206,6 +218,9 @@ static void(^__afterChangingText)(void);
             [self.textView didChangeTextInRange:range replacementText:text];
         };
     }
+    else {
+        [self setCurrentParagraph];
+    }
     self.lastSelectedRange = self.textView.selectedRange;
     return shouldChange;
 }
@@ -218,7 +233,37 @@ static void(^__afterChangingText)(void);
     }
 }
 
-#pragma mark - Change InputView
+#pragma mark - InputView
+
+- (LMFontInputViewController *)fontInputController {
+
+    if (!_fontInputController) {
+        _fontInputController = [self.lm_storyboard instantiateViewControllerWithIdentifier:@"style"];
+        _fontInputController.textStyle = self.currentTextStyle;
+        _fontInputController.delegate = self;
+    }
+    return _fontInputController;
+}
+
+- (LMImageInputViewController *)imageInputController {
+
+    if (!_imageInputController) {
+        _imageInputController = [self.lm_storyboard instantiateViewControllerWithIdentifier:@"image"];
+        _imageInputController.delegate = self;
+    }
+    return _imageInputController;
+}
+
+- (LMFormatInputViewController *)formatInputController {
+    
+    if (!_formatInputController) {
+        _formatInputController = [self.lm_storyboard instantiateViewControllerWithIdentifier:@"format"];
+        _formatInputController.delegate = self;
+    }
+    return _formatInputController;
+}
+
+#pragma mark <LMSegmentedControlDelegate>
 
 - (void)lm_segmentedControl:(LMSegmentedControl *)control didTapAtIndex:(NSInteger)index {
     
@@ -240,58 +285,43 @@ static void(^__afterChangingText)(void);
     return storyboard;
 }
 
-- (LMStyleSettingsController *)styleSettingsViewController {
-    if (!_styleSettingsViewController) {
-        _styleSettingsViewController = [self.lm_storyboard instantiateViewControllerWithIdentifier:@"style"];
-        _styleSettingsViewController.textStyle = self.currentTextStyle;
-        _styleSettingsViewController.delegate = self;
-    }
-    return _styleSettingsViewController;
-}
-
-- (LMImageSettingsController *)imageSettingsViewController {
-    if (!_imageSettingsViewController) {
-        _imageSettingsViewController = [self.lm_storyboard instantiateViewControllerWithIdentifier:@"image"];
-        _imageSettingsViewController.delegate = self;
-    }
-    return _imageSettingsViewController;
-}
+#pragma mark Change Input View
 
 - (void)changeTextInputView:(LMSegmentedControl *)control {
     
     CGRect rect = self.view.bounds;
     rect.size.height = self.keyboardSpacingHeight - CGRectGetHeight(self.contentInputAccessoryView.frame);
+    
+    UIViewController *inputViewController = nil;
     switch (control.selectedSegmentIndex) {
         case 1:
-        {
-            UIView *inputView = [[UIView alloc] initWithFrame:rect];
-            self.styleSettingsViewController.view.frame = rect;
-            [inputView addSubview:self.styleSettingsViewController.view];
-            self.textView.inputView = inputView;
+            inputViewController = self.fontInputController;
             break;
-        }
         case 2:
-        {
-            UIView *inputView = [[UIView alloc] initWithFrame:rect];
-            self.imageSettingsViewController.view.frame = rect;
-            [inputView addSubview:self.imageSettingsViewController.view];
-            self.textView.inputView = inputView;
+            inputViewController = self.imageInputController;
             break;
-        }
+        case 3:
+            inputViewController = self.formatInputController;
+            break;
         default:
             self.textView.inputView = nil;
             break;
     }
+    if (inputViewController) {
+        UIView *inputView = [[UIView alloc] initWithFrame:rect];
+        inputViewController.view.frame = rect;
+        [inputView addSubview:inputViewController.view];
+        self.textView.inputView = inputView;
+    }
     [self.textView reloadInputViews];
 }
 
-#pragma mark - settings
+#pragma mark - Settings
 
 // 刷新设置界面
 - (void)reloadSettingsView {
-    self.styleSettingsViewController.textStyle = self.currentTextStyle;
-//    [self.styleSettingsViewController setParagraphConfig:self.currentParagraphConfig];
-    [self.styleSettingsViewController reload];
+    self.fontInputController.textStyle = self.currentTextStyle;
+    [self.fontInputController reload];
 }
 
 - (LMTextStyle *)textStyleForSelection {
@@ -349,7 +379,7 @@ static void(^__afterChangingText)(void);
     return textAttachment;
 }
 
-#pragma mark - <LMStyleSettingsControllerDelegate>
+#pragma mark - <LMInputDelegates>
 
 - (void)lm_didChangedTextStyle:(LMTextStyle *)textStyle {
     
@@ -358,17 +388,17 @@ static void(^__afterChangingText)(void);
     [self updateTextStyleForSelection];
 }
 
-- (void)lm_didChangedParagraphType:(NSInteger)type {
+- (void)lm_didChangedParagraphType:(LMFormatType)type {
     [self.textView setParagraphType:type forRange:self.textView.selectedRange];
 }
 
-#pragma mark - <LMImageSettingsControllerDelegate>
+#pragma mark - <LMImageInputViewControllerDelegate>
 
-- (void)lm_imageSettingsController:(LMImageSettingsController *)viewController presentPreview:(UIViewController *)previewController {
+- (void)lm_imageInputViewController:(LMImageInputViewController *)viewController presentPreview:(UIViewController *)previewController {
     [self presentViewController:previewController animated:YES completion:nil];
 }
 
-- (void)lm_imageSettingsController:(LMImageSettingsController *)viewController insertImage:(UIImage *)image {
+- (void)lm_imageInputViewController:(LMImageInputViewController *)viewController insertImage:(UIImage *)image {
     
     // 降低图片质量用于流畅显示，将原始图片存入到 Document 目录下，将图片文件 URL 与 Attachment 绑定。
     float actualWidth = image.size.width * image.scale;
@@ -402,7 +432,7 @@ static void(^__afterChangingText)(void);
     });
 }
 
-- (void)lm_imageSettingsController:(LMImageSettingsController *)viewController presentImagePickerView:(UIViewController *)picker {
+- (void)lm_imageInputViewController:(LMImageInputViewController *)viewController presentImagePickerView:(UIViewController *)picker {
     [self presentViewController:picker animated:YES completion:nil];
 }
 

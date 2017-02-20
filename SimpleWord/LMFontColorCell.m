@@ -6,17 +6,17 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMStyleColorCell.h"
+#import "LMFontColorCell.h"
 #import "LMColorPickerView.h"
 
-@interface LMStyleColorCell () <LMColorPickerViewDataSource, LMColorPickerViewDelegate>
+@interface LMFontColorCell () <LMColorPickerViewDataSource, LMColorPickerViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *colorDisplayView;
 @property (weak, nonatomic) IBOutlet LMColorPickerView *colorPickerView;
 
 @end
 
-@implementation LMStyleColorCell
+@implementation LMFontColorCell
 {
     CAShapeLayer *_lineLayer;
 }
@@ -114,7 +114,7 @@
 
 - (void)lm_colorPickerView:(LMColorPickerView *)pickerView didSelectColor:(UIColor *)color {
     self.colorDisplayView.backgroundColor = color;
-    [self.delegate lm_didChangeStyleSettings:@{LMStyleSettingsTextColorName: color}];
+    [self.delegate lm_didChangeStyleSettings:@{LMFontSettingsTextColorName: color}];
 }
 
 @end

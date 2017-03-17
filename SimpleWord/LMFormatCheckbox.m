@@ -1,19 +1,19 @@
 //
-//  LMParagraphCheckbox.m
+//  LMFormatCheckbox.m
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/19.
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphCheckbox.h"
+#import "LMFormatCheckbox.h"
 #import "UIFont+LMText.h"
 
-@interface LMParagraphCheckbox ()
+@interface LMFormatCheckbox ()
 
 @end
 
-@implementation LMParagraphCheckbox
+@implementation LMFormatCheckbox
 
 @synthesize view = _view;
 
@@ -28,16 +28,16 @@
 - (NSDictionary *)textAttributes {
     
     UIFont *font = [UIFont lm_systemFont];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.paragraphSpacing = [self paragraphSpacing];
-    paragraphStyle.minimumLineHeight = [self indent];
-    paragraphStyle.maximumLineHeight = paragraphStyle.minimumLineHeight;
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.paragraphSpacing = [self paragraphSpacing];
+    style.minimumLineHeight = [self indent];
+    style.maximumLineHeight = style.minimumLineHeight;
     
     CGFloat baselineOffset = ([self indent] - font.lineHeight) / 2;
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
                                  NSBaselineOffsetAttributeName: @(baselineOffset),
-                                 NSParagraphStyleAttributeName: paragraphStyle,
+                                 NSParagraphStyleAttributeName: style,
                                  };
     return attributes;
 }

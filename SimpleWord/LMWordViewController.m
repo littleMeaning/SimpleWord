@@ -16,7 +16,7 @@
 #import "NSTextAttachment+LMText.h"
 #import "UIFont+LMText.h"
 #import "LMTextHTMLParser.h"
-#import "LMParagraph.h"
+#import "LMFormat.h"
 
 @interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, LMFontInputDelegate, LMImageInputDelegate, LMFormatInputDelegate>
 
@@ -30,54 +30,29 @@
 @property (nonatomic, strong) LMFormatInputViewController *formatInputController;
 @property (nonatomic, strong) LMImageInputViewController  *imageInputController;
 
+@property (nonatomic, readonly) LMFormat *currentParagraph;
 @property (nonatomic, strong) LMTextStyle *currentTextStyle;
 
 @property (nonatomic, assign) NSRange lastSelectedRange;
-@property (nonatomic, readonly) LMParagraph *currentParagraph;
 @property (nonatomic, assign) BOOL keepCurrentTextStyle;
 
 @end
 
 @implementation LMWordViewController
 
-#pragma mark - life cycle
+@synthesize currentTextStyle = _currentTextStyle;
 
-- (void)setup {
-    
-}
+#pragma mark - life cycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setup];
-    
-    NSArray *items = @[
-                       [UIImage imageNamed:@"ABC_icon"],
-                       [UIImage imageNamed:@"style_icon"],
-                       [UIImage imageNamed:@"img_icon"],
-                       [UIImage imageNamed:@"swipe_rename"],
-                       [UIImage imageNamed:@"clear_icon"]
-                       ];
-    _contentInputAccessoryView = [[LMSegmentedControl alloc] initWithItems:items];
-    _contentInputAccessoryView.delegate = self;
-    _contentInputAccessoryView.changeSegmentManually = YES;
-    
-    _textView = [[LMWordView alloc] init];
-    _textView.delegate = self;
-    _textView.titleTextField.delegate = self;
-    _textView.typingAttributes = ({
-        NSMutableDictionary *typingAttributes = [_textView.typingAttributes mutableCopy];
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.paragraphSpacing = 4.f;
-        typingAttributes[NSParagraphStyleAttributeName] = [paragraphStyle copy];
-        typingAttributes;
-    });
-    [self.view addSubview:_textView];
-    
-//    [self setCurrentParagraphConfig:[[LMParagraphConfig alloc] init]];
-//    [self setCurrentTextStyle:[LMTextStyle textStyleWithType:LMTextStyleFormatNormal]];
-//    [self updateParagraphTypingAttributes];
+    [self.view addSubview:self.textView];
     [self updateTextStyleTypingAttributes];
+    
+    [self.contentInputAccessoryView addTarget:self
+                                       action:@selector(changeTextInputView:)
+                             forControlEvents:UIControlEventValueChanged];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
@@ -87,11 +62,11 @@
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    [_contentInputAccessoryView addTarget:self action:@selector(changeTextInputView:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    
     [self layoutTextView];
     
     CGRect rect = self.view.bounds;
@@ -110,15 +85,49 @@
     self.textView.contentInset = insets;
 }
 
-#pragma mark - getter & setter
-
-- (LMParagraph *)currentParagraph {
-    return [self.textView paragraphAtLocation:self.textView.selectedRange.location];
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)setCurrentParagraph {
-    // 设置 inputView 中当前段落风格的显示
-//    [self.fontInputController setParagraph:self.currentParagraph];
+#pragma mark - getter & setter
+
+- (LMWordView *)textView {
+    
+    if (!_textView) {
+        _textView = [[LMWordView alloc] init];
+        _textView.delegate = self;
+        _textView.titleTextField.delegate = self;
+        _textView.typingAttributes = ({
+            NSMutableDictionary *typingAttributes = [_textView.typingAttributes mutableCopy];
+            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+            style.paragraphSpacing = 4.f;
+            typingAttributes[NSParagraphStyleAttributeName] = [style copy];
+            typingAttributes;
+        });
+    }
+    return _textView;
+}
+
+- (LMSegmentedControl *)contentInputAccessoryView {
+
+    if (!_contentInputAccessoryView) {
+        
+        NSArray *items = @[
+                           [UIImage imageNamed:@"ABC_icon"],
+                           [UIImage imageNamed:@"style_icon"],
+                           [UIImage imageNamed:@"img_icon"],
+                           [UIImage imageNamed:@"format_icon"],
+                           [UIImage imageNamed:@"clear_icon"]
+                           ];
+        _contentInputAccessoryView = [[LMSegmentedControl alloc] initWithItems:items];
+        _contentInputAccessoryView.delegate = self;
+        _contentInputAccessoryView.changeSegmentManually = YES;
+    }
+    return _contentInputAccessoryView;
+}
+
+- (LMFormat *)currentParagraph {
+    return [self.textView paragraphAtLocation:self.textView.selectedRange.location];
 }
 
 #pragma mark - Keyboard
@@ -173,25 +182,8 @@
 
 - (void)textViewDidChangeSelection:(UITextView *)textView {
     
-    LMParagraph *paragraph = [self.textView paragraphAtLocation:self.textView.selectedRange.location];
+    LMFormat *paragraph = [self.textView paragraphAtLocation:self.textView.selectedRange.location];
     self.formatInputController.paragraph = paragraph;
-    
-//    if (self.lastSelectedRange.location != textView.selectedRange.location) {
-//        
-//        if (_keepCurrentTextStyle) {
-//            // 如果当前行的内容为空，TextView 会自动使用上一行的 typingAttributes，所以在删除内容时，保持 typingAttributes 不变
-//            [self updateTextStyleTypingAttributes];
-//            [self updateParagraphTypingAttributes];
-//            _keepCurrentTextStyle = NO;
-//        }
-//        else {
-//            self.currentTextStyle = [self textStyleForSelection];
-//            self.currentParagraphConfig = [self paragraphForSelection];
-//            [self updateTextStyleTypingAttributes];
-//            [self updateParagraphTypingAttributes];
-//            [self reloadSettingsView];
-//        }
-//    }
 }
 
 static void(^__afterChangingText)(void);
@@ -201,9 +193,7 @@ static void(^__afterChangingText)(void);
     if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningParagraph != LMFormatTypeNormal) {
         // 光标在文本的起始位置输入退格键
         [self.textView setParagraphType:LMFormatTypeNormal forRange:range];
-        [self setCurrentParagraph];
         self.lastSelectedRange = self.textView.selectedRange;
-        [self setCurrentParagraph];
         return NO;
     }
     
@@ -217,9 +207,6 @@ static void(^__afterChangingText)(void);
         __afterChangingText = ^{
             [self.textView didChangeTextInRange:range replacementText:text];
         };
-    }
-    else {
-        [self setCurrentParagraph];
     }
     self.lastSelectedRange = self.textView.selectedRange;
     return shouldChange;
@@ -353,7 +340,7 @@ static void(^__afterChangingText)(void);
 
 - (NSTextAttachment *)insertImage:(UIImage *)image {
     // textView 默认会有一些左右边距
-    CGFloat width = CGRectGetWidth(self.textView.frame) - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12.f);
+//    CGFloat width = CGRectGetWidth(self.textView.frame) - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12.f);
     NSTextAttachment *textAttachment;// = [NSTextAttachment attachmentWithImage:image width:width];
     NSAttributedString *attachmentString = [NSAttributedString attributedStringWithAttachment:textAttachment];
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"\n"];
@@ -364,11 +351,11 @@ static void(^__afterChangingText)(void);
         [attributedString insertAttributedString:[[NSAttributedString alloc] initWithString:@"\n"] atIndex:0];
     }
     [attributedString addAttributes:self.textView.typingAttributes range:NSMakeRange(0, attributedString.length)];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [paragraphStyle setParagraphStyle:[NSParagraphStyle defaultParagraphStyle]];
-    paragraphStyle.paragraphSpacingBefore = 8.f;
-    paragraphStyle.paragraphSpacing = 8.f;
-    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, attributedString.length)];
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    [style setParagraphStyle:[NSParagraphStyle defaultParagraphStyle]];
+    style.paragraphSpacingBefore = 8.f;
+    style.paragraphSpacing = 8.f;
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:style range:NSMakeRange(0, attributedString.length)];
     
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:self.textView.attributedText];
     [attributedText replaceCharactersInRange:self.lastSelectedRange withAttributedString:attributedString];

@@ -6,8 +6,8 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphFormat.h"
+#import "LMFormatStyle.h"
 
-@interface LMParagraphBullets : LMParagraphFormat
+@interface LMFormatDashedLine : LMFormatStyle
 
 @end

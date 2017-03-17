@@ -8,7 +8,7 @@
 
 #import "LMFormatInputViewController.h"
 #import "LMFormatCell.h"
-#import "LMParagraph.h"
+#import "LMFormat.h"
 
 @interface LMFormatInputViewController ()
 
@@ -37,7 +37,7 @@
 
 #pragma mark - getter & setter
 
-- (void)setParagraph:(LMParagraph *)paragraph {
+- (void)setParagraph:(LMFormat *)paragraph {
     if (self.paragraph == paragraph) {
         return;
     }

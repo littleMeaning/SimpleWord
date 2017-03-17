@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "LMFormatType.h"
 
-@class LMParagraph;
+@class LMFormat;
 
 @protocol LMFormatInputDelegate <NSObject>
 
@@ -21,6 +21,6 @@
 @interface LMFormatInputViewController : UITableViewController
 
 @property (nonatomic, weak) id<LMFormatInputDelegate> delegate;
-@property (nonatomic, weak) LMParagraph *paragraph;
+@property (nonatomic, weak) LMFormat *paragraph;
 
 @end

@@ -1,26 +1,26 @@
 //
-//  LMParagraph.m
+//  LMFormat.m
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/21.
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraph.h"
-#import "LMParagraphFormat.h"
+#import "LMFormat.h"
+#import "LMFormatStyle.h"
 #import "UIFont+LMText.h"
-#import "LMParagraphCheckbox.h"
+#import "LMFormatCheckbox.h"
 #import "LMWordView.h"
 
 NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
 
-@implementation LMParagraph
+@implementation LMFormat
 
 - (instancetype)initWithFormatType:(LMFormatType)type textView:(UITextView *)textView {
     if (self = [super init]) {
         _type = type;
         _textView = textView;
-        _paragraphStyle = [LMParagraphFormat paragraphStyleWithType:type];
+        _style = [LMFormatStyle paragraphStyleWithType:type];
     }
     return self;
 }
@@ -36,13 +36,13 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
 }
 
 - (CGFloat)height {
-    return CGRectGetHeight(self.paragraphStyle.view.frame) + [self.paragraphStyle paragraphSpacing];
+    return CGRectGetHeight(self.style.view.frame) + [self.style paragraphSpacing];
 }
 
 #pragma mark - public method
 
 - (NSDictionary *)typingAttributes {
-    return [self.paragraphStyle textAttributes];
+    return [self.style textAttributes];
 }
 
 // 添加段落文本属性以适应当前段落样式
@@ -63,7 +63,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
         return;
     }
     [self textAttributesToFit];
-    UIView *view = [self.paragraphStyle view];
+    UIView *view = [self.style view];
     [self.textView addSubview:view];
     [self updateLayout];
     if (self.type == LMFormatTypeNormal) {
@@ -73,7 +73,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
 
 - (void)restoreParagraph {
     // 移除段落样式
-    [self.paragraphStyle.view removeFromSuperview];
+    [self.style.view removeFromSuperview];
     NSMutableArray *exclusionPaths = [self.textView.textContainer.exclusionPaths mutableCopy];
     if ([exclusionPaths containsObject:self.exclusionPath]) {
         [exclusionPaths removeObject:self.exclusionPath];
@@ -90,7 +90,7 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     NSLayoutManager *layoutManager = self.textView.layoutManager;
     UIEdgeInsets textContainerInset = self.textView.textContainerInset;
     
-    CGFloat boundingWidth = (textContainer.size.width - 3 * kUITextViewDefaultEdgeSpacing - self.paragraphStyle.indent);
+    CGFloat boundingWidth = (textContainer.size.width - 3 * kUITextViewDefaultEdgeSpacing - self.style.indent);
     NSAttributedString *attributedText = [self.textView.attributedText attributedSubstringFromRange:self.textRange];
     if (attributedText.length == 0 || [attributedText.string isEqualToString:@"\n"]) {
         attributedText = [[NSAttributedString alloc] initWithString:@"A" attributes:self.typingAttributes];
@@ -106,7 +106,7 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     CGFloat y = [layoutManager boundingRectForGlyphRange:self.textRange inTextContainer:textContainer].origin.y;
     
     CGRect rect = CGRectZero;
-    if ([self.paragraphStyle indent] == 0) {
+    if ([self.style indent] == 0) {
         // Normal 样式无需缩进
         rect.origin.x = textContainerInset.left;
     }
@@ -114,21 +114,21 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
         rect.origin.x = textContainerInset.left + kUITextViewDefaultEdgeSpacing;
     }
     rect.origin.y = textContainerInset.top + y;
-    rect.size.width = [self.paragraphStyle indent];
+    rect.size.width = [self.style indent];
     rect.size.height = boundingRect.size.height;
     [self updateFrameWithViewRect:rect];
 }
 
 - (void)updateFrameWithYOffset:(CGFloat)yOffset {
     
-    UIView *view = [self.paragraphStyle view];
+    UIView *view = [self.style view];
     CGRect rect = view.frame;
     rect.origin.y += yOffset;
     [self updateFrameWithViewRect:rect];
 }
 
 - (void)updateDisplayRecursion {
-    [self.paragraphStyle updateDisplayWithParagraph:self];
+    [self.style updateDisplayWithParagraph:self];
     if (self.next && self.next.type == self.type) {
         [self.next updateDisplayRecursion];
     }
@@ -141,7 +141,7 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     NSTextContainer *textContainer = self.textView.textContainer;
     UIEdgeInsets textContainerInset = self.textView.textContainerInset;
     
-    UIView *view = [self.paragraphStyle view];
+    UIView *view = [self.style view];
     view.frame = rect;
     
     rect.origin.x -= textContainerInset.left;

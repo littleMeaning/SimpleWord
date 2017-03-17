@@ -1,5 +1,5 @@
 //
-//  LMParagraphFormat.h
+//  LMFormatStyle.h
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/19.
@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LMParagraph.h"
+#import "LMFormat.h"
 
-@interface LMParagraphFormat : NSObject
+@interface LMFormatStyle : NSObject
 
 @property (nonatomic, readonly) CGFloat indent;
 @property (nonatomic, readonly) CGFloat paragraphSpacing;
@@ -20,6 +20,6 @@
 + (instancetype)paragraphStyleWithType:(LMFormatType)type;
 
 /// 刷新显示（同类型段落减少间距，有序列表数字显示改变）
-- (void)updateDisplayWithParagraph:(LMParagraph *)paragraph;
+- (void)updateDisplayWithParagraph:(LMFormat *)paragraph;
 
 @end

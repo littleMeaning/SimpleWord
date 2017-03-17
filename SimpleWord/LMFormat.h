@@ -1,5 +1,5 @@
 //
-//  LMParagraph.h
+//  LMFormat.h
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/21.
@@ -11,16 +11,16 @@
 
 extern NSString * const LMParagraphAttributeName;
 
-@class LMParagraphFormat;
+@class LMFormatStyle;
 
-@interface LMParagraph : NSObject
+@interface LMFormat : NSObject
 
 // 使用链表结构
-@property (nonatomic, weak) LMParagraph *previous;
-@property (nonatomic, strong) LMParagraph *next;
+@property (nonatomic, weak) LMFormat *previous;
+@property (nonatomic, strong) LMFormat *next;
 
 @property (nonatomic, readonly) LMFormatType type;
-@property (nonatomic, readonly) LMParagraphFormat *paragraphStyle;
+@property (nonatomic, readonly) LMFormatStyle *style;
 @property (nonatomic, readonly) CGFloat height;
 @property (nonatomic, readonly) NSRange textRange;
 @property (nonatomic, assign) NSInteger length;

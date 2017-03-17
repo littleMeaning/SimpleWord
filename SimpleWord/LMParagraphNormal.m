@@ -26,11 +26,11 @@
 }
 
 - (NSDictionary *)textAttributes {
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.paragraphSpacing = [self paragraphSpacing];
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.paragraphSpacing = [self paragraphSpacing];
     NSDictionary *attributes = @{
                                  NSFontAttributeName: [UIFont lm_systemFont],
-                                 NSParagraphStyleAttributeName: paragraphStyle,
+                                 NSParagraphStyleAttributeName: style,
                                  };
     return attributes;
 }

@@ -1,21 +1,21 @@
 //
-//  LMParagraphFormat.m
+//  LMFormatStyle.m
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/19.
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphFormat.h"
+#import "LMFormatStyle.h"
 
-@interface LMParagraphFormat ()
+@interface LMFormatStyle ()
 
 @end
 
-@implementation LMParagraphFormat
+@implementation LMFormatStyle
 
 - (instancetype)initWithType:(LMFormatType)type {
-    return [LMParagraphFormat paragraphStyleWithType:type];
+    return [LMFormatStyle paragraphStyleWithType:type];
 }
 
 + (instancetype)paragraphStyleWithType:(LMFormatType)type {
@@ -24,9 +24,9 @@
                                    @"LMParagraphBullets",
                                    @"LMParagraphDashedLine",
                                    @"LMParagraphNumber",
-                                   @"LMParagraphCheckbox"
+                                   @"LMFormatCheckbox"
                                    ];
-    LMParagraphFormat *instance = [[NSClassFromString(classNameOfStyles[type]) alloc] init];
+    LMFormatStyle *instance = [[NSClassFromString(classNameOfStyles[type]) alloc] init];
     return instance;
 }
 
@@ -46,7 +46,7 @@
     return nil;
 }
 
-- (void)updateDisplayWithParagraph:(LMParagraph *)paragraph {
+- (void)updateDisplayWithParagraph:(LMFormat *)paragraph {
     return;
 }
 

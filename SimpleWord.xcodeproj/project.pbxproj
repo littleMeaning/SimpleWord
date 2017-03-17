@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		740A3CFE1E5824FD00DA1AB1 /* LMParagraphDashedLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A3CFD1E5824FD00DA1AB1 /* LMParagraphDashedLine.m */; };
+		740A3CFE1E5824FD00DA1AB1 /* LMFormatDashedLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 740A3CFD1E5824FD00DA1AB1 /* LMFormatDashedLine.m */; };
 		740B9FFC1E4D911000EB0678 /* LMFontInputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 740B9FFB1E4D911000EB0678 /* LMFontInputViewController.m */; };
 		740B9FFF1E4D9E7200EB0678 /* LMFontFormatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 740B9FFE1E4D9E7200EB0678 /* LMFontFormatCell.m */; };
-		742D7EFE1E07D1E200EA436F /* LMParagraphCheckbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7EFD1E07D1E200EA436F /* LMParagraphCheckbox.m */; };
-		742D7F011E07D5BD00EA436F /* LMParagraphBullets.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7F001E07D5BD00EA436F /* LMParagraphBullets.m */; };
-		742D7F041E08B93800EA436F /* LMParagraphNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7F031E08B93800EA436F /* LMParagraphNumber.m */; };
-		7433A51C1E57DE4900891573 /* LMParagraphFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 7433A51B1E57DE4900891573 /* LMParagraphFormat.m */; };
-		743EBC7C1E0A1057003829C8 /* LMParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 743EBC7B1E0A1057003829C8 /* LMParagraph.m */; };
+		742D7EFE1E07D1E200EA436F /* LMFormatCheckbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7EFD1E07D1E200EA436F /* LMFormatCheckbox.m */; };
+		742D7F011E07D5BD00EA436F /* LMFormatBullets.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7F001E07D5BD00EA436F /* LMFormatBullets.m */; };
+		742D7F041E08B93800EA436F /* LMFormatNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 742D7F031E08B93800EA436F /* LMFormatNumber.m */; };
+		7433A51C1E57DE4900891573 /* LMFormatStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7433A51B1E57DE4900891573 /* LMFormatStyle.m */; };
 		744FF1EB1CE45EF0008F06BF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF1EA1CE45EF0008F06BF /* main.m */; };
 		744FF1EE1CE45EF0008F06BF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF1ED1CE45EF0008F06BF /* AppDelegate.m */; };
 		744FF1F11CE45EF0008F06BF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF1F01CE45EF0008F06BF /* ViewController.m */; };
@@ -31,6 +30,7 @@
 		744FF2291CE5DB52008F06BF /* LMFormatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF2281CE5DB52008F06BF /* LMFormatCell.m */; };
 		744FF22C1CE5DBB0008F06BF /* LMFontStyleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF22B1CE5DBB0008F06BF /* LMFontStyleCell.m */; };
 		744FF22F1CE5DBEE008F06BF /* LMStyleParagraphCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF22E1CE5DBEE008F06BF /* LMStyleParagraphCell.m */; };
+		748995651E7BBB8200F269F7 /* LMFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 748995641E7BBB8200F269F7 /* LMFormat.m */; };
 		748B40991D20F324004C1365 /* LMTextHTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 748B40981D20F324004C1365 /* LMTextHTMLParser.m */; };
 		74B08F801D6C3C6700856235 /* HTMLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B08F7F1D6C3C6700856235 /* HTMLViewController.m */; };
 		74B2BBBD1E18F5170008C953 /* LMParagraphNormal.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B2BBBC1E18F5170008C953 /* LMParagraphNormal.m */; };
@@ -45,23 +45,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		740A3CFC1E5824FD00DA1AB1 /* LMParagraphDashedLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphDashedLine.h; sourceTree = "<group>"; };
-		740A3CFD1E5824FD00DA1AB1 /* LMParagraphDashedLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphDashedLine.m; sourceTree = "<group>"; };
+		740A3CFC1E5824FD00DA1AB1 /* LMFormatDashedLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFormatDashedLine.h; sourceTree = "<group>"; };
+		740A3CFD1E5824FD00DA1AB1 /* LMFormatDashedLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFormatDashedLine.m; sourceTree = "<group>"; };
 		740B9FFA1E4D911000EB0678 /* LMFontInputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFontInputViewController.h; sourceTree = "<group>"; };
 		740B9FFB1E4D911000EB0678 /* LMFontInputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFontInputViewController.m; sourceTree = "<group>"; };
 		740B9FFD1E4D9E7200EB0678 /* LMFontFormatCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFontFormatCell.h; sourceTree = "<group>"; };
 		740B9FFE1E4D9E7200EB0678 /* LMFontFormatCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFontFormatCell.m; sourceTree = "<group>"; };
-		742D7EFC1E07D1E200EA436F /* LMParagraphCheckbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphCheckbox.h; sourceTree = "<group>"; };
-		742D7EFD1E07D1E200EA436F /* LMParagraphCheckbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphCheckbox.m; sourceTree = "<group>"; };
-		742D7EFF1E07D5BD00EA436F /* LMParagraphBullets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphBullets.h; sourceTree = "<group>"; };
-		742D7F001E07D5BD00EA436F /* LMParagraphBullets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphBullets.m; sourceTree = "<group>"; };
-		742D7F021E08B93800EA436F /* LMParagraphNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphNumber.h; sourceTree = "<group>"; };
-		742D7F031E08B93800EA436F /* LMParagraphNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphNumber.m; sourceTree = "<group>"; };
-		7433A51A1E57DE4900891573 /* LMParagraphFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraphFormat.h; sourceTree = "<group>"; };
-		7433A51B1E57DE4900891573 /* LMParagraphFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraphFormat.m; sourceTree = "<group>"; };
+		742D7EFC1E07D1E200EA436F /* LMFormatCheckbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFormatCheckbox.h; sourceTree = "<group>"; };
+		742D7EFD1E07D1E200EA436F /* LMFormatCheckbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFormatCheckbox.m; sourceTree = "<group>"; };
+		742D7EFF1E07D5BD00EA436F /* LMFormatBullets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFormatBullets.h; sourceTree = "<group>"; };
+		742D7F001E07D5BD00EA436F /* LMFormatBullets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFormatBullets.m; sourceTree = "<group>"; };
+		742D7F021E08B93800EA436F /* LMFormatNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFormatNumber.h; sourceTree = "<group>"; };
+		742D7F031E08B93800EA436F /* LMFormatNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFormatNumber.m; sourceTree = "<group>"; };
+		7433A51A1E57DE4900891573 /* LMFormatStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFormatStyle.h; sourceTree = "<group>"; };
+		7433A51B1E57DE4900891573 /* LMFormatStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFormatStyle.m; sourceTree = "<group>"; };
 		7433A51D1E57FEDA00891573 /* LMFormatType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMFormatType.h; sourceTree = "<group>"; };
-		743EBC7A1E0A1057003829C8 /* LMParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMParagraph.h; sourceTree = "<group>"; };
-		743EBC7B1E0A1057003829C8 /* LMParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMParagraph.m; sourceTree = "<group>"; };
 		744FF1E61CE45EF0008F06BF /* SimpleWord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		744FF1EA1CE45EF0008F06BF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		744FF1EC1CE45EF0008F06BF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -91,6 +89,8 @@
 		744FF22B1CE5DBB0008F06BF /* LMFontStyleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFontStyleCell.m; sourceTree = "<group>"; };
 		744FF22D1CE5DBEE008F06BF /* LMStyleParagraphCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMStyleParagraphCell.h; sourceTree = "<group>"; };
 		744FF22E1CE5DBEE008F06BF /* LMStyleParagraphCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMStyleParagraphCell.m; sourceTree = "<group>"; };
+		748995631E7BBB8200F269F7 /* LMFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFormat.h; sourceTree = "<group>"; };
+		748995641E7BBB8200F269F7 /* LMFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFormat.m; sourceTree = "<group>"; };
 		748B40971D20F324004C1365 /* LMTextHTMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMTextHTMLParser.h; sourceTree = "<group>"; };
 		748B40981D20F324004C1365 /* LMTextHTMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMTextHTMLParser.m; sourceTree = "<group>"; };
 		74B08F7E1D6C3C6700856235 /* HTMLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLViewController.h; sourceTree = "<group>"; };
@@ -228,6 +228,45 @@
 			name = Cells;
 			sourceTree = "<group>";
 		};
+		7489955F1E7BAEA900F269F7 /* InputViews */ = {
+			isa = PBXGroup;
+			children = (
+				748995611E7BAEC100F269F7 /* Format */,
+				748995601E7BAEB900F269F7 /* Image */,
+				748995621E7BAED100F269F7 /* Font */,
+			);
+			name = InputViews;
+			sourceTree = "<group>";
+		};
+		748995601E7BAEB900F269F7 /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				74C89A0C1CE9F15C00C63C56 /* LMImageInputViewController.h */,
+				74C89A0D1CE9F15C00C63C56 /* LMImageInputViewController.m */,
+				74C89A161CEA100300C63C56 /* LMImagePreviewController.h */,
+				74C89A171CEA100300C63C56 /* LMImagePreviewController.m */,
+			);
+			name = Image;
+			sourceTree = "<group>";
+		};
+		748995611E7BAEC100F269F7 /* Format */ = {
+			isa = PBXGroup;
+			children = (
+				744FF2161CE48910008F06BF /* LMFormatInputViewController.h */,
+				744FF2171CE48910008F06BF /* LMFormatInputViewController.m */,
+			);
+			name = Format;
+			sourceTree = "<group>";
+		};
+		748995621E7BAED100F269F7 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				740B9FFA1E4D911000EB0678 /* LMFontInputViewController.h */,
+				740B9FFB1E4D911000EB0678 /* LMFontInputViewController.m */,
+			);
+			name = Font;
+			sourceTree = "<group>";
+		};
 		74C899881CE5F0E700C63C56 /* Util */ = {
 			isa = PBXGroup;
 			children = (
@@ -247,22 +286,22 @@
 			isa = PBXGroup;
 			children = (
 				7433A51D1E57FEDA00891573 /* LMFormatType.h */,
+				748995631E7BBB8200F269F7 /* LMFormat.h */,
+				748995641E7BBB8200F269F7 /* LMFormat.m */,
 				74C89A011CE727D300C63C56 /* LMTextStyle.h */,
 				74C89A021CE727D300C63C56 /* LMTextStyle.m */,
-				743EBC7A1E0A1057003829C8 /* LMParagraph.h */,
-				743EBC7B1E0A1057003829C8 /* LMParagraph.m */,
-				7433A51A1E57DE4900891573 /* LMParagraphFormat.h */,
-				7433A51B1E57DE4900891573 /* LMParagraphFormat.m */,
+				7433A51A1E57DE4900891573 /* LMFormatStyle.h */,
+				7433A51B1E57DE4900891573 /* LMFormatStyle.m */,
 				74B2BBBB1E18F5170008C953 /* LMParagraphNormal.h */,
 				74B2BBBC1E18F5170008C953 /* LMParagraphNormal.m */,
-				742D7EFC1E07D1E200EA436F /* LMParagraphCheckbox.h */,
-				742D7EFD1E07D1E200EA436F /* LMParagraphCheckbox.m */,
-				742D7EFF1E07D5BD00EA436F /* LMParagraphBullets.h */,
-				742D7F001E07D5BD00EA436F /* LMParagraphBullets.m */,
-				740A3CFC1E5824FD00DA1AB1 /* LMParagraphDashedLine.h */,
-				740A3CFD1E5824FD00DA1AB1 /* LMParagraphDashedLine.m */,
-				742D7F021E08B93800EA436F /* LMParagraphNumber.h */,
-				742D7F031E08B93800EA436F /* LMParagraphNumber.m */,
+				742D7EFC1E07D1E200EA436F /* LMFormatCheckbox.h */,
+				742D7EFD1E07D1E200EA436F /* LMFormatCheckbox.m */,
+				742D7EFF1E07D5BD00EA436F /* LMFormatBullets.h */,
+				742D7F001E07D5BD00EA436F /* LMFormatBullets.m */,
+				740A3CFC1E5824FD00DA1AB1 /* LMFormatDashedLine.h */,
+				740A3CFD1E5824FD00DA1AB1 /* LMFormatDashedLine.m */,
+				742D7F021E08B93800EA436F /* LMFormatNumber.h */,
+				742D7F031E08B93800EA436F /* LMFormatNumber.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -275,14 +314,7 @@
 				744FF21B1CE592F7008F06BF /* LMWordViewController.m */,
 				744FF2001CE45F15008F06BF /* LMWordView.h */,
 				744FF2011CE45F15008F06BF /* LMWordView.m */,
-				744FF2161CE48910008F06BF /* LMFormatInputViewController.h */,
-				744FF2171CE48910008F06BF /* LMFormatInputViewController.m */,
-				74C89A0C1CE9F15C00C63C56 /* LMImageInputViewController.h */,
-				74C89A0D1CE9F15C00C63C56 /* LMImageInputViewController.m */,
-				74C89A161CEA100300C63C56 /* LMImagePreviewController.h */,
-				74C89A171CEA100300C63C56 /* LMImagePreviewController.m */,
-				740B9FFA1E4D911000EB0678 /* LMFontInputViewController.h */,
-				740B9FFB1E4D911000EB0678 /* LMFontInputViewController.m */,
+				7489955F1E7BAEA900F269F7 /* InputViews */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -371,10 +403,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				742D7F011E07D5BD00EA436F /* LMParagraphBullets.m in Sources */,
+				742D7F011E07D5BD00EA436F /* LMFormatBullets.m in Sources */,
 				744FF2181CE48910008F06BF /* LMFormatInputViewController.m in Sources */,
 				744FF2261CE5DB21008F06BF /* LMFontColorCell.m in Sources */,
-				743EBC7C1E0A1057003829C8 /* LMParagraph.m in Sources */,
 				744FF21F1CE59C30008F06BF /* LMSegmentedControl.m in Sources */,
 				744FF1F11CE45EF0008F06BF /* ViewController.m in Sources */,
 				74C899871CE5F0D900C63C56 /* LMFontSizePickerView.m in Sources */,
@@ -389,17 +420,18 @@
 				744FF22C1CE5DBB0008F06BF /* LMFontStyleCell.m in Sources */,
 				74B2BBBD1E18F5170008C953 /* LMParagraphNormal.m in Sources */,
 				74DA5FE71D253DF2009C3AAF /* UIFont+LMText.m in Sources */,
-				740A3CFE1E5824FD00DA1AB1 /* LMParagraphDashedLine.m in Sources */,
+				740A3CFE1E5824FD00DA1AB1 /* LMFormatDashedLine.m in Sources */,
 				748B40991D20F324004C1365 /* LMTextHTMLParser.m in Sources */,
 				744FF2221CE5DAD5008F06BF /* LMFontSizeCell.m in Sources */,
-				742D7EFE1E07D1E200EA436F /* LMParagraphCheckbox.m in Sources */,
-				7433A51C1E57DE4900891573 /* LMParagraphFormat.m in Sources */,
+				742D7EFE1E07D1E200EA436F /* LMFormatCheckbox.m in Sources */,
+				7433A51C1E57DE4900891573 /* LMFormatStyle.m in Sources */,
+				748995651E7BBB8200F269F7 /* LMFormat.m in Sources */,
 				74C89A151CE9FEEF00C63C56 /* LMPhotoCollectionCell.m in Sources */,
 				740B9FFC1E4D911000EB0678 /* LMFontInputViewController.m in Sources */,
 				744FF22F1CE5DBEE008F06BF /* LMStyleParagraphCell.m in Sources */,
 				744FF2021CE45F15008F06BF /* LMWordView.m in Sources */,
 				744FF21C1CE592F7008F06BF /* LMWordViewController.m in Sources */,
-				742D7F041E08B93800EA436F /* LMParagraphNumber.m in Sources */,
+				742D7F041E08B93800EA436F /* LMFormatNumber.m in Sources */,
 				74C89A0E1CE9F15C00C63C56 /* LMImageInputViewController.m in Sources */,
 				74C89A181CEA100300C63C56 /* LMImagePreviewController.m in Sources */,
 			);

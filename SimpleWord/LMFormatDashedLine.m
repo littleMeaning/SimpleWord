@@ -6,14 +6,14 @@
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphDashedLine.h"
+#import "LMFormatDashedLine.h"
 #import "UIFont+LMText.h"
 
-@interface LMParagraphDashedLine ()
+@interface LMFormatDashedLine ()
 
 @end
 
-@implementation LMParagraphDashedLine
+@implementation LMFormatDashedLine
 
 @synthesize view = _view;
 
@@ -33,12 +33,12 @@
 - (NSDictionary *)textAttributes {
     
     UIFont *font = [UIFont lm_systemFont];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.paragraphSpacing = [self paragraphSpacing];
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.paragraphSpacing = [self paragraphSpacing];
     
     NSDictionary *attributes = @{
                                  NSFontAttributeName: font,
-                                 NSParagraphStyleAttributeName: paragraphStyle,
+                                 NSParagraphStyleAttributeName: style,
                                  };
     return attributes;
 }

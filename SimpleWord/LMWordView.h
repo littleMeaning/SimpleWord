@@ -7,19 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LMFormatType.h"
 
-#import "LMParagraph.h"
+@class LMFormat;
 
 @interface LMWordView : UITextView
 
 @property (nonatomic, strong) UITextField *titleTextField;
 
-@property (nonatomic, strong) LMParagraph *beginningParagraph;
+@property (nonatomic, strong) LMFormat *beginningParagraph;
 - (void)setParagraphType:(LMFormatType)type forRange:(NSRange)range;
 - (void)setTypingAttributesForSelection;
 - (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text;
 - (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
-- (LMParagraph *)paragraphAtLocation:(NSUInteger)loc;
+- (LMFormat *)paragraphAtLocation:(NSUInteger)loc;
 
 @end

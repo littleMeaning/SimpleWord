@@ -1,13 +1,13 @@
 //
-//  LMParagraphCheckbox.h
+//  LMParagraphUnorderedList.h
 //  SimpleWord
 //
 //  Created by Chenly on 2016/12/19.
 //  Copyright © 2016年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphFormat.h"
+#import "LMFormatStyle.h"
 
-@interface LMParagraphCheckbox : LMParagraphFormat
+@interface LMFormatBullets : LMFormatStyle
 
 @end

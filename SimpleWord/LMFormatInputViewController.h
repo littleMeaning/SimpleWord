@@ -14,7 +14,7 @@
 @protocol LMFormatInputDelegate <NSObject>
 
 /// 切换段落样式
-- (void)lm_didChangedParagraphType:(LMFormatType)type;
+- (void)lm_didChangedFormatWithType:(LMFormatType)type;
 
 @end
 

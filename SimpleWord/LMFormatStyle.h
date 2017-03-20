@@ -17,7 +17,7 @@
 @property (nonatomic, readonly) NSDictionary *textAttributes;
 
 - (instancetype)initWithType:(LMFormatType)type;
-+ (instancetype)paragraphStyleWithType:(LMFormatType)type;
++ (instancetype)styleWithType:(LMFormatType)type;
 
 /// 刷新显示（同类型段落减少间距，有序列表数字显示改变）
 - (void)updateDisplayWithParagraph:(LMFormat *)paragraph;

@@ -63,7 +63,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.delegate lm_didChangedParagraphType:indexPath.row];
+    [self.delegate lm_didChangedFormatWithType:indexPath.row];
 }
 
 @end

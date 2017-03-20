@@ -15,15 +15,15 @@
 @implementation LMFormatStyle
 
 - (instancetype)initWithType:(LMFormatType)type {
-    return [LMFormatStyle paragraphStyleWithType:type];
+    return [LMFormatStyle styleWithType:type];
 }
 
-+ (instancetype)paragraphStyleWithType:(LMFormatType)type {
++ (instancetype)styleWithType:(LMFormatType)type {
     NSArray *classNameOfStyles = @[
-                                   @"LMParagraphNormal",
-                                   @"LMParagraphBullets",
-                                   @"LMParagraphDashedLine",
-                                   @"LMParagraphNumber",
+                                   @"LMFormatNormal",
+                                   @"LMFormatBullets",
+                                   @"LMFormatDashedLine",
+                                   @"LMFormatNumber",
                                    @"LMFormatCheckbox"
                                    ];
     LMFormatStyle *instance = [[NSClassFromString(classNameOfStyles[type]) alloc] init];

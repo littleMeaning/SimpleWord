@@ -24,13 +24,13 @@
 
 @property (nonatomic, assign) CGFloat keyboardSpacingHeight;
 @property (nonatomic, assign) CGFloat inputViewHeight;
-@property (nonatomic, strong) LMSegmentedControl *contentInputAccessoryView;
+@property (nonatomic, strong) LMSegmentedControl *inputSegmentControl;
 
 @property (nonatomic, strong) LMFontInputViewController   *fontInputController;
 @property (nonatomic, strong) LMFormatInputViewController *formatInputController;
 @property (nonatomic, strong) LMImageInputViewController  *imageInputController;
 
-@property (nonatomic, readonly) LMFormat *currentParagraph;
+@property (nonatomic, readonly) LMFormat *currentFormat;
 @property (nonatomic, strong) LMTextStyle *currentTextStyle;
 
 @property (nonatomic, assign) NSRange lastSelectedRange;
@@ -50,7 +50,7 @@
     [self.view addSubview:self.textView];
     [self updateTextStyleTypingAttributes];
     
-    [self.contentInputAccessoryView addTarget:self
+    [self.inputSegmentControl addTarget:self
                                        action:@selector(changeTextInputView:)
                              forControlEvents:UIControlEventValueChanged];
     
@@ -71,7 +71,7 @@
     
     CGRect rect = self.view.bounds;
     rect.size.height = 40.f;
-    self.contentInputAccessoryView.frame = rect;
+    self.inputSegmentControl.frame = rect;
 }
 
 - (void)layoutTextView {
@@ -108,9 +108,9 @@
     return _textView;
 }
 
-- (LMSegmentedControl *)contentInputAccessoryView {
+- (LMSegmentedControl *)inputSegmentControl {
 
-    if (!_contentInputAccessoryView) {
+    if (!_inputSegmentControl) {
         
         NSArray *items = @[
                            [UIImage imageNamed:@"ABC_icon"],
@@ -119,14 +119,13 @@
                            [UIImage imageNamed:@"format_icon"],
                            [UIImage imageNamed:@"clear_icon"]
                            ];
-        _contentInputAccessoryView = [[LMSegmentedControl alloc] initWithItems:items];
-        _contentInputAccessoryView.delegate = self;
-        _contentInputAccessoryView.changeSegmentManually = YES;
+        _inputSegmentControl = [[LMSegmentedControl alloc] initWithItems:items];
+        _inputSegmentControl.delegate = self;
     }
-    return _contentInputAccessoryView;
+    return _inputSegmentControl;
 }
 
-- (LMFormat *)currentParagraph {
+- (LMFormat *)currentFormat {
     return [self.textView paragraphAtLocation:self.textView.selectedRange.location];
 }
 
@@ -169,8 +168,8 @@
 #pragma mark - <UITextViewDelegate>
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-    [self.contentInputAccessoryView setSelectedSegmentIndex:0 animated:NO];
-    _textView.inputAccessoryView = self.contentInputAccessoryView;
+    [self.inputSegmentControl setSelectedSegmentIndex:0 animated:NO];
+    _textView.inputAccessoryView = self.inputSegmentControl;
     [self.imageInputController reload];
     return YES;
 }
@@ -184,6 +183,7 @@
     
     LMFormat *paragraph = [self.textView paragraphAtLocation:self.textView.selectedRange.location];
     self.formatInputController.paragraph = paragraph;
+    [self didFormatChange:paragraph.type];
 }
 
 static void(^__afterChangingText)(void);
@@ -192,7 +192,7 @@ static void(^__afterChangingText)(void);
 {
     if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningParagraph != LMFormatTypeNormal) {
         // 光标在文本的起始位置输入退格键
-        [self.textView setParagraphType:LMFormatTypeNormal forRange:range];
+        [self.textView setFormatWithType:LMFormatTypeNormal forRange:range];
         self.lastSelectedRange = self.textView.selectedRange;
         return NO;
     }
@@ -277,7 +277,7 @@ static void(^__afterChangingText)(void);
 - (void)changeTextInputView:(LMSegmentedControl *)control {
     
     CGRect rect = self.view.bounds;
-    rect.size.height = self.keyboardSpacingHeight - CGRectGetHeight(self.contentInputAccessoryView.frame);
+    rect.size.height = self.keyboardSpacingHeight - CGRectGetHeight(self.inputSegmentControl.frame);
     
     UIViewController *inputViewController = nil;
     switch (control.selectedSegmentIndex) {
@@ -375,8 +375,10 @@ static void(^__afterChangingText)(void);
     [self updateTextStyleForSelection];
 }
 
-- (void)lm_didChangedParagraphType:(LMFormatType)type {
-    [self.textView setParagraphType:type forRange:self.textView.selectedRange];
+- (void)lm_didChangedFormatWithType:(LMFormatType)type {
+    
+    [self.textView setFormatWithType:type forRange:self.textView.selectedRange];
+    [self didFormatChange:type];
 }
 
 #pragma mark - <LMImageInputViewControllerDelegate>
@@ -421,6 +423,19 @@ static void(^__afterChangingText)(void);
 
 - (void)lm_imageInputViewController:(LMImageInputViewController *)viewController presentImagePickerView:(UIViewController *)picker {
     [self presentViewController:picker animated:YES completion:nil];
+}
+
+#pragma mark - private
+
+- (void)didFormatChange:(LMFormatType)type {
+    
+    // 仅段落格式为普通文本时候设置字体标签可用
+    if (type == LMFormatTypeNormal) {
+        [self.inputSegmentControl setEnable:YES forSegmentIndex:1];
+    }
+    else {
+        [self.inputSegmentControl setEnable:NO forSegmentIndex:1];
+    }
 }
 
 #pragma mark - export

@@ -21,6 +21,7 @@ extern NSString * const LMParagraphAttributeName;
 
 @property (nonatomic, readonly) LMFormatType type;
 @property (nonatomic, readonly) LMFormatStyle *style;
+
 @property (nonatomic, readonly) CGFloat height;
 @property (nonatomic, readonly) NSRange textRange;
 @property (nonatomic, assign) NSInteger length;
@@ -32,8 +33,8 @@ extern NSString * const LMParagraphAttributeName;
 
 - (instancetype)initWithFormatType:(LMFormatType)type textView:(UITextView *)textView;
 
-- (void)formatParagraph;
-- (void)restoreParagraph;
+- (void)format;  // 格式化
+- (void)restore; // 移除格式
 - (void)updateLayout;
 - (void)updateFrameWithYOffset:(CGFloat)yOffset;
 - (void)updateDisplayRecursion;

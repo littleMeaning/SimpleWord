@@ -8,29 +8,36 @@
 
 #import "LMSegmentedControl.h"
 
+@interface LMSegmentedControl ()
+
+@property (nonatomic, strong) NSMutableArray *itemViews;
+@property (nonatomic, strong) UIView *slideBlockView;
+
+@end
+
 @implementation LMSegmentedControl
-{
-    NSMutableArray *_itemViews;
-    UIView *_slideBlockView;
-}
 
 - (instancetype)initWithItems:(NSArray<UIImage *> *)items {
+
     if (self = [super init]) {
+        
         self.clipsToBounds = YES;
         self.backgroundColor = [UIColor whiteColor];
-        _itemViews = [NSMutableArray arrayWithCapacity:items.count];
-        for (UIImage *itemImage in items) {
-            UIImageView *itemView = [[UIImageView alloc] initWithImage:itemImage];
-            itemView.contentMode = UIViewContentModeScaleAspectFit;
-            [self addSubview:itemView];
-            [_itemViews addObject:itemView];
-        }
-        _slideBlockView = [[UIView alloc] init];
-        _slideBlockView.backgroundColor = [UIColor darkGrayColor];
-        [self addSubview:_slideBlockView];
         
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-        [self addGestureRecognizer:tap];
+        self.itemViews = [NSMutableArray array];
+        [items enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
+            
+            UIButton *itemView = [[UIButton alloc] init];
+            itemView.backgroundColor = [UIColor clearColor];
+            itemView.imageView.contentMode = UIViewContentModeScaleAspectFit;
+            itemView.tag = idx;
+            [itemView setImage:image forState:UIControlStateNormal];
+            [self addSubview:itemView];
+            [self.itemViews addObject:itemView];
+            
+            [itemView addTarget:self action:@selector(itemAction:) forControlEvents:UIControlEventTouchUpInside];
+        }];
+        [self addSubview:self.slideBlockView];
     }
     return self;
 }
@@ -43,7 +50,7 @@
     CGFloat itemHeight = CGRectGetHeight(rect) - 4.f;
     rect.size = CGSizeMake(itemWidth, itemHeight);
     rect.origin.y = 1.f;
-    for (UIView *itemView in _itemViews) {
+    for (UIButton *itemView in _itemViews) {
         itemView.frame = CGRectInset(rect, itemWidth / 4, itemHeight / 4);
         rect.origin.x += itemWidth;
     }
@@ -55,21 +62,30 @@
     _slideBlockView.frame = rect;
 }
 
-- (void)handleTap:(UITapGestureRecognizer *)tap {
-    CGPoint point = [tap locationInView:self];
-    CGFloat itemWidth = CGRectGetWidth(self.bounds) / self.numberOfSegments;
-    NSInteger index = point.x / itemWidth;
+#pragma mark - getter & setter
+
+- (UIView *)slideBlockView {
     
+    if (!_slideBlockView) {
+        _slideBlockView = [[UIView alloc] init];
+        _slideBlockView.backgroundColor = [UIColor darkGrayColor];
+    }
+    return _slideBlockView;
+}
+
+#pragma mark - action
+
+- (void)itemAction:(UIControl *)item {
+
+    NSInteger index = item.tag;
     if ([self.delegate respondsToSelector:@selector(lm_segmentedControl:didTapAtIndex:)]) {
         [self.delegate lm_segmentedControl:self didTapAtIndex:index];
     }
-    if (!self.changeSegmentManually) {
-        [self setSelectedSegmentIndex:index animated:YES];
-    }
+    [self setSelectedSegmentIndex:index animated:YES];
 }
 
 - (NSInteger)numberOfSegments {
-    return _itemViews.count;
+    return self.itemViews.count;
 }
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex animated:(BOOL)animated {
@@ -88,6 +104,15 @@
         [self layoutSubviews];
     }
     [self sendActionsForControlEvents:UIControlEventValueChanged];
+}
+
+- (void)setEnable:(BOOL)enable forSegmentIndex:(NSUInteger)index {
+    
+    if (index >= self.itemViews.count) {
+        return;
+    }
+    UIControl *itemView = self.itemViews[index];
+    itemView.enabled = enable;
 }
 
 - (void)drawRect:(CGRect)rect {

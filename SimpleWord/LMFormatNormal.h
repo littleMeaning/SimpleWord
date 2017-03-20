@@ -8,6 +8,6 @@
 
 #import "LMFormatStyle.h"
 
-@interface LMParagraphNormal : LMFormatStyle
+@interface LMFormatNormal : LMFormatStyle
 
 @end

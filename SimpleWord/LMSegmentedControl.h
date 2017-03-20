@@ -19,12 +19,12 @@
 @interface LMSegmentedControl : UIControl
 
 @property (nonatomic, weak) id<LMSegmentedControlDelegate> delegate;
-@property (nonatomic, assign) BOOL changeSegmentManually;
 
 @property (nonatomic, readonly) NSInteger numberOfSegments;
 @property (nonatomic, readonly) NSInteger selectedSegmentIndex;
 
 - (instancetype)initWithItems:(NSArray<UIImage *> *)items;
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex animated:(BOOL)animated;
+- (void)setEnable:(BOOL)enable forSegmentIndex:(NSUInteger)index;
 
 @end

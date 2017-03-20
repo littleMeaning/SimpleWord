@@ -104,7 +104,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 #pragma mark - LMFormat
 
-- (void)setParagraphType:(LMFormatType)type forRange:(NSRange)range {
+- (void)setFormatWithType:(LMFormatType)type forRange:(NSRange)range {
     
     NSRange selectedRange = self.selectedRange;
     self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
@@ -116,7 +116,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     LMFormat *oldParagraph = begin;
     LMFormat *newParagraph;
     do {
-        [oldParagraph restoreParagraph];
+        [oldParagraph restore];
         
         newParagraph = [[LMFormat alloc] initWithFormatType:type textView:self];
         if (oldParagraph == self.beginningParagraph) {
@@ -129,7 +129,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         newParagraph.length = oldParagraph.length;
         newParagraph.next = oldParagraph.next;
         oldParagraph.next.previous = newParagraph;
-        [newParagraph formatParagraph];
+        [newParagraph format];
         
         if (NSLocationInRange(selectedRange.location, newParagraph.textRange) ||
             selectedRange.location == newParagraph.textRange.location) {
@@ -177,7 +177,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         begin.type != LMFormatTypeNormal) {
         if (begin.length == 0 || ([[self.text substringWithRange:begin.textRange] isEqualToString:@"\n"])) {
             // 光标在段首且为空段落时输入换行则去掉改段落样式
-            [self setParagraphType:LMFormatTypeNormal forRange:range];
+            [self setFormatWithType:LMFormatTypeNormal forRange:range];
             return NO;
         }
     }
@@ -185,7 +185,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         // 光标在段首且为空段落时输入退格则去掉改段落样式
         LMFormat *paragraph = [self paragraphAtLocation:range.location + 1];
         if (paragraph.type != LMFormatTypeNormal) {
-            [self setParagraphType:LMFormatTypeNormal forRange:NSMakeRange(range.location + 1, 0)];
+            [self setFormatWithType:LMFormatTypeNormal forRange:NSMakeRange(range.location + 1, 0)];
             return NO;
         }
     }
@@ -197,7 +197,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         LMFormat *item = begin;
         while ((item = item.next) && item != end) {
             offset -= item.height;
-            [item restoreParagraph];
+            [item restore];
         }
     }
     
@@ -214,7 +214,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         [replacement appendAttributedString:attributeStr];
         if (begin != end) {
             offset -= end.height;
-            [end restoreParagraph];
+            [end restore];
         }
         begin.next = end.next;
         begin.next.previous = begin;
@@ -240,7 +240,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
                 newParagraph.previous.next = newParagraph;
                 if (begin != end) {
                     offset -= end.height;
-                    [end restoreParagraph];
+                    [end restore];
                 }
                 newParagraph.length = component.length + tailLength;
                 end = newParagraph;
@@ -271,7 +271,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     [begin updateLayout];
     offset += begin.height;
     for (LMFormat *newParagraph in newParagraphs) {
-        [newParagraph formatParagraph];
+        [newParagraph format];
         offset += newParagraph.height;
     }
     

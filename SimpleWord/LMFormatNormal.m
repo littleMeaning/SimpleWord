@@ -6,14 +6,14 @@
 //  Copyright © 2017年 Little Meaning. All rights reserved.
 //
 
-#import "LMParagraphNormal.h"
+#import "LMFormatNormal.h"
 #import "UIFont+LMText.h"
 
-@interface LMParagraphNormal ()
+@interface LMFormatNormal ()
 
 @end
 
-@implementation LMParagraphNormal
+@implementation LMFormatNormal
 
 @synthesize view = _view;
 

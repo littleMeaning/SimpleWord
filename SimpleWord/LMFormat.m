@@ -20,7 +20,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     if (self = [super init]) {
         _type = type;
         _textView = textView;
-        _style = [LMFormatStyle paragraphStyleWithType:type];
+        _style = [LMFormatStyle styleWithType:type];
     }
     return self;
 }
@@ -57,7 +57,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     self.textView.allowsEditingTextAttributes = NO;
 }
 
-- (void)formatParagraph {
+- (void)format {
     // 格式化段落样式
     if (!self.textView) {
         return;
@@ -71,7 +71,7 @@ NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
     }
 }
 
-- (void)restoreParagraph {
+- (void)restore {
     // 移除段落样式
     [self.style.view removeFromSuperview];
     NSMutableArray *exclusionPaths = [self.textView.textContainer.exclusionPaths mutableCopy];

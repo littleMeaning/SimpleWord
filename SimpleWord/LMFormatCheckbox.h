@@ -8,6 +8,6 @@
 
 #import "LMFormatStyle.h"
 
-@interface LMFormatCheckbox : LMFormatStyle
+@interface LMFormatCheckbox : NSObject <LMFormatStyle>
 
 @end

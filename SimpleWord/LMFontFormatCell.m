@@ -7,7 +7,6 @@
 //
 
 #import "LMFontFormatCell.h"
-#import "LMTextStyle.h"
 
 @interface LMFontFormatCell ()
 

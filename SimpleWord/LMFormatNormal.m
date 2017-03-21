@@ -8,6 +8,7 @@
 
 #import "LMFormatNormal.h"
 #import "UIFont+LMText.h"
+#import "LMTextStyle.h"
 
 @interface LMFormatNormal ()
 
@@ -16,6 +17,14 @@
 @implementation LMFormatNormal
 
 @synthesize view = _view;
+
+- (instancetype)init {
+    
+    if (self = [super init]) {
+        _textStyle = [[LMTextStyle appearance] copy];
+    }
+    return self;
+}
 
 - (CGFloat)indent {
     return 0;
@@ -26,12 +35,20 @@
 }
 
 - (NSDictionary *)textAttributes {
-    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-    style.paragraphSpacing = [self paragraphSpacing];
-    NSDictionary *attributes = @{
-                                 NSFontAttributeName: [UIFont lm_systemFont],
-                                 NSParagraphStyleAttributeName: style,
-                                 };
+    
+    UIFont *font = self.textStyle.font ?: [UIFont lm_systemFont];
+    UIColor *textColor = self.textStyle.textColor;
+    BOOL underline = self.textStyle.underline;
+    
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    attributes[NSFontAttributeName] = font;
+    attributes[NSForegroundColorAttributeName] = textColor;
+    attributes[NSUnderlineStyleAttributeName] = @(underline);
+    attributes[NSParagraphStyleAttributeName] = ({
+        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        style.paragraphSpacing = [self paragraphSpacing];
+        style;
+    });
     return attributes;
 }
 

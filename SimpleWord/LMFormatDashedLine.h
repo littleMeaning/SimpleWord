@@ -8,6 +8,6 @@
 
 #import "LMFormatStyle.h"
 
-@interface LMFormatDashedLine : LMFormatStyle
+@interface LMFormatDashedLine : NSObject <LMFormatStyle>
 
 @end

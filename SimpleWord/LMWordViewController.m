@@ -17,6 +17,7 @@
 #import "UIFont+LMText.h"
 #import "LMTextHTMLParser.h"
 #import "LMFormat.h"
+#import "LMFormatNormal.h"
 
 @interface LMWordViewController () <UITextViewDelegate, UITextFieldDelegate, LMSegmentedControlDelegate, LMFontInputDelegate, LMImageInputDelegate, LMFormatInputDelegate>
 
@@ -129,6 +130,13 @@
     return [self.textView formatAtLocation:self.textView.selectedRange.location];
 }
 
+- (LMTextStyle *)currentTextStyle {
+    if (self.currentFormat.type == LMFormatTypeNormal) {
+        return self.currentFormat.style.textStyle;
+    }
+    return nil;
+}
+
 #pragma mark - Keyboard
 
 - (void)keyboardWillShow:(NSNotification *)notification {
@@ -204,6 +212,9 @@ static void(^__afterChangingText)(void);
         shouldChange = [self.textView changeTextInRange:range replacementText:text];
     }
     if (shouldChange) {
+        if (self.currentTextStyle) {
+            [LMTextStyle setupAppearanceWithInstance:self.currentTextStyle];
+        }
         __afterChangingText = ^{
             [self.textView didChangeTextInRange:range replacementText:text];
         };
@@ -226,7 +237,6 @@ static void(^__afterChangingText)(void);
 
     if (!_fontInputController) {
         _fontInputController = [self.lm_storyboard instantiateViewControllerWithIdentifier:@"style"];
-        _fontInputController.textStyle = self.currentTextStyle;
         _fontInputController.delegate = self;
     }
     return _fontInputController;
@@ -260,6 +270,11 @@ static void(^__afterChangingText)(void);
     }
     if (index != control.selectedSegmentIndex) {
         [control setSelectedSegmentIndex:index animated:YES];
+        if (index == 1) {
+            // Font
+            self.fontInputController.textStyle = self.currentFormat.style.textStyle;
+            [self.fontInputController reload];
+        }
     }
 }
 
@@ -304,12 +319,6 @@ static void(^__afterChangingText)(void);
 }
 
 #pragma mark - Settings
-
-// 刷新设置界面
-- (void)reloadSettingsView {
-    self.fontInputController.textStyle = self.currentTextStyle;
-    [self.fontInputController reload];
-}
 
 - (LMTextStyle *)textStyleForSelection {
     LMTextStyle *textStyle = [[LMTextStyle alloc] init];
@@ -427,8 +436,7 @@ static void(^__afterChangingText)(void);
 
 #pragma mark - private
 
-- (void)didFormatChange:(LMFormatType)type {
-    
+- (void)didFormatChange:(LMFormatType)type {    
     // 仅段落格式为普通文本时候设置字体标签可用
     if (type == LMFormatTypeNormal) {
         [self.inputSegmentControl setEnable:YES forSegmentIndex:1];

@@ -11,6 +11,7 @@
 #import "UIFont+LMText.h"
 #import "LMFormatCheckbox.h"
 #import "LMWordView.h"
+#import "LMTextStyle.h"
 
 @implementation LMFormat
 
@@ -18,7 +19,7 @@
     if (self = [super init]) {
         _type = type;
         _textView = textView;
-        _style = [LMFormatStyle styleWithType:type];
+        _style = [LMFormatStyle styleWithType:type];        
     }
     return self;
 }
@@ -37,11 +38,11 @@
     return CGRectGetHeight(self.style.view.frame) + [self.style paragraphSpacing];
 }
 
-#pragma mark - public method
-
 - (NSDictionary *)typingAttributes {
     return [self.style textAttributes];
 }
+
+#pragma mark - public method
 
 // 添加段落文本属性以适应当前段落样式
 - (void)textAttributesToFit {

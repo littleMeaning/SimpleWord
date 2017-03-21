@@ -8,7 +8,7 @@
 
 #import "LMFormatStyle.h"
 
-@interface LMFormatNumber : LMFormatStyle
+@interface LMFormatNumber : NSObject <LMFormatStyle>
 
 @property (nonatomic, assign) NSInteger number;
 

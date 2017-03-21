@@ -8,6 +8,6 @@
 
 #import "LMFormatStyle.h"
 
-@interface LMFormatBullets : LMFormatStyle
+@interface LMFormatBullets : NSObject <LMFormatStyle>
 
 @end

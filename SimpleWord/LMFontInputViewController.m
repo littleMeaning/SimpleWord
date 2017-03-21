@@ -35,7 +35,11 @@
     [super viewDidLayoutSubviews];
 }
 
-- (void)reload {}
+- (void)reload {    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
+}
 
 #pragma mark - setTextStyle
 
@@ -57,12 +61,10 @@
     
     if ([indexPath isEqual:self.selectedIndexPath]) {
         switch (indexPath.row) {
+            case 1:
+                return 120.f;
             case 2:
-                return 120.f;
-            case 3:
                 return 180.f;
-            case 4:
-                return 120.f;
             default:
                 break;
         }
@@ -95,7 +97,7 @@
             cell = fontSizeCell;
             break;
         }
-        case 3:
+        case 2:
         {
             LMFontColorCell *colorCell = [tableView dequeueReusableCellWithIdentifier:@"color"];
             colorCell.selectedColor = self.textStyle.textColor;

@@ -8,6 +8,10 @@
 
 #import "LMFormatStyle.h"
 
-@interface LMFormatNormal : LMFormatStyle
+@class LMTextStyle;
+
+@interface LMFormatNormal : NSObject <LMFormatStyle>
+
+@property (nonatomic, readonly) LMTextStyle *textStyle;
 
 @end

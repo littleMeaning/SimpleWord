@@ -10,44 +10,58 @@
 
 @interface LMFormatStyle ()
 
+@property (nonatomic, strong) id<LMFormatStyle> child;
+
 @end
 
 @implementation LMFormatStyle
 
 - (instancetype)initWithType:(LMFormatType)type {
-    return [LMFormatStyle styleWithType:type];
+    
+    if (self = [super init]) {
+        NSArray *classNameOfStyles = @[
+                                       @"LMFormatNormal",
+                                       @"LMFormatBullets",
+                                       @"LMFormatDashedLine",
+                                       @"LMFormatNumber",
+                                       @"LMFormatCheckbox"
+                                       ];
+        _child = [[NSClassFromString(classNameOfStyles[type]) alloc] init];
+    }
+    return self;
 }
 
 + (instancetype)styleWithType:(LMFormatType)type {
-    NSArray *classNameOfStyles = @[
-                                   @"LMFormatNormal",
-                                   @"LMFormatBullets",
-                                   @"LMFormatDashedLine",
-                                   @"LMFormatNumber",
-                                   @"LMFormatCheckbox"
-                                   ];
-    LMFormatStyle *instance = [[NSClassFromString(classNameOfStyles[type]) alloc] init];
-    return instance;
+    return [[LMFormatStyle alloc] initWithType:type];
 }
 
 - (CGFloat)indent {
-    return 0;
+    return [self.child indent];
 }
 
 - (CGFloat)paragraphSpacing {
-    return 0;
+    return [self.child indent];
 }
 
 - (UIView *)view {
-    return nil;
+    return [self.child view];
 }
 
 - (NSDictionary *)textAttributes {
+    return [self.child textAttributes];
+}
+
+- (LMTextStyle *)textStyle {
+    if ([self.child respondsToSelector:@selector(textStyle)]) {
+        return [self.child textStyle];
+    }
     return nil;
 }
 
-- (void)updateDisplayWithFormat:(LMFormat *)paragraph {
-    return;
+- (void)updateDisplayWithFormat:(LMFormat *)format {
+    if ([self.child respondsToSelector:@selector(updateDisplayWithFormat:)]) {
+        [self.child updateDisplayWithFormat:format];
+    }
 }
 
 @end

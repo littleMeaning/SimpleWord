@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "LMTextStyle.h"
 
 @protocol LMFontFormatDelegate <NSObject>

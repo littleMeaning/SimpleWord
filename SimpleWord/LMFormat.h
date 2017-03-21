@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "LMFormatType.h"
 
-extern NSString * const LMParagraphAttributeName;
-
 @class LMFormatStyle;
 
 @interface LMFormat : NSObject

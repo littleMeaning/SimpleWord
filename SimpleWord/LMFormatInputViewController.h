@@ -21,6 +21,6 @@
 @interface LMFormatInputViewController : UITableViewController
 
 @property (nonatomic, weak) id<LMFormatInputDelegate> delegate;
-@property (nonatomic, weak) LMFormat *paragraph;
+@property (nonatomic, weak) LMFormat *format;
 
 @end

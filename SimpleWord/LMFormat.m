@@ -12,8 +12,6 @@
 #import "LMFormatCheckbox.h"
 #import "LMWordView.h"
 
-NSString * const LMParagraphAttributeName = @"LMParagraphAttributeName";
-
 @implementation LMFormat
 
 - (instancetype)initWithFormatType:(LMFormatType)type textView:(UITextView *)textView {
@@ -128,7 +126,7 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
 }
 
 - (void)updateDisplayRecursion {
-    [self.style updateDisplayWithParagraph:self];
+    [self.style updateDisplayWithFormat:self];
     if (self.next && self.next.type == self.type) {
         [self.next updateDisplayRecursion];
     }

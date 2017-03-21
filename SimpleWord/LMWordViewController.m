@@ -126,7 +126,7 @@
 }
 
 - (LMFormat *)currentFormat {
-    return [self.textView paragraphAtLocation:self.textView.selectedRange.location];
+    return [self.textView formatAtLocation:self.textView.selectedRange.location];
 }
 
 #pragma mark - Keyboard
@@ -181,16 +181,16 @@
 
 - (void)textViewDidChangeSelection:(UITextView *)textView {
     
-    LMFormat *paragraph = [self.textView paragraphAtLocation:self.textView.selectedRange.location];
-    self.formatInputController.paragraph = paragraph;
-    [self didFormatChange:paragraph.type];
+    LMFormat *format = [self.textView formatAtLocation:self.textView.selectedRange.location];
+    self.formatInputController.format = format;
+    [self didFormatChange:format.type];
 }
 
 static void(^__afterChangingText)(void);
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningParagraph != LMFormatTypeNormal) {
+    if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningFormat != LMFormatTypeNormal) {
         // 光标在文本的起始位置输入退格键
         [self.textView setFormatWithType:LMFormatTypeNormal forRange:range];
         self.lastSelectedRange = self.textView.selectedRange;

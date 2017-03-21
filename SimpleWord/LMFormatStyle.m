@@ -46,7 +46,7 @@
     return nil;
 }
 
-- (void)updateDisplayWithParagraph:(LMFormat *)paragraph {
+- (void)updateDisplayWithFormat:(LMFormat *)paragraph {
     return;
 }
 

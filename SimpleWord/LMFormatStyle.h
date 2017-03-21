@@ -20,6 +20,6 @@
 + (instancetype)styleWithType:(LMFormatType)type;
 
 /// 刷新显示（同类型段落减少间距，有序列表数字显示改变）
-- (void)updateDisplayWithParagraph:(LMFormat *)paragraph;
+- (void)updateDisplayWithFormat:(LMFormat *)paragraph;
 
 @end

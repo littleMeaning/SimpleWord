@@ -70,7 +70,7 @@
     self.numberLabel.text = [NSString stringWithFormat:@"%ld.", number];
 }
 
-- (void)updateDisplayWithParagraph:(LMFormat *)paragraph {    
+- (void)updateDisplayWithFormat:(LMFormat *)paragraph {    
     if (paragraph.previous.type == LMFormatTypeNumber) {
         self.number = ((LMFormatNumber *)paragraph.previous.style).number + 1;
     }

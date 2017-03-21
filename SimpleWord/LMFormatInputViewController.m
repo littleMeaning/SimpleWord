@@ -31,17 +31,17 @@
 }
 
 - (void)setSelectedRow {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.paragraph.type inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.format.type inSection:0];
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
 }
 
 #pragma mark - getter & setter
 
-- (void)setParagraph:(LMFormat *)paragraph {
-    if (self.paragraph == paragraph) {
+- (void)setFormat:(LMFormat *)paragraph {
+    if (self.format == paragraph) {
         return;
     }
-    _paragraph = paragraph;
+    _format = paragraph;
     [self setSelectedRow];
 }
 

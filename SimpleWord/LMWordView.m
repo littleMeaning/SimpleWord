@@ -63,8 +63,8 @@ static CGFloat const kLMWCommonSpacing = 16.f;
                                                kLMWCommonSpacing,
                                                kLMWCommonSpacing);
     
-    self.beginningParagraph = [[LMFormat alloc] initWithFormatType:LMFormatTypeNormal textView:self];
-    self.typingAttributes = self.beginningParagraph.typingAttributes;
+    self.beginningFormat = [[LMFormat alloc] initWithFormatType:LMFormatTypeNormal textView:self];
+    self.typingAttributes = self.beginningFormat.typingAttributes;
 }
 
 - (void)layoutSubviews {
@@ -109,36 +109,36 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     NSRange selectedRange = self.selectedRange;
     self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
     
-    LMFormat *begin = [self paragraphAtLocation:range.location];
-    LMFormat *end = [self paragraphAtLocation:NSMaxRange(range)];
+    LMFormat *begin = [self formatAtLocation:range.location];
+    LMFormat *end = [self formatAtLocation:NSMaxRange(range)];
     
     CGFloat offset = 0;
-    LMFormat *oldParagraph = begin;
-    LMFormat *newParagraph;
+    LMFormat *oldFormat = begin;
+    LMFormat *newFormat;
     do {
-        [oldParagraph restore];
+        [oldFormat restore];
         
-        newParagraph = [[LMFormat alloc] initWithFormatType:type textView:self];
-        if (oldParagraph == self.beginningParagraph) {
-            self.beginningParagraph = newParagraph;
+        newFormat = [[LMFormat alloc] initWithFormatType:type textView:self];
+        if (oldFormat == self.beginningFormat) {
+            self.beginningFormat = newFormat;
         }
         else {
-            oldParagraph.previous.next = newParagraph;
-            newParagraph.previous = oldParagraph.previous;
+            oldFormat.previous.next = newFormat;
+            newFormat.previous = oldFormat.previous;
         }
-        newParagraph.length = oldParagraph.length;
-        newParagraph.next = oldParagraph.next;
-        oldParagraph.next.previous = newParagraph;
-        [newParagraph format];
+        newFormat.length = oldFormat.length;
+        newFormat.next = oldFormat.next;
+        oldFormat.next.previous = newFormat;
+        [newFormat format];
         
-        if (NSLocationInRange(selectedRange.location, newParagraph.textRange) ||
-            selectedRange.location == newParagraph.textRange.location) {
-            self.typingAttributes = newParagraph.typingAttributes;
+        if (NSLocationInRange(selectedRange.location, newFormat.textRange) ||
+            selectedRange.location == newFormat.textRange.location) {
+            self.typingAttributes = newFormat.typingAttributes;
         }
-        offset += (newParagraph.height - oldParagraph.height);
+        offset += (newFormat.height - oldFormat.height);
         
-    } while (oldParagraph != end && (oldParagraph = oldParagraph.next));
-    end = newParagraph;
+    } while (oldFormat != end && (oldFormat = oldFormat.next));
+    end = newFormat;
     
     // 调整后续段落的位置
     if (offset != 0) {
@@ -162,14 +162,14 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 - (void)setTypingAttributesForSelection {
     
-    LMFormat *paragraph = [self paragraphAtLocation:self.selectedRange.location];
-    self.typingAttributes = paragraph.typingAttributes;
+    LMFormat *format = [self formatAtLocation:self.selectedRange.location];
+    self.typingAttributes = format.typingAttributes;
 }
 
 - (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text {
 
-    LMFormat *begin = [self paragraphAtLocation:range.location];
-    LMFormat *end = [self paragraphAtLocation:NSMaxRange(range)];
+    LMFormat *begin = [self formatAtLocation:range.location];
+    LMFormat *end = [self formatAtLocation:NSMaxRange(range)];
     
     if ([text isEqualToString:@"\n"] &&
         range.length == 0 &&
@@ -183,8 +183,8 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     }
     else if (text.length == 0 && [[self.text substringWithRange:range] isEqualToString:@"\n"]) {
         // 光标在段首且为空段落时输入退格则去掉改段落样式
-        LMFormat *paragraph = [self paragraphAtLocation:range.location + 1];
-        if (paragraph.type != LMFormatTypeNormal) {
+        LMFormat *format = [self formatAtLocation:range.location + 1];
+        if (format.type != LMFormatTypeNormal) {
             [self setFormatWithType:LMFormatTypeNormal forRange:NSMakeRange(range.location + 1, 0)];
             return NO;
         }
@@ -202,8 +202,8 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     }
     
     NSMutableAttributedString *replacement = [[NSMutableAttributedString alloc] init];
-    NSMutableArray *newParagraphs = [[NSMutableArray alloc] init];
-    LMFormat *paragraph;
+    NSMutableArray *newFormats = [[NSMutableArray alloc] init];
+    LMFormat *format;
     CGFloat tailLength = NSMaxRange(end.textRange) - NSMaxRange(range);
     NSArray *components = [text componentsSeparatedByString:@"\n"];
     if (components.count == 1) {
@@ -218,7 +218,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
         }
         begin.next = end.next;
         begin.next.previous = begin;
-        paragraph = begin;
+        format = begin;
         end = begin;
     }
     else {
@@ -229,34 +229,34 @@ static CGFloat const kLMWCommonSpacing = 16.f;
                 // 第一个
                 begin.length = range.location - begin.textRange.location + component.length + 1;
                 attributeStr = [[NSAttributedString alloc] initWithString:[component stringByAppendingString:@"\n"] attributes:begin.typingAttributes];
-                paragraph = begin;
+                format = begin;
             }
             else if (idx == components.count - 1) {
                 // 最后一个
-                LMFormat *newParagraph = [[LMFormat alloc] initWithFormatType:end.type textView:self];
-                newParagraph.previous = paragraph;
-                newParagraph.next = end.next;
-                newParagraph.next.previous = newParagraph;
-                newParagraph.previous.next = newParagraph;
+                LMFormat *newFormat = [[LMFormat alloc] initWithFormatType:end.type textView:self];
+                newFormat.previous = format;
+                newFormat.next = end.next;
+                newFormat.next.previous = newFormat;
+                newFormat.previous.next = newFormat;
                 if (begin != end) {
                     offset -= end.height;
                     [end restore];
                 }
-                newParagraph.length = component.length + tailLength;
-                end = newParagraph;
-                [newParagraphs addObject:newParagraph];
+                newFormat.length = component.length + tailLength;
+                end = newFormat;
+                [newFormats addObject:newFormat];
                 attributeStr = [[NSAttributedString alloc] initWithString:component attributes:end.typingAttributes];
             }
             else {
-                LMFormat *newParagraph = [[LMFormat alloc] initWithFormatType:LMFormatTypeNormal textView:self];
-                newParagraph.previous = paragraph;
-                paragraph.next = newParagraph;
-                newParagraph.length = component.length + 1;
+                LMFormat *newFormat = [[LMFormat alloc] initWithFormatType:LMFormatTypeNormal textView:self];
+                newFormat.previous = format;
+                format.next = newFormat;
+                newFormat.length = component.length + 1;
                 
-                [newParagraphs addObject:newParagraph];
-                paragraph = newParagraph;
+                [newFormats addObject:newFormat];
+                format = newFormat;
                 
-                attributeStr = [[NSAttributedString alloc] initWithString:[component stringByAppendingString:@"\n"] attributes:paragraph.typingAttributes];
+                attributeStr = [[NSAttributedString alloc] initWithString:[component stringByAppendingString:@"\n"] attributes:format.typingAttributes];
             }
             [replacement appendAttributedString:attributeStr];
         }
@@ -270,9 +270,9 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     offset -= begin.height;
     [begin updateLayout];
     offset += begin.height;
-    for (LMFormat *newParagraph in newParagraphs) {
-        [newParagraph format];
-        offset += newParagraph.height;
+    for (LMFormat *newFormat in newFormats) {
+        [newFormat format];
+        offset += newFormat.height;
     }
     
     // 调整后续段落位置
@@ -297,31 +297,31 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 - (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     // 没有换行情况下，文本内容改变
-    LMFormat *paragraph = [self paragraphAtLocation:range.location];
-    paragraph.length += (text.length - range.length);
+    LMFormat *format = [self formatAtLocation:range.location];
+    format.length += (text.length - range.length);
     
-    CGFloat offset = -paragraph.height;
-    [paragraph updateLayout];
-    offset += paragraph.height;
+    CGFloat offset = -format.height;
+    [format updateLayout];
+    offset += format.height;
     if (offset != 0) {
-        LMFormat *item = paragraph;
+        LMFormat *item = format;
         while ((item = item.next)) {
             [item updateFrameWithYOffset:offset];
         }
     }
 }
 
-- (LMFormat *)paragraphAtLocation:(NSUInteger)loc {
-    // 通过 Location 查找 Paragraph
-    LMFormat *paragraph = self.beginningParagraph;
-    while (paragraph && !(loc == paragraph.textRange.location || NSLocationInRange(loc, paragraph.textRange))) {
-        if (!paragraph.next) {
+- (LMFormat *)formatAtLocation:(NSUInteger)loc {
+    // 通过 Location 查找 Format
+    LMFormat *format = self.beginningFormat;
+    while (format && !(loc == format.textRange.location || NSLocationInRange(loc, format.textRange))) {
+        if (!format.next) {
             break;
         }
-        paragraph = paragraph.next;
+        format = format.next;
     }
-    NSAssert(paragraph, @"paragraphForTextRange: 错误");
-    return paragraph;
+    NSAssert(format, @"formatAtLocation: 错误");
+    return format;
 }
 
 @end

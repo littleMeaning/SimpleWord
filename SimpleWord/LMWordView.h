@@ -15,12 +15,12 @@
 
 @property (nonatomic, strong) UITextField *titleTextField;
 
-@property (nonatomic, strong) LMFormat *beginningParagraph;
+@property (nonatomic, strong) LMFormat *beginningFormat;
 - (void)setFormatWithType:(LMFormatType)type forRange:(NSRange)range;
 - (void)setTypingAttributesForSelection;
 - (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text;
 - (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
-- (LMFormat *)paragraphAtLocation:(NSUInteger)loc;
+- (LMFormat *)formatAtLocation:(NSUInteger)loc;
 
 @end

@@ -297,9 +297,11 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 - (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     // 没有换行情况下，文本内容改变
-    LMFormat *format = [self formatAtLocation:range.location];
-    format.length += (text.length - range.length);
-    
+    CGFloat location = range.location;
+    LMFormat *format = [self formatAtLocation:location];
+    // 获取当前编辑的段落长度
+    format.length = [self.text paragraphRangeForRange:NSMakeRange(location, 0)].length;
+    // 调整后面的段落位置
     CGFloat offset = -format.height;
     [format updateLayout];
     offset += format.height;

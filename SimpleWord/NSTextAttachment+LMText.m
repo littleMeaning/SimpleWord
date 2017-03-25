@@ -24,16 +24,18 @@
     return textAttachment;
 }
 
-//+ (instancetype)attachmentWithImage:(UIImage *)image width:(CGFloat)width {
-//    NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];    
-//    CGRect rect = CGRectZero;
-//    rect.size.width = width;
-//    rect.size.height = width * image.size.height / image.size.width;
-//    rect.size.width += kSpaceWidth;
-//    textAttachment.bounds = rect;
-//    textAttachment.image = image;
-//    return textAttachment;
-//}
+static CGFloat const kDefaultSpaceWidth = 8.f;
+
++ (instancetype)attachmentWithImage:(UIImage *)image width:(CGFloat)width {
+    NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];    
+    CGRect rect = CGRectZero;
+    rect.size.width = width;
+    rect.size.height = width * image.size.height / image.size.width;
+    rect.size.width += kDefaultSpaceWidth;
+    textAttachment.bounds = rect;
+    textAttachment.image = image;
+    return textAttachment;
+}
 
 //+ (UIImage *)imageWithType:(LMFormatType)type {
 //    CGRect rect = [self attachmentBounds];

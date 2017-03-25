@@ -208,13 +208,13 @@ static void(^__afterChangingText)(void);
     BOOL shouldChange = YES;
     NSString *replacedText = [textView.text substringWithRange:range];
     if ([text containsString:@"\n"] || [replacedText containsString:@"\n"]) {
+        if (self.currentTextStyle) {
+            [LMTextStyle setupAppearanceWithInstance:self.currentTextStyle];
+        }
         // 段落发生改变
         shouldChange = [self.textView changeTextInRange:range replacementText:text];
     }
     if (shouldChange) {
-        if (self.currentTextStyle) {
-            [LMTextStyle setupAppearanceWithInstance:self.currentTextStyle];
-        }
         __afterChangingText = ^{
             [self.textView didChangeTextInRange:range replacementText:text];
         };
@@ -349,8 +349,8 @@ static void(^__afterChangingText)(void);
 
 - (NSTextAttachment *)insertImage:(UIImage *)image {
     // textView 默认会有一些左右边距
-//    CGFloat width = CGRectGetWidth(self.textView.frame) - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12.f);
-    NSTextAttachment *textAttachment;// = [NSTextAttachment attachmentWithImage:image width:width];
+    CGFloat width = CGRectGetWidth(self.textView.frame) - (self.textView.textContainerInset.left + self.textView.textContainerInset.right + 12.f);
+    NSTextAttachment *textAttachment = [NSTextAttachment attachmentWithImage:image width:width];
     NSAttributedString *attachmentString = [NSAttributedString attributedStringWithAttachment:textAttachment];
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@"\n"];
     [attributedString insertAttributedString:attachmentString atIndex:0];

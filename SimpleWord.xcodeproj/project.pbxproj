@@ -32,7 +32,7 @@
 		744FF22F1CE5DBEE008F06BF /* LMStyleParagraphCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 744FF22E1CE5DBEE008F06BF /* LMStyleParagraphCell.m */; };
 		748995651E7BBB8200F269F7 /* LMFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 748995641E7BBB8200F269F7 /* LMFormat.m */; };
 		748B40991D20F324004C1365 /* LMTextHTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 748B40981D20F324004C1365 /* LMTextHTMLParser.m */; };
-		74AD0DD41E810E4100D36D76 /* LMTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 74AD0DD21E810E4100D36D76 /* LMTextStyle.m */; };
+		74AD0DDB1E82111F00D36D76 /* LMTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 74AD0DDA1E82111F00D36D76 /* LMTextStyle.m */; };
 		74B08F801D6C3C6700856235 /* HTMLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B08F7F1D6C3C6700856235 /* HTMLViewController.m */; };
 		74B2BBBD1E18F5170008C953 /* LMFormatNormal.m in Sources */ = {isa = PBXBuildFile; fileRef = 74B2BBBC1E18F5170008C953 /* LMFormatNormal.m */; };
 		74C899871CE5F0D900C63C56 /* LMFontSizePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C899861CE5F0D900C63C56 /* LMFontSizePickerView.m */; };
@@ -93,8 +93,8 @@
 		748995641E7BBB8200F269F7 /* LMFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMFormat.m; sourceTree = "<group>"; };
 		748B40971D20F324004C1365 /* LMTextHTMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMTextHTMLParser.h; sourceTree = "<group>"; };
 		748B40981D20F324004C1365 /* LMTextHTMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMTextHTMLParser.m; sourceTree = "<group>"; };
-		74AD0DD21E810E4100D36D76 /* LMTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LMTextStyle.m; path = ../../../Desktop/LMTextStyle.m; sourceTree = "<group>"; };
-		74AD0DD31E810E4100D36D76 /* LMTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LMTextStyle.h; path = ../../../Desktop/LMTextStyle.h; sourceTree = "<group>"; };
+		74AD0DD91E82111F00D36D76 /* LMTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMTextStyle.h; sourceTree = "<group>"; };
+		74AD0DDA1E82111F00D36D76 /* LMTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMTextStyle.m; sourceTree = "<group>"; };
 		74B08F7E1D6C3C6700856235 /* HTMLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLViewController.h; sourceTree = "<group>"; };
 		74B08F7F1D6C3C6700856235 /* HTMLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTMLViewController.m; sourceTree = "<group>"; };
 		74B2BBBB1E18F5170008C953 /* LMFormatNormal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMFormatNormal.h; sourceTree = "<group>"; };
@@ -130,8 +130,6 @@
 		740BA0001E4D9E7F00EB0678 /* Font */ = {
 			isa = PBXGroup;
 			children = (
-				74AD0DD31E810E4100D36D76 /* LMTextStyle.h */,
-				74AD0DD21E810E4100D36D76 /* LMTextStyle.m */,
 				744FF22A1CE5DBB0008F06BF /* LMFontStyleCell.h */,
 				744FF22B1CE5DBB0008F06BF /* LMFontStyleCell.m */,
 				744FF2201CE5DAD5008F06BF /* LMFontSizeCell.h */,
@@ -309,6 +307,8 @@
 		74C89A0F1CE9F18700C63C56 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				74AD0DD91E82111F00D36D76 /* LMTextStyle.h */,
+				74AD0DDA1E82111F00D36D76 /* LMTextStyle.m */,
 				74AD0CFB1E7BBE4E00D36D76 /* Format */,
 			);
 			name = Models;
@@ -428,7 +428,7 @@
 				74B2BBBD1E18F5170008C953 /* LMFormatNormal.m in Sources */,
 				74DA5FE71D253DF2009C3AAF /* UIFont+LMText.m in Sources */,
 				740A3CFE1E5824FD00DA1AB1 /* LMFormatDashedLine.m in Sources */,
-				74AD0DD41E810E4100D36D76 /* LMTextStyle.m in Sources */,
+				74AD0DDB1E82111F00D36D76 /* LMTextStyle.m in Sources */,
 				748B40991D20F324004C1365 /* LMTextHTMLParser.m in Sources */,
 				744FF2221CE5DAD5008F06BF /* LMFontSizeCell.m in Sources */,
 				742D7EFE1E07D1E200EA436F /* LMFormatCheckbox.m in Sources */,

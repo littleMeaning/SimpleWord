@@ -78,7 +78,7 @@
     [self.fontSizeNumbers enumerateObjectsUsingBlock:^(NSNumber * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.integerValue == currentFontSize) {
             _currentFontSize = currentFontSize;
-            self.fontSizeLabel.text = [@(self.currentFontSize).stringValue stringByAppendingString:@"px"];
+            self.fontSizeLabel.text = @(self.currentFontSize).stringValue;
             [self.pickerView selectIndex:idx animated:NO];
             *stop = YES;
         }
@@ -97,7 +97,7 @@
 
 - (void)lm_pickerView:(LMFontSizePickerView *)pickerView didSelectIndex:(NSInteger)index {
     _currentFontSize = self.fontSizeNumbers[index].integerValue;
-    self.fontSizeLabel.text = [@(self.currentFontSize).stringValue stringByAppendingString:@"px"];
+    self.fontSizeLabel.text = @(self.currentFontSize).stringValue;
     [self.delegate lm_didChangeStyleSettings:@{LMFontSettingsFontSizeName: @(self.currentFontSize)}];
 }
 

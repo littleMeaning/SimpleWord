@@ -90,7 +90,8 @@
         {
             LMFontSizeCell *fontSizeCell = [tableView dequeueReusableCellWithIdentifier:@"fontSize"];
             if (!fontSizeCell.fontSizeNumbers) {
-                fontSizeCell.fontSizeNumbers = @[@9, @10, @11, @12, @14, @16, @18, @24, @30, @36];
+                // 设置可选的字体大小
+                fontSizeCell.fontSizeNumbers = @[@12, @13, @14, @15, @16, @17, @18, @19, @20, @22, @24, @26, @28, @30, @33, @36];
                 fontSizeCell.delegate = self;
             }
             fontSizeCell.currentFontSize = self.textStyle.fontSize;

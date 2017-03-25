@@ -24,7 +24,7 @@
     static dispatch_once_t onceToken;
     static CGFloat lineHeight;
     dispatch_once(&onceToken, ^{
-        lineHeight = [UIFont lm_systemFont].lineHeight;
+        lineHeight = [UIFont normalFont].lineHeight;
     });
     return lineHeight;
 }
@@ -35,7 +35,7 @@
 
 - (NSDictionary *)textAttributes {
     
-    UIFont *font = [UIFont lm_systemFont];
+    UIFont *font = [UIFont normalFont];
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
     style.paragraphSpacing = [self paragraphSpacing];
     
@@ -50,7 +50,7 @@
     if (!_view) {
         _view = ({
             UILabel *label = [[UILabel alloc] init];
-            label.font = [UIFont lm_systemFont];
+            label.font = [UIFont normalFont];
             label.textAlignment = NSTextAlignmentRight;
             label.frame = CGRectMake(0, 0, [self indent], [self indent]);
             _numberLabel = label;

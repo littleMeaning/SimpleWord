@@ -36,7 +36,7 @@
 
 - (NSDictionary *)textAttributes {
     
-    UIFont *font = self.textStyle.font ?: [UIFont lm_systemFont];
+    UIFont *font = self.textStyle.font ?: [UIFont normalFont];
     UIColor *textColor = self.textStyle.textColor;
     BOOL underline = self.textStyle.underline;
     

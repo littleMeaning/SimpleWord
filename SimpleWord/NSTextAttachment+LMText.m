@@ -13,7 +13,7 @@
 @implementation NSTextAttachment (LMText)
 
 + (CGRect)attachmentBounds {
-    CGFloat height = (NSInteger)[UIFont lm_systemFont].lineHeight + 4.f;
+    CGFloat height = (NSInteger)[UIFont normalFont].lineHeight + 4.f;
     return CGRectMake(0, 0, height, height);
 }
 

@@ -27,7 +27,7 @@
 @property (nonatomic, weak) UITextView *textView;
 
 @property (nonatomic, readonly) NSDictionary *typingAttributes;
-@property (nonatomic, strong) UIBezierPath *exclusionPath;
+@property (nonatomic, readonly) UIBezierPath *exclusionPath;
 
 - (instancetype)initWithFormatType:(LMFormatType)type textView:(UITextView *)textView;
 

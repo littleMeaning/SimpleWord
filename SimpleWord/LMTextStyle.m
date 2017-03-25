@@ -29,7 +29,7 @@
     switch (format) {
         case LMFontFormatNone:
         case LMFontFormatBody:
-            textStyle.fontSize = 18.f;
+            textStyle.fontSize = 17.f;
             textStyle.bold = NO;
             break;
         case LMFontFormatSubTitle:
@@ -47,7 +47,7 @@
 }
 
 - (UIFont *)font {
-    return [UIFont lm_fontWithFontSize:self.fontSize bold:self.bold italic:self.italic];
+    return [UIFont fontWithFontSize:self.fontSize bold:self.bold italic:self.italic];
 }
 
 #pragma mark - <NSCopying>

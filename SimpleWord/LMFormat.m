@@ -13,6 +13,12 @@
 #import "LMWordView.h"
 #import "LMTextStyle.h"
 
+@interface LMFormat ()
+
+@property (nonatomic, readwrite, strong) UIBezierPath *exclusionPath;
+
+@end
+
 @implementation LMFormat
 
 - (instancetype)initWithFormatType:(LMFormatType)type textView:(UITextView *)textView {
@@ -36,6 +42,10 @@
 
 - (CGFloat)height {
     return CGRectGetHeight(self.style.view.frame) + [self.style paragraphSpacing];
+}
+
+- (CGFloat)maxY {
+    return CGRectGetMaxY(self.style.view.frame) + [self.style paragraphSpacing];
 }
 
 - (NSDictionary *)typingAttributes {
@@ -81,7 +91,8 @@
     self.textView.textContainer.exclusionPaths = exclusionPaths;
 }
 
-static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认间距（文字与边界及exclusionPath之间）
+// UITextView 默认间距（文字与边界及exclusionPath之间）
+static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f;
 
 - (void)updateLayout {
     
@@ -102,7 +113,10 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     CGRect boundingRect = [attributedText boundingRectWithSize:CGSizeMake(boundingWidth, MAXFLOAT)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                        context:nil];
-    CGFloat y = [layoutManager boundingRectForGlyphRange:self.textRange inTextContainer:textContainer].origin.y;
+    CGFloat y = textContainerInset.top;
+    if (self.previous) {
+        y = [self.previous maxY];
+    }
     
     CGRect rect = CGRectZero;
     if ([self.style indent] == 0) {
@@ -112,7 +126,7 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f; // UITextView 默认�
     else {
         rect.origin.x = textContainerInset.left + kUITextViewDefaultEdgeSpacing;
     }
-    rect.origin.y = textContainerInset.top + y;
+    rect.origin.y = y;
     rect.size.width = [self.style indent];
     rect.size.height = boundingRect.size.height;
     [self updateFrameWithViewRect:rect];

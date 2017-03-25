@@ -92,7 +92,7 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     CGRect rect = [super caretRectForPosition:position];
     NSParagraphStyle *style = self.typingAttributes[NSParagraphStyleAttributeName];
     if (style) {
-        UIFont *font = self.typingAttributes[NSFontAttributeName] ?: [UIFont lm_systemFont];
+        UIFont *font = self.typingAttributes[NSFontAttributeName] ?: [UIFont normalFont];
         CGFloat height = CGRectGetHeight(rect) - style.lineSpacing * 2;
         if (height > font.lineHeight) {
             rect.origin.y += style.lineSpacing;

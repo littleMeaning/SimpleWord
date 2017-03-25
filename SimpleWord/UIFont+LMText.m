@@ -10,16 +10,11 @@
 
 @implementation UIFont (LMText)
 
-+ (instancetype)lm_systemFont {
-    static dispatch_once_t onceToken;
-    static UIFont *font;
-    dispatch_once(&onceToken, ^{
-        font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-    });
-    return font;
++ (instancetype)normalFont {
+    return [UIFont fontWithFontSize:17.f bold:NO italic:NO];
 }
 
-+ (instancetype)lm_fontWithFontSize:(float)fontSize bold:(BOOL)bold italic:(BOOL)italic {
++ (instancetype)fontWithFontSize:(float)fontSize bold:(BOOL)bold italic:(BOOL)italic {
     
     UIFont *font = bold ? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
     if (italic) {

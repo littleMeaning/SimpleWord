@@ -40,7 +40,7 @@
 }
 
 - (CGFloat)paragraphSpacing {
-    return [self.child indent];
+    return [self.child paragraphSpacing];
 }
 
 - (UIView *)view {
@@ -56,6 +56,13 @@
         return [self.child textStyle];
     }
     return nil;
+}
+
+- (NSInteger)number {
+    if ([self.child respondsToSelector:@selector(number)]) {
+        return [self.child number];
+    }
+    return 0;
 }
 
 - (void)updateDisplayWithFormat:(LMFormat *)format {

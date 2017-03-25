@@ -75,7 +75,7 @@
     UIView *view = [self.style view];
     [self.textView addSubview:view];
     [self updateLayout];
-    if (self.type == LMFormatTypeNormal) {
+    if (self.type == LMFormatTypeNumber) {
         [self updateDisplayRecursion];
     }
 }
@@ -97,7 +97,6 @@ static CGFloat const kUITextViewDefaultEdgeSpacing = 5.f;
 - (void)updateLayout {
     
     NSTextContainer *textContainer = self.textView.textContainer;
-    NSLayoutManager *layoutManager = self.textView.layoutManager;
     UIEdgeInsets textContainerInset = self.textView.textContainerInset;
     
     CGFloat boundingWidth = (textContainer.size.width - 3 * kUITextViewDefaultEdgeSpacing - self.style.indent);

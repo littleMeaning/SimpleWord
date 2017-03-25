@@ -26,23 +26,13 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];    
-    [self setSelectedRow];
+    [super viewWillAppear:animated];
 }
 
-- (void)setSelectedRow {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.format.type inSection:0];
+- (void)selectRowForFormatType:(LMFormatType)type {
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:type inSection:0];
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-}
-
-#pragma mark - getter & setter
-
-- (void)setFormat:(LMFormat *)paragraph {
-    if (self.format == paragraph) {
-        return;
-    }
-    _format = paragraph;
-    [self setSelectedRow];
 }
 
 #pragma mark - UITableViewDataSource
@@ -63,7 +53,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.delegate lm_didChangedFormatWithType:indexPath.row];
+    
+    [self.delegate lm_didSelectRowForFormatType:indexPath.row];
 }
 
 @end

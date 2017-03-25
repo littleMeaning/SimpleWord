@@ -49,18 +49,17 @@
 - (UIView *)view {
     if (!_view) {
         _view = ({
-            UILabel *label = [[UILabel alloc] init];
-            label.font = [UIFont normalFont];
-            label.textAlignment = NSTextAlignmentRight;
-            label.frame = CGRectMake(0, 0, [self indent], [self indent]);
-            _numberLabel = label;
-            self.number = 1;
+            _numberLabel = [[UILabel alloc] init];
+            _numberLabel.font = [UIFont normalFont];
+            _numberLabel.textAlignment = NSTextAlignmentRight;
+            _numberLabel.frame = CGRectMake(0, 0, [self indent], [self indent]);
             
             UIView *view = [[UIView alloc] init];
             view.backgroundColor = [UIColor clearColor];
-            [view addSubview:label];
+            [view addSubview:_numberLabel];
             view;
         });
+        self.number = 1;
     }
     return _view;
 }

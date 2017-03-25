@@ -13,14 +13,15 @@
 
 @protocol LMFormatInputDelegate <NSObject>
 
-/// 切换段落样式
-- (void)lm_didChangedFormatWithType:(LMFormatType)type;
+// 选择段落样式
+- (void)lm_didSelectRowForFormatType:(LMFormatType)type;
 
 @end
 
 @interface LMFormatInputViewController : UITableViewController
 
 @property (nonatomic, weak) id<LMFormatInputDelegate> delegate;
-@property (nonatomic, weak) LMFormat *format;
+
+- (void)selectRowForFormatType:(LMFormatType)type;
 
 @end

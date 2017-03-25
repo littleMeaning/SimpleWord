@@ -190,7 +190,7 @@
 - (void)textViewDidChangeSelection:(UITextView *)textView {
     
     LMFormat *format = [self.textView formatAtLocation:self.textView.selectedRange.location];
-    self.formatInputController.format = format;
+    [self.formatInputController selectRowForFormatType:format.type];
     [self didFormatChange:format.type];
 }
 
@@ -384,7 +384,7 @@ static void(^__afterChangingText)(void);
     [self updateTextStyleForSelection];
 }
 
-- (void)lm_didChangedFormatWithType:(LMFormatType)type {
+- (void)lm_didSelectRowForFormatType:(LMFormatType)type {
     
     [self.textView setFormatWithType:type forRange:self.textView.selectedRange];
     [self didFormatChange:type];

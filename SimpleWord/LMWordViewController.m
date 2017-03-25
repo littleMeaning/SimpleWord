@@ -436,13 +436,16 @@ static void(^__afterChangingText)(void);
 
 #pragma mark - private
 
-- (void)didFormatChange:(LMFormatType)type {    
+- (void)didFormatChange:(LMFormatType)type {
     // 仅段落格式为普通文本时候设置字体标签可用
     if (type == LMFormatTypeNormal) {
         [self.inputSegmentControl setEnable:YES forSegmentIndex:1];
     }
     else {
         [self.inputSegmentControl setEnable:NO forSegmentIndex:1];
+        if (self.inputSegmentControl.selectedSegmentIndex == 1) {
+            [self.inputSegmentControl setSelectedSegmentIndex:0 animated:YES];
+        }
     }
 }
 

@@ -112,7 +112,7 @@
         return;
     }
     UIControl *itemView = self.itemViews[index];
-    itemView.enabled = enable;
+    itemView.enabled = enable;        
 }
 
 - (void)drawRect:(CGRect)rect {

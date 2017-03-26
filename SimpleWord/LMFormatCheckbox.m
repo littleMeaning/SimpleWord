@@ -11,11 +11,14 @@
 
 @interface LMFormatCheckbox ()
 
+@property (nonatomic, readonly) UIButton *checkboxButton;
+
 @end
 
 @implementation LMFormatCheckbox
 
 @synthesize view = _view;
+@synthesize checkboxButton = _checkboxButton;
 
 - (CGFloat)indent {
     return 20.f;
@@ -46,19 +49,35 @@
     
     if (!_view) {
         _view = ({
+            UIView *view = [[UIView alloc] init];
+            view.backgroundColor = [UIColor clearColor];
+            [view addSubview:self.checkboxButton];
+            view;
+        });
+    }
+    return _view;
+}
+
+- (UIButton *)checkboxButton {
+    if (!_checkboxButton) {
+        _checkboxButton = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
             [button setImage:[self checkboxImage] forState:UIControlStateNormal];
             [button setImage:[self checkboxHighlightImage] forState:UIControlStateSelected];
             [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
             button.frame = CGRectMake(0, 0, [self indent], [self indent]);
-            
-            UIView *view = [[UIView alloc] init];
-            view.backgroundColor = [UIColor clearColor];
-            [view addSubview:button];
-            view;
+            button;
         });
     }
-    return _view;
+    return _checkboxButton;
+}
+
+- (void)setSelected:(BOOL)selected {
+    self.checkboxButton.selected = selected;
+}
+
+- (BOOL)selected {
+    return self.checkboxButton.selected;
 }
 
 - (void)buttonAction:(UIButton *)button {

@@ -10,6 +10,8 @@
 #import <objc/runtime.h>
 #import "UIFont+LMText.h"
 #import "LMFormat.h"
+#import "LMFormatManager.h"
+#import "LMFormatStyle.h"
 
 @interface LMWordView ()
 
@@ -168,6 +170,9 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 - (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text {
 
+    NSMutableArray<LMFormat *> *oldFormats = [NSMutableArray array];
+    NSMutableArray<LMFormat *> *newFormats = [NSMutableArray array];
+    
     LMFormat *begin = [self formatAtLocation:range.location];
     LMFormat *end = [self formatAtLocation:NSMaxRange(range)];
     
@@ -181,136 +186,57 @@ static CGFloat const kLMWCommonSpacing = 16.f;
             return NO;
         }
     }
-    else if (text.length == 0 && [[self.text substringWithRange:range] isEqualToString:@"\n"]) {
-        // 光标在段首且为空段落时输入退格则去掉改段落样式
-        LMFormat *format = [self formatAtLocation:range.location + 1];
-        if (format.type != LMFormatTypeNormal) {
-            [self setFormatWithType:LMFormatTypeNormal forRange:NSMakeRange(range.location + 1, 0)];
-            return NO;
-        }
-    }
+
+    LMFormat *item = begin;
+    do {
+        [oldFormats addObject:item];
+    } while (item != end && (item = item.next));
     
-    self.scrollEnabled = NO; // 设置 scrollEnabled=NO 可以解决 exclusionPath 位置不准确的 bug
-    // 去掉被删除的段落样式
-    CGFloat offset = 0;
-    if (begin != end) {
-        LMFormat *item = begin;
-        while ((item = item.next) && item != end) {
-            offset -= item.height;
-            [item restore];
-        }
-    }
-    
-    NSMutableAttributedString *replacement = [[NSMutableAttributedString alloc] init];
-    NSMutableArray *newFormats = [[NSMutableArray alloc] init];
-    LMFormat *format;
-    CGFloat tailLength = NSMaxRange(end.textRange) - NSMaxRange(range);
+    __block NSMutableAttributedString *replacementAttrString = [[NSMutableAttributedString alloc] init];
     NSArray *components = [text componentsSeparatedByString:@"\n"];
-    if (components.count == 1) {
-        // 不包含 "\n" 字符，不产生新的段落
-        NSString *component = components.firstObject;
-        begin.length = range.location - begin.textRange.location + component.length + tailLength;
-        NSAttributedString *attributeStr = [[NSAttributedString alloc] initWithString:component attributes:begin.typingAttributes];
-        [replacement appendAttributedString:attributeStr];
-        if (begin != end) {
-            offset -= end.height;
-            [end restore];
-        }
-        begin.next = end.next;
-        begin.next.previous = begin;
-        format = begin;
-        end = begin;
-    }
-    else {
-        for (NSInteger idx = 0; idx < components.count; idx ++) {
-            NSString *component = components[idx];
-            NSAttributedString *attributeStr;
-            if (idx == 0) {
-                // 第一个
-                begin.length = range.location - begin.textRange.location + component.length + 1;
-                attributeStr = [[NSAttributedString alloc] initWithString:[component stringByAppendingString:@"\n"] attributes:begin.typingAttributes];
-                format = begin;
-            }
-            else if (idx == components.count - 1) {
-                // 最后一个
-                LMFormat *newFormat = [[LMFormat alloc] initWithFormatType:end.type textView:self];
-                newFormat.previous = format;
-                newFormat.next = end.next;
-                newFormat.next.previous = newFormat;
-                newFormat.previous.next = newFormat;
-                if (begin != end) {
-                    offset -= end.height;
-                    [end restore];
+    [components enumerateObjectsUsingBlock:^(NSString *component, NSUInteger idx, BOOL * stop) {
+
+        LMFormat *format = [[LMFormat alloc] initWithFormatType:begin.type textView:self];
+        if (idx == 0 || idx == components.count - 1) {
+            // 头尾两个段落，可能连接前后内容，需额外计算长度
+            format.length = ({
+                NSString *theText = [self.text stringByReplacingCharactersInRange:range withString:text];
+                NSUInteger location = (idx == 0) ? range.location : (range.location + text.length + 1);
+                NSUInteger length = 0;
+                if (location < theText.length) {
+                     length = [theText paragraphRangeForRange:NSMakeRange(location, 0)].length;
                 }
-                newFormat.length = component.length + tailLength;
-                end = newFormat;
-                [newFormats addObject:newFormat];
-                attributeStr = [[NSAttributedString alloc] initWithString:component attributes:end.typingAttributes];
+                length;
+            });
+            if (idx == 0 && format.type == LMFormatTypeCheckbox) {
+                // checkbox 选中状态不丢失
+                format.style.selected = oldFormats.firstObject.style.selected;
             }
-            else {
-                LMFormat *newFormat = [[LMFormat alloc] initWithFormatType:LMFormatTypeNormal textView:self];
-                newFormat.previous = format;
-                format.next = newFormat;
-                newFormat.length = component.length + 1;
-                
-                [newFormats addObject:newFormat];
-                format = newFormat;
-                
-                attributeStr = [[NSAttributedString alloc] initWithString:[component stringByAppendingString:@"\n"] attributes:format.typingAttributes];
-            }
-            [replacement appendAttributedString:attributeStr];
         }
-    }
+        else {
+            format.length = component.length + 1;
+        }
+        [newFormats addObject:format];
+        
+        if (idx != components.count - 1) {
+            component = [component stringByAppendingString:@"\n"];
+        }
+        NSAttributedString *attributeStr = [[NSAttributedString alloc] initWithString:component attributes:nil];
+        [replacementAttrString appendAttributedString:attributeStr];
+    }];
+    
     NSMutableAttributedString *attributedText = [self.attributedText mutableCopy];
-    [attributedText replaceCharactersInRange:range withAttributedString:replacement];
+    [attributedText replaceCharactersInRange:range withAttributedString:replacementAttrString];
     self.allowsEditingTextAttributes = YES;
     self.attributedText = attributedText;
     self.allowsEditingTextAttributes = NO;
     
-    offset -= begin.height;
-    [begin updateLayout];
-    offset += begin.height;
-    for (LMFormat *newFormat in newFormats) {
-        [newFormat format];
-        offset += newFormat.height;
-    }
-    
-    // 调整后续段落位置
-    if (offset != 0) {
-        LMFormat *item = end;
-        while ((item = item.next)) {
-            [item updateFrameWithYOffset:offset];
-        }
-    }
-    
-    // 如果是有序列表则需要重新编写序号
-    if (end.type == LMFormatTypeNumber) {
-        [end updateDisplayRecursion];
-    }
+    [LMFormatManager sharedInstance].textView = self;
+    [[LMFormatManager sharedInstance] replaceFormats:oldFormats withReplacements:newFormats];
     
     self.selectedRange = NSMakeRange(range.location + text.length, 0);   // 设置光标位置
-    self.scrollEnabled = YES;
-    
     self.typingAttributes = begin.typingAttributes;
     return NO;
-}
-
-- (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    // 没有换行情况下，文本内容改变
-    CGFloat location = range.location;
-    LMFormat *format = [self formatAtLocation:location];
-    // 获取当前编辑的段落长度
-    format.length = [self.text paragraphRangeForRange:NSMakeRange(location, 0)].length;
-    // 调整后面的段落位置
-    CGFloat offset = -format.height;
-    [format updateLayout];
-    offset += format.height;
-    if (offset != 0) {
-        LMFormat *item = format;
-        while ((item = item.next)) {
-            [item updateFrameWithYOffset:offset];
-        }
-    }
 }
 
 - (LMFormat *)formatAtLocation:(NSUInteger)loc {

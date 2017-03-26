@@ -35,7 +35,6 @@
 @property (nonatomic, strong) LMTextStyle *currentTextStyle;
 
 @property (nonatomic, assign) NSRange lastSelectedRange;
-@property (nonatomic, assign) BOOL keepCurrentTextStyle;
 
 @end
 
@@ -194,8 +193,6 @@
     [self didFormatChange:format.type];
 }
 
-static void(^__afterChangingText)(void);
-
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     if (range.location == 0 && range.length == 0 && text.length == 0 && self.textView.beginningFormat != LMFormatTypeNormal) {
@@ -211,13 +208,8 @@ static void(^__afterChangingText)(void);
         if (self.currentTextStyle) {
             [LMTextStyle setupAppearanceWithInstance:self.currentTextStyle];
         }
-        // 段落发生改变
+        // 段落发生改变时，通过代码来修改 text 内容
         shouldChange = [self.textView changeTextInRange:range replacementText:text];
-    }
-    if (shouldChange) {
-        __afterChangingText = ^{
-            [self.textView didChangeTextInRange:range replacementText:text];
-        };
     }
     self.lastSelectedRange = self.textView.selectedRange;
     return shouldChange;
@@ -225,9 +217,20 @@ static void(^__afterChangingText)(void);
 
 - (void)textViewDidChange:(UITextView *)textView {
     
-    if (__afterChangingText) {
-        __afterChangingText();
-        __afterChangingText = nil;
+    // 没有换行情况下，文本内容改变
+    CGFloat location = self.textView.selectedRange.location - 1;
+    LMFormat *format = [self.textView formatAtLocation:location];
+    // 获取当前编辑的段落长度
+    format.length = [self.textView.text paragraphRangeForRange:NSMakeRange(location, 0)].length;
+    // 调整后面的段落位置
+    CGFloat offset = -format.height;
+    [format updateLayout];
+    offset += format.height;
+    if (offset != 0) {
+        LMFormat *item = format;
+        while ((item = item.next)) {
+            [item updateFrameWithYOffset:offset];
+        }
     }
 }
 

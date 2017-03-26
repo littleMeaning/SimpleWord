@@ -19,7 +19,6 @@
 - (void)setFormatWithType:(LMFormatType)type forRange:(NSRange)range;
 - (void)setTypingAttributesForSelection;
 - (BOOL)changeTextInRange:(NSRange)range replacementText:(NSString *)text;
-- (void)didChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
 - (LMFormat *)formatAtLocation:(NSUInteger)loc;
 

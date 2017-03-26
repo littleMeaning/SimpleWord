@@ -21,6 +21,7 @@
 @optional
 @property (nonatomic, readonly) LMTextStyle *textStyle; // LMFormatNormal
 @property (nonatomic, readonly) NSInteger number;       // LMFormatNumber
+@property (nonatomic, assign) BOOL selected;            // LMFormatCheckbox
 
 /**
  刷新显示（同类型段落减少间距，有序列表数字显示改变）

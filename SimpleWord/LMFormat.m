@@ -75,9 +75,7 @@
     UIView *view = [self.style view];
     [self.textView addSubview:view];
     [self updateLayout];
-    if (self.type == LMFormatTypeNumber) {
-        [self updateDisplayRecursion];
-    }
+    [self.style updateDisplayWithFormat:self];
 }
 
 - (void)restore {

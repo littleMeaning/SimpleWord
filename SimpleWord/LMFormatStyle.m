@@ -65,6 +65,19 @@
     return 0;
 }
 
+- (void)setSelected:(BOOL)selected {
+    if ([self.child respondsToSelector:@selector(setSelected:)]) {
+        [self.child setSelected:selected];
+    }
+}
+
+- (BOOL)selected {
+    if ([self.child respondsToSelector:@selector(selected)]) {
+        return [self.child selected];
+    }
+    return NO;
+}
+
 - (void)updateDisplayWithFormat:(LMFormat *)format {
     if ([self.child respondsToSelector:@selector(updateDisplayWithFormat:)]) {
         [self.child updateDisplayWithFormat:format];

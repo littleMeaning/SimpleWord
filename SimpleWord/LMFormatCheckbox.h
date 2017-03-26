@@ -10,4 +10,6 @@
 
 @interface LMFormatCheckbox : NSObject <LMFormatStyle>
 
+@property (nonatomic, assign) BOOL selected;
+
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "LMTextHTMLParser.h"
-#import "UIFont+LMText.m"
+#import "UIFont+LMText.h"
 #import "NSTextAttachment+LMText.h"
 
 @implementation LMTextHTMLParser

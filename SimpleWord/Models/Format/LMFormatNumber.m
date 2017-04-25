@@ -8,7 +8,6 @@
 
 #import "LMFormatNumber.h"
 #import "UIFont+LMText.h"
-#import "UIFont+LMText.h"
 
 @interface LMFormatNumber ()
 
@@ -24,6 +23,7 @@
     static dispatch_once_t onceToken;
     static CGFloat lineHeight;
     dispatch_once(&onceToken, ^{
+        // TODO: 根据序号最大占宽动态变化。
         lineHeight = [UIFont normalFont].lineHeight;
     });
     return lineHeight;
@@ -52,7 +52,7 @@
             _numberLabel = [[UILabel alloc] init];
             _numberLabel.font = [UIFont normalFont];
             _numberLabel.textAlignment = NSTextAlignmentRight;
-            _numberLabel.frame = CGRectMake(0, 0, [self indent], [self indent]);
+            _numberLabel.frame = CGRectMake(0, 0, [self indent], [UIFont normalFont].lineHeight);
             
             UIView *view = [[UIView alloc] init];
             view.backgroundColor = [UIColor clearColor];

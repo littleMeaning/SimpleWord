@@ -65,15 +65,15 @@
         offset += format.height;
     }
     // 调整后续段落位置
+    LMFormat *end = replacements.lastObject;
     if (offset != 0) {
-        LMFormat *end = formats.lastObject;
         LMFormat *item = end;
         while ((item = item.next)) {
             [item updateFrameWithYOffset:offset];
         }
-        // 如果是有序列表则需要重新编写序号
-        [end updateDisplayRecursion];
     }
+    // 如果是有序列表则需要重新编写序号
+    [end updateDisplayRecursion];
     
     LMFormat *begin = formats.firstObject;
     self.textView.typingAttributes = begin.typingAttributes;

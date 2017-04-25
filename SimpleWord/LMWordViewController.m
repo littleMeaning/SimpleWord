@@ -219,6 +219,9 @@
     
     // 没有换行情况下，文本内容改变
     CGFloat location = self.textView.selectedRange.location - 1;
+    if (location < 0) {
+        return;
+    }
     LMFormat *format = [self.textView formatAtLocation:location];
     // 获取当前编辑的段落长度
     format.length = [self.textView.text paragraphRangeForRange:NSMakeRange(location, 0)].length;

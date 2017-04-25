@@ -7,7 +7,7 @@
 //
 
 #import "LMTextStyle.h"
-#import "UIFont+LMText.m"
+#import "UIFont+LMText.h"
 
 @interface LMTextStyle ()
 

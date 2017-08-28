@@ -8,7 +8,7 @@
 
 #import "LMTextHTMLParser.h"
 #import "LMParagraphConfig.h"
-#import "UIFont+LMText.m"
+#import "UIFont+LMText.h"
 #import "NSTextAttachment+LMText.h"
 
 @implementation LMTextHTMLParser
@@ -58,6 +58,12 @@
                     [htmlContent appendString:@"</p>"];
                     isNewParagraph = YES;
                 }
+                
+                // 如果当前是空字符，多写的\n符，使html加入换行
+                /*if ([content isEqualToString:@""]) {
+                    [htmlContent appendString:@"<br />"];
+                }*/
+                
                 if (isNewParagraph && (content.length > 0 || i < components.count - 1)) {
                     [htmlContent appendString:[NSString stringWithFormat:@"<p style=\"text-indent:%@em;margin:4px auto 0px auto;\">", @(2 * paragraphConfig.indentLevel).stringValue]];
                     isNewParagraph = NO;
@@ -65,7 +71,7 @@
                 [htmlContent appendString:[self HTMLWithContent:content font:font underline:underline color:color]];
                 isFirst = NO;
             }
-            if (effectiveRange.location + effectiveRange.length >= attributedString.length && ![htmlContent hasSuffix:@"</p>"]) {
+            if (effectiveRange.location + effectiveRange.length >= attributedString.length && ![htmlContent hasSuffix:@"</p>"] && ![htmlContent hasSuffix:@"<br />"]) {
                 // 补上</p>
                 [htmlContent appendString:@"</p>"];
             }

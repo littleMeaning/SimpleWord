@@ -56,8 +56,10 @@
     _contentInputAccessoryView.changeSegmentManually = YES;
     
     _textView = [[LMWordView alloc] init];
+    _textView.placeholder = @"写点什么吧";
+    _textView.placeholderColor = [UIColor grayColor];
     _textView.delegate = self;
-    _textView.titleTextField.delegate = self;
+    _textView.titleTextView.delegate = self;
     [self.view addSubview:_textView];
     
     [self setCurrentParagraphConfig:[[LMParagraphConfig alloc] init]];
@@ -123,7 +125,7 @@
 #pragma mark - <UITextViewDelegate>
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    if (textField.text.length == 0) {
+    if (!textField.hasText) {
         textField.text = textField.placeholder;
     }
     self.textView.editable = NO;
@@ -500,6 +502,7 @@
     NSTextAttachment *attachment = [self insertImage:degradedImage];
     [self.textView resignFirstResponder];
     [self.textView scrollRangeToVisible:_lastSelectedRange];
+    [self.textView becomeFirstResponder];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
@@ -527,7 +530,7 @@
 
 - (NSString *)exportHTML {
     
-    NSString *title = [NSString stringWithFormat:@"<h1 align=\"center\">%@</h1>", self.textView.titleTextField.text];
+    NSString *title = [NSString stringWithFormat:@"<h1 align=\"center\">%@</h1>", self.textView.titleTextView.text];
     NSString *content = [LMTextHTMLParser HTMLFromAttributedString:self.textView.attributedText];
     return [title stringByAppendingString:content];
 }

@@ -60,9 +60,9 @@
                 }
                 
                 // 如果当前是空字符，多写的\n符，使html加入换行
-                if ([content isEqualToString:@""]) {
+                /*if ([content isEqualToString:@""]) {
                     [htmlContent appendString:@"<br />"];
-                }
+                }*/
                 
                 if (isNewParagraph && (content.length > 0 || i < components.count - 1)) {
                     [htmlContent appendString:[NSString stringWithFormat:@"<p style=\"text-indent:%@em;margin:4px auto 0px auto;\">", @(2 * paragraphConfig.indentLevel).stringValue]];

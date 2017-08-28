@@ -66,7 +66,7 @@
     viewController.view.frame = self.container.bounds;
     
     if (sender.selectedSegmentIndex == 1) {
-        [self.wordViewController.textView.titleTextField resignFirstResponder];
+        [self.wordViewController.textView.titleTextView resignFirstResponder];
         [self.view endEditing:YES];
         self.htmlViewController.HTMLString = [self.wordViewController exportHTML];
     }

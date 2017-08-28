@@ -39,11 +39,22 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     return self;
 }
 
+
 - (void)setup {
-    _titleTextField = [[UITextField alloc] init];
-    _titleTextField.font = [UIFont boldSystemFontOfSize:16.f];
-    _titleTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.titlePlaceholder?:@"标题"
-            attributes:@{ NSForegroundColorAttributeName:self.titlePlaceholderColor?:[UIColor grayColor]}];
+    _titleTextView = [[LMTextView alloc] init];
+    _titleTextView.font = [UIFont boldSystemFontOfSize:16.f];
+    _titleTextView.autoExtend = YES;
+//    _titleTextView.backgroundColor = [UIColor redColor];
+    _titleTextView.placeholderPosition = CGPointMake(4, 9);
+    
+    __weak LMWordView *weakSelf = self;
+    [_titleTextView setAutoExtendBlock:^{
+        [weakSelf setNeedsLayout];
+        if (weakSelf.titleExtendBlock) {
+            weakSelf.titleExtendBlock();
+        }
+    }];
+    
     _separatorLine = [[UIView alloc] init];
     _separatorLine.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
     
@@ -51,17 +62,14 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     _titleView.backgroundColor = [UIColor whiteColor];
     
     
-    [_titleView addSubview:_titleTextField];
+    [_titleView addSubview:_titleTextView];
     [_titleView addSubview:_separatorLine];
     [self addSubview:_titleView];
     
     self.autocorrectionType = UITextAutocorrectionTypeNo;
     self.spellCheckingType = UITextSpellCheckingTypeNo;    
     self.alwaysBounceVertical = YES;
-    self.textContainerInset = UIEdgeInsetsMake(kLMWMargin + kLMWTitleHeight + kLMWCommonSpacing,
-                                               kLMWCommonSpacing,
-                                               kLMWCommonSpacing,
-                                               kLMWCommonSpacing);
+    
     
     // 默认的占位文字颜色
     self.placeholderColor = [UIColor grayColor];
@@ -80,6 +88,15 @@ static CGFloat const kLMWCommonSpacing = 16.f;
     self.placeholderLabel.hidden = self.hasText && self.attributedText.length;
 }
 
+// 拦截粘贴事件，把\r替换成\n
+- (void)paste:(id)sender
+{
+    UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+    NSString *string = pasteBoard.string;
+    string = [string stringByReplacingOccurrencesOfString:@"\r" withString:@"\n"];
+    [self insertText:string];
+}
+
 /*- (void)insertText:(NSString *)text
 {
     if (!self.hasText && [text isEqualToString:@"\n"]) {
@@ -90,31 +107,45 @@ static CGFloat const kLMWCommonSpacing = 16.f;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    if (!CGRectEqualToRect(_frameCache, self.frame)) {
-        CGRect rect = CGRectInset(self.bounds, kLMWMargin, kLMWMargin);
-        rect.origin.y = kLMWMargin;
-        rect.size.height = kLMWTitleHeight;
-        _titleView.frame = rect;
-        
-        rect.origin = CGPointZero;
-        rect.size.height = 30.f;
-        _titleTextField.frame = rect;
-        
-        rect.origin.y = CGRectGetHeight(_titleView.bounds) - 1;
-        rect.size.height = 1.f;
-        _separatorLine.frame = rect;
-        
-        _frameCache = self.frame;
-    }
     
+    CGRect titleTextFrame = CGRectMake(0, 0,
+                                       self.frame.size.width - 2 * kLMWMargin ,
+                                       self.titleTextView.contentSize.height > 1 ? self.titleTextView.contentSize.height : 30.f);
+    _titleTextView.frame = titleTextFrame;
+    
+    CGRect titleViewFrame = CGRectMake(kLMWMargin, kLMWMargin,
+                                       self.frame.size.width - 2 * kLMWMargin,
+                                       titleTextFrame.size.height + 1);
+    _titleView.frame = titleViewFrame;
+    
+    _separatorLine.frame = CGRectMake(0, titleViewFrame.size.height - 1.f, titleViewFrame.size.width, 1.f);
+    
+    self.textContainerInset = UIEdgeInsetsMake(CGRectGetMaxY(titleViewFrame) + kLMWMargin,
+                                               kLMWCommonSpacing,
+                                               kLMWCommonSpacing,
+                                               kLMWCommonSpacing);
+
     // placeholder
     CGRect frame = self.placeholderLabel.frame;
+    frame.origin.y = CGRectGetMaxY(titleViewFrame) + kLMWMargin;
     frame.size.width = self.frame.size.width - 2 * self.placeholderLabel.frame.origin.x;
     self.placeholderLabel.frame = frame;
     [self.placeholderLabel sizeToFit];
 }
 
 #pragma mark - 重写setter
+- (void)setTitlePlaceholder:(NSString *)titlePlaceholder
+{
+    _titlePlaceholder = titlePlaceholder;
+    self.titleTextView.placeholderText = titlePlaceholder?:@"添加标题";
+}
+- (void)setTitlePlaceholderColor:(UIColor *)titlePlaceholderColor
+{
+    _titlePlaceholderColor = titlePlaceholderColor;
+    UIColor *color = self.titlePlaceholderColor?:[UIColor grayColor];
+    self.titleTextView.placeholderColor = color;
+}
+
 - (void)setPlaceholderColor:(UIColor *)placeholderColor
 {
     _placeholderColor = placeholderColor;

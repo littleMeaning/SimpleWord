@@ -59,7 +59,7 @@
     _textView.placeholder = @"写点什么吧";
     _textView.placeholderColor = [UIColor grayColor];
     _textView.delegate = self;
-    _textView.titleTextField.delegate = self;
+    _textView.titleTextView.delegate = self;
     [self.view addSubview:_textView];
     
     [self setCurrentParagraphConfig:[[LMParagraphConfig alloc] init]];
@@ -530,7 +530,7 @@
 
 - (NSString *)exportHTML {
     
-    NSString *title = [NSString stringWithFormat:@"<h1 align=\"center\">%@</h1>", self.textView.titleTextField.text];
+    NSString *title = [NSString stringWithFormat:@"<h1 align=\"center\">%@</h1>", self.textView.titleTextView.text];
     NSString *content = [LMTextHTMLParser HTMLFromAttributedString:self.textView.attributedText];
     return [title stringByAppendingString:content];
 }

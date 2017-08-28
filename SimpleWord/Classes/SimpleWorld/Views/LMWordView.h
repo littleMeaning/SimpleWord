@@ -7,17 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LMTextView.h"
+
+typedef void(^DidAutoExtendBlock)();
 
 @interface LMWordView : UITextView
 
-@property (nonatomic, strong) UITextField *titleTextField;
+/**
+ *  标题文本框
+ */
+@property (nonatomic, strong) LMTextView *titleTextView;
 
 // 标题占位文本
 @property (nonatomic, copy) NSString *titlePlaceholder;
 // 标题占位文本颜色
-@property (nonatomic, strong) NSString *titlePlaceholderColor;
+@property (nonatomic, strong) UIColor *titlePlaceholderColor;
 // 占位文本
 @property (nonatomic, copy) NSString *placeholder;
 // 占位文本颜色
 @property (nonatomic, strong) UIColor *placeholderColor;
+
+/**
+ *  自扩展完成操作
+ */
+@property (nonatomic, copy) DidAutoExtendBlock titleExtendBlock;
 @end
